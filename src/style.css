@@ -2,17 +2,37 @@
 
 @theme {
   --font-sans: "Poppins", ui-sans-serif, system-ui, sans-serif;
-
-  /* Color Branding Mapping */
   --color-brand-maroon: #690B22;
   --color-brand-terracotta: #E07A5F;
   --color-brand-cream-light: #F1E3D3;
   --color-brand-forest-dark: #1B4D3E;
 }
 
-/* Global Styles based on UI/UX Guidelines */
+html, body {
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+}
+
 @layer base {
   body {
     @apply bg-brand-cream-light text-brand-forest-dark;
   }
+}
+
+/* Smooth fade-in animation */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+}
+.animate-fade-up { animation: fadeUp 0.8s ease-out both; }
+.animate-fade-up-delay { animation: fadeUp 0.8s ease-out 0.2s both; }
+.animate-float { animation: float 4s ease-in-out infinite; }
+
+/* Smooth organic blob */
+.blob {
+  border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
 }
