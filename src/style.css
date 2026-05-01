@@ -1,6 +1,18 @@
 @import "tailwindcss";
 
 @theme {
-  /* Di sini Anda bisa menambahkan kustomisasi tema menggunakan CSS variabel */
-  /* Contoh: --font-sans: "Inter", ui-sans-serif, system-ui; */
+  --font-sans: "Poppins", ui-sans-serif, system-ui, sans-serif;
+
+  /* Color Branding Mapping */
+  --color-brand-maroon: #690B22;
+  --color-brand-terracotta: #E07A5F;
+  --color-brand-cream-light: #F1E3D3;
+  --color-brand-forest-dark: #1B4D3E;
+}
+
+/* Global Styles based on UI/UX Guidelines */
+@layer base {
+  body {
+    @apply bg-brand-cream-light text-brand-forest-dark;
+  }
 }

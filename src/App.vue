@@ -3,21 +3,28 @@ import { RouterLink, RouterView } from 'vue-router'
 </script>
 
 <template>
-  <header class="bg-white shadow-sm border-b border-gray-100">
-    <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center gap-8">
+  <header class="bg-white shadow-sm border-b border-brand-maroon/10">
+    <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center gap-8 font-medium">
       <RouterLink 
         to="/" 
-        class="text-gray-900 font-semibold hover:text-indigo-600 transition-colors"
-        active-class="text-indigo-600"
+        class="text-brand-forest-dark hover:text-brand-maroon transition-colors"
+        active-class="text-brand-maroon font-bold"
       >
         Home
       </RouterLink>
       <RouterLink 
-        to="/about" 
-        class="text-gray-900 font-semibold hover:text-indigo-600 transition-colors"
-        active-class="text-indigo-600"
+        to="/admin/dashboard" 
+        class="text-brand-forest-dark hover:text-brand-maroon transition-colors"
+        active-class="text-brand-maroon font-bold"
       >
-        About
+        Dashboard
+      </RouterLink>
+      <RouterLink 
+        to="/login" 
+        class="text-brand-forest-dark hover:text-brand-maroon transition-colors"
+        active-class="text-brand-maroon font-bold"
+      >
+        Login
       </RouterLink>
     </nav>
   </header>
@@ -26,9 +33,3 @@ import { RouterLink, RouterView } from 'vue-router'
     <RouterView />
   </main>
 </template>
-
-<style>
-body {
-  @apply bg-gray-50;
-}
-</style>
