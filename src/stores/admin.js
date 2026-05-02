@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { referenceApi } from '../api/mockService'
+import { referenceApi } from '../api/apiService'
 
 /**
  * Admin Reference Store

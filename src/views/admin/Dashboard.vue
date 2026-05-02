@@ -107,7 +107,7 @@ import {
   CategoryScale, LinearScale, PointElement, LineElement,
   Title, Tooltip, Legend, Filler
 } from 'chart.js'
-import { dashboardApi, orderApi } from '../../api/mockService'
+import { dashboardApi, orderApi } from '../../api/apiService'
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Filler)
 

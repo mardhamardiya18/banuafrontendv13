@@ -27,7 +27,7 @@
     <div v-else class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5">
       <div v-for="item in data" :key="item.id" class="group relative rounded-2xl overflow-hidden bg-white border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
         <img :src="item.image_url" alt="" class="w-full aspect-4/3 object-cover group-hover:scale-105 transition-transform duration-500" />
-        <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+        <div class="absolute inset-0 bg-linear-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
         <div class="absolute bottom-0 left-0 right-0 p-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
           <p class="text-white text-xs font-medium truncate">{{ item.sub_product_name }}</p>
         </div>
@@ -46,11 +46,38 @@
             <option v-for="sp in subs" :key="sp.id" :value="sp.id">{{ sp.name }}</option>
           </select>
         </div>
+        <!-- Image Upload Area -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1.5">Image URL</label>
-          <input v-model="form.image_url" type="text" required class="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm outline-none focus:border-brand-maroon" placeholder="https://..." />
+          <label class="block text-sm font-medium text-gray-700 mb-2.5">File Foto</label>
+          <div 
+            @click="$refs.fileInput.click()"
+            class="relative group cursor-pointer border-2 border-dashed border-gray-200 hover:border-brand-maroon/50 rounded-2xl p-4 transition-all bg-gray-50/50 hover:bg-brand-maroon/2"
+          >
+            <input 
+              type="file" 
+              ref="fileInput" 
+              class="hidden" 
+              accept="image/*"
+              @change="handleFileChange"
+            />
+            
+            <div v-if="previewUrl" class="relative">
+              <img :src="previewUrl" alt="preview" class="w-full aspect-4/3 object-cover rounded-xl shadow-sm border border-gray-100" />
+              <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl flex items-center justify-center">
+                <span class="text-white text-xs font-bold flex items-center gap-2 bg-black/20 px-3 py-2 rounded-lg backdrop-blur-md">
+                  <i class="bx bx-camera text-base"></i> Ganti Foto
+                </span>
+              </div>
+            </div>
+
+            <div v-else class="py-8 flex flex-col items-center justify-center text-center">
+              <div class="w-14 h-14 bg-white rounded-2xl shadow-sm border border-gray-100 flex items-center justify-center text-gray-400 group-hover:text-brand-maroon transition-colors mb-3">
+                <i class="bx bx-image-add text-3xl"></i>
+              </div>
+              <p class="text-sm font-bold text-gray-700">Klik untuk Unggah Foto</p>
+            </div>
+          </div>
         </div>
-        <img v-if="form.image_url" :src="form.image_url" alt="preview" class="w-full rounded-xl object-cover max-h-48" />
       </form>
       <template #footer>
         <div class="flex justify-end gap-3">
@@ -69,14 +96,23 @@
 import { ref, onMounted } from 'vue'
 import BaseModal from '../../components/admin/BaseModal.vue'
 import ConfirmDialog from '../../components/admin/ConfirmDialog.vue'
-import { galleryApi } from '../../api/mockService'
+import { galleryApi } from '../../api/apiService'
 import { useAdminStore } from '../../stores/admin'
 
 const store = useAdminStore()
 const loading = ref(false), data = ref([]), subs = ref([])
 const showForm = ref(false), saving = ref(false)
-const form = ref({ sub_product_id: '', image_url: '' })
+const previewUrl = ref(null)
+const form = ref({ sub_product_id: '', image_url: null })
 const showDel = ref(false), delTarget = ref(null), deleting = ref(false)
+
+const handleFileChange = (e) => {
+  const file = e.target.files[0]
+  if (file) {
+    form.value.image_url = file
+    previewUrl.value = URL.createObjectURL(file)
+  }
+}
 
 const fetchData = async () => {
   loading.value = true
@@ -85,7 +121,14 @@ const fetchData = async () => {
 }
 const save = async () => {
   saving.value = true
-  try { await galleryApi.create(form.value); store.showToast('Foto ditambahkan'); showForm.value = false; form.value = { sub_product_id: '', image_url: '' }; await fetchData() }
+  try { 
+    await galleryApi.create(form.value)
+    store.showToast('Foto ditambahkan')
+    showForm.value = false
+    form.value = { sub_product_id: '', image_url: null }
+    previewUrl.value = null
+    await fetchData() 
+  }
   finally { saving.value = false }
 }
 const confirmDel = (item) => { delTarget.value = item; showDel.value = true }

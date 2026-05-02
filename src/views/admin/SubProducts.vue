@@ -15,11 +15,13 @@
       search-placeholder="Cari sub produk..."
       @page-change="fetchData" @search="onSearch">
       <template #cell-name="{ value }"><span class="font-semibold text-gray-800">{{ value }}</span></template>
-      <template #cell-product_name="{ value }">
-        <span class="px-2.5 py-1 rounded-lg bg-gray-100 text-xs font-medium text-gray-600">{{ value }}</span>
+      <template #cell-product_name="{ value, row }">
+        <span class="px-2.5 py-1 rounded-lg bg-gray-100 text-xs font-medium text-gray-600">
+          {{ value || row.product?.name || '-' }}
+        </span>
       </template>
-      <template #cell-price="{ value }"><span class="font-semibold">Rp {{ value.toLocaleString('id-ID') }}</span></template>
-      <template #cell-cost="{ value }"><span class="text-gray-500">Rp {{ value.toLocaleString('id-ID') }}</span></template>
+      <template #cell-price="{ value }"><span class="font-semibold">Rp {{ (value || 0).toLocaleString('id-ID') }}</span></template>
+      <template #cell-cost="{ value }"><span class="text-gray-500">Rp {{ (value || 0).toLocaleString('id-ID') }}</span></template>
       <template #cell-is_active="{ value }">
         <span class="px-2 py-0.5 rounded-full text-[10px] font-bold" :class="value ? 'bg-emerald-50 text-emerald-600' : 'bg-gray-100 text-gray-400'">{{ value ? 'Aktif' : 'Nonaktif' }}</span>
       </template>
@@ -107,7 +109,7 @@ import { ref, onMounted } from 'vue'
 import DataTable from '../../components/admin/DataTable.vue'
 import BaseModal from '../../components/admin/BaseModal.vue'
 import ConfirmDialog from '../../components/admin/ConfirmDialog.vue'
-import { subProductApi } from '../../api/mockService'
+import { subProductApi } from '../../api/apiService'
 import { useAdminStore } from '../../stores/admin'
 
 const store = useAdminStore()

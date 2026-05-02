@@ -50,7 +50,11 @@
         @page-change="fetchItems" @search="() => fetchItems(1)">
         <template #cell-thumbnail="{ value }"><img :src="value" alt="" class="w-10 h-10 rounded-xl object-cover border border-gray-100" /></template>
         <template #cell-name="{ value }"><span class="font-semibold text-gray-800">{{ value }}</span></template>
-        <template #cell-menu_name="{ value }"><span class="px-2.5 py-1 rounded-lg bg-gray-100 text-xs font-medium text-gray-600">{{ value }}</span></template>
+        <template #cell-menu_name="{ value, row }">
+          <span class="px-2.5 py-1 rounded-lg bg-gray-100 text-xs font-medium text-gray-600">
+            {{ value || row.menu?.name || '-' }}
+          </span>
+        </template>
         <template #cell-type="{ value }"><span class="px-2.5 py-1 rounded-lg bg-blue-50 text-xs font-medium text-blue-600">{{ value }}</span></template>
         <template #cell-is_active="{ value }">
           <span class="px-2 py-0.5 rounded-full text-[10px] font-bold" :class="value?'bg-emerald-50 text-emerald-600':'bg-gray-100 text-gray-400'">{{ value?'Aktif':'Off' }}</span>
@@ -76,8 +80,12 @@
         search-placeholder="Cari add-on..."
         @page-change="fetchAddons" @search="() => fetchAddons(1)">
         <template #cell-name="{ value }"><span class="font-semibold text-gray-800">{{ value }}</span></template>
-        <template #cell-sub_product_name="{ value }"><span class="px-2.5 py-1 rounded-lg bg-gray-100 text-xs font-medium text-gray-600">{{ value }}</span></template>
-        <template #cell-price="{ value }"><span class="font-semibold">Rp {{ value.toLocaleString('id-ID') }}</span></template>
+        <template #cell-sub_product_name="{ value, row }">
+          <span class="px-2.5 py-1 rounded-lg bg-gray-100 text-xs font-medium text-gray-600">
+            {{ value || row.sub_product?.name || '-' }}
+          </span>
+        </template>
+        <template #cell-price="{ value }"><span class="font-semibold">Rp {{ (value || 0).toLocaleString('id-ID') }}</span></template>
         <template #cell-is_active="{ value }">
           <span class="px-2 py-0.5 rounded-full text-[10px] font-bold" :class="value?'bg-emerald-50 text-emerald-600':'bg-gray-100 text-gray-400'">{{ value?'Aktif':'Off' }}</span>
         </template>
@@ -124,7 +132,7 @@
             <input v-model="itemForm.name" type="text" required class="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm outline-none focus:border-brand-maroon" />
           </div>
         </div>
-        <div class="grid sm:grid-cols-3 gap-5">
+        <div class="grid sm:grid-cols-2 gap-5">
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1.5">Tipe</label>
             <input v-model="itemForm.type" type="text" class="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm outline-none focus:border-brand-maroon" placeholder="protein / vegetable" />
@@ -133,11 +141,41 @@
             <label class="block text-sm font-medium text-gray-700 mb-1.5">Display Order</label>
             <input v-model.number="itemForm.display_order" type="number" class="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm outline-none focus:border-brand-maroon" />
           </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1.5">Thumbnail URL</label>
-            <input v-model="itemForm.thumbnail" type="text" class="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm outline-none focus:border-brand-maroon" />
+        </div>
+
+        <!-- Thumbnail Upload Area -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2.5">Gambar Item</label>
+          <div 
+            @click="$refs.itemFileInput.click()"
+            class="relative group cursor-pointer border-2 border-dashed border-gray-200 hover:border-brand-maroon/50 rounded-2xl p-4 transition-all bg-gray-50/50 hover:bg-brand-maroon/2"
+          >
+            <input 
+              type="file" 
+              ref="itemFileInput" 
+              class="hidden" 
+              accept="image/*"
+              @change="handleItemFileChange"
+            />
+            
+            <div v-if="itemPreviewUrl" class="relative">
+              <img :src="itemPreviewUrl" alt="preview" class="w-full h-40 object-cover rounded-xl shadow-sm border border-gray-100" />
+              <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl flex items-center justify-center">
+                <span class="text-white text-xs font-bold flex items-center gap-2 bg-black/20 px-3 py-2 rounded-lg backdrop-blur-md">
+                  <i class="bx bx-camera text-base"></i> Ganti Gambar
+                </span>
+              </div>
+            </div>
+
+            <div v-else class="py-6 flex flex-col items-center justify-center text-center">
+              <div class="w-12 h-12 bg-white rounded-2xl shadow-sm border border-gray-100 flex items-center justify-center text-gray-400 group-hover:text-brand-maroon transition-colors mb-2">
+                <i class="bx bx-image-add text-2xl"></i>
+              </div>
+              <p class="text-xs font-bold text-gray-700">Klik untuk Unggah Gambar</p>
+            </div>
           </div>
         </div>
+
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1.5">Deskripsi</label>
           <textarea v-model="itemForm.description" rows="2" class="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm outline-none focus:border-brand-maroon resize-none"></textarea>
@@ -199,7 +237,7 @@ import { ref, onMounted } from 'vue'
 import DataTable from '../../components/admin/DataTable.vue'
 import BaseModal from '../../components/admin/BaseModal.vue'
 import ConfirmDialog from '../../components/admin/ConfirmDialog.vue'
-import { menuApi, menuItemApi, addonApi } from '../../api/mockService'
+import { menuApi, menuItemApi, addonApi } from '../../api/apiService'
 import { useAdminStore } from '../../stores/admin'
 
 const store = useAdminStore()
@@ -225,12 +263,32 @@ const saveMenu = async () => {
 const itemLoading = ref(false), itemData = ref([]), itemMeta = ref(null), menuList = ref([])
 const itemSearch = ref(''), itemPerPage = ref(10)
 const showItemForm = ref(false), editItem = ref(null)
-const emptyItemForm = { menu_id: '', name: '', type: '', is_active: true, description: '', thumbnail: '', display_order: 1 }
+const itemPreviewUrl = ref(null)
+const emptyItemForm = { menu_id: '', name: '', type: '', is_active: true, description: '', thumbnail: null, display_order: 1 }
 const itemForm = ref({ ...emptyItemForm })
 const itemCols = [{ key: 'thumbnail', label: 'Img' }, { key: 'name', label: 'Nama' }, { key: 'menu_name', label: 'Menu' }, { key: 'type', label: 'Tipe' }, { key: 'is_active', label: 'Status' }]
 
+const handleItemFileChange = (e) => {
+  const file = e.target.files[0]
+  if (file) {
+    itemForm.value.thumbnail = file
+    itemPreviewUrl.value = URL.createObjectURL(file)
+  }
+}
+
 const fetchItems = async (p = 1) => { itemLoading.value = true; try { const r = await menuItemApi.getAll(p, itemPerPage.value, itemSearch.value); if (r.status === 'success') { itemData.value = r.data; itemMeta.value = r.meta } } finally { itemLoading.value = false } }
-const openItemForm = (item = null) => { editItem.value = item; itemForm.value = item ? { ...item } : { ...emptyItemForm }; showItemForm.value = true }
+
+const openItemForm = (item = null) => {
+  editItem.value = item
+  if (item) {
+    itemForm.value = { ...item }
+    itemPreviewUrl.value = item.thumbnail
+  } else {
+    itemForm.value = { ...emptyItemForm }
+    itemPreviewUrl.value = null
+  }
+  showItemForm.value = true
+}
 const saveItem = async () => {
   saving.value = true
   try { if (editItem.value) { await menuItemApi.update(editItem.value.id, itemForm.value); store.showToast('Item diperbarui') } else { await menuItemApi.create(itemForm.value); store.showToast('Item ditambahkan') }; showItemForm.value = false; await fetchItems() } finally { saving.value = false }

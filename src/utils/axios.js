@@ -12,7 +12,7 @@ const axiosInstance = axios.create({
   baseURL: import.meta.env.VITE_API_URL || 'https://api.banuatumpeng.com/api',
   headers: {
     'X-Requested-With': 'XMLHttpRequest',
-    'Content-Type': 'multipart/form-data',
+    'Content-Type': 'application/json',
     'Accept': 'application/json'
   }
 })

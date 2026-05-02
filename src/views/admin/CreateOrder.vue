@@ -121,7 +121,7 @@
                 <option :value="null" disabled>Pilih add-on</option>
                 <option v-for="a in getAvailableAddons(item)" :key="a.id" :value="a.id">{{ a.name }} — Rp {{ a.price.toLocaleString('id-ID') }}</option>
               </select>
-              <input v-model.number="addon.quantity" type="number" min="1" class="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm outline-none focus:border-brand-maroon/40 transition-all w-20" placeholder="Qty" />
+              <input v-model.number="addon.quantity" type="number" min="1" class="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm outline-none focus:border-brand-maroon/40 transition-all" placeholder="Qty" />
               <span class="text-xs font-semibold text-gray-500 w-28 text-right">Rp {{ (addon.snapshot_price * addon.quantity).toLocaleString('id-ID') }}</span>
               <button @click="item.addons.splice(aIdx, 1)" class="text-gray-400 hover:text-red-500"><i class="bx bx-x"></i></button>
             </div>
@@ -218,7 +218,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { orderApi, referenceApi } from '../../api/mockService'
+import { orderApi, referenceApi } from '../../api/apiService'
 import { useAdminStore } from '../../stores/admin'
 
 const router = useRouter()

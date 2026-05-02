@@ -71,7 +71,7 @@ import { ref, onMounted } from 'vue'
 import DataTable from '../../components/admin/DataTable.vue'
 import BaseModal from '../../components/admin/BaseModal.vue'
 import ConfirmDialog from '../../components/admin/ConfirmDialog.vue'
-import { bankAccountApi } from '../../api/mockService'
+import { bankAccountApi } from '../../api/apiService'
 import { useAdminStore } from '../../stores/admin'
 
 const store = useAdminStore()

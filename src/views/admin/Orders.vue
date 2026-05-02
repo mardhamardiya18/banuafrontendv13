@@ -16,21 +16,21 @@
       search-placeholder="Cari invoice, pelanggan, status..."
       @page-change="fetchData" @search="onSearch" @row-click="viewOrder">
       <template #cell-invoice_number="{ value }"><span class="font-mono text-xs font-bold text-brand-maroon">{{ value }}</span></template>
-      <template #cell-customer_name="{ value }"><span class="font-semibold text-gray-800">{{ value }}</span></template>
-      <template #cell-delivery_date="{ value }"><span class="text-gray-600">{{ value }}</span></template>
-      <template #cell-total_amount="{ value }"><span class="font-semibold">Rp {{ value.toLocaleString('id-ID') }}</span></template>
-      <template #cell-order_status="{ value }">
-        <span class="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wide" :class="statusBadge(value)">{{ value }}</span>
+      <template #cell-customer_name="{ value, row }"><span class="font-semibold text-gray-800">{{ value || row.customer_snapshot?.name || '-' }}</span></template>
+      <template #cell-delivery_date="{ value, row }"><span class="text-gray-600">{{ value || row.delivery?.date || '-' }}</span></template>
+      <template #cell-total_amount="{ value, row }"><span class="font-semibold">Rp {{ (value || row.finance?.total_amount || 0).toLocaleString('id-ID') }}</span></template>
+      <template #cell-order_status="{ value, row }">
+        <span class="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wide" :class="statusBadge(value || row.status?.order)">{{ value || row.status?.order || '-' }}</span>
       </template>
-      <template #cell-payment_status="{ value }">
-        <span class="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wide" :class="payBadge(value)">{{ value }}</span>
+      <template #cell-payment_status="{ value, row }">
+        <span class="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wide" :class="payBadge(value || row.status?.payment)">{{ value || row.status?.payment || '-' }}</span>
       </template>
     </DataTable>
 
     <!-- Order Detail Slide-over -->
     <teleport to="body">
       <transition name="slideover-bg">
-        <div v-if="showDetail" class="fixed inset-0 z-[70] flex justify-end" @click.self="showDetail=false">
+        <div v-if="showDetail" class="fixed inset-0 z-7 flex justify-end" @click.self="showDetail=false">
           <div class="absolute inset-0 bg-gray-900/40 backdrop-blur-sm"></div>
           <transition name="slideover-panel">
             <div v-if="showDetail" class="relative bg-white w-full max-w-2xl h-full overflow-y-auto shadow-2xl">
@@ -89,7 +89,7 @@
                             <div class="space-y-1">
                               <div v-for="a in item.addons" :key="a.id" class="flex justify-between text-xs bg-white rounded-lg p-2.5 border border-gray-100">
                                 <span class="text-gray-600">{{ a.name }} ({{ a.quantity }}x)</span>
-                                <span class="font-semibold text-gray-800">Rp {{ a.sub_total.toLocaleString('id-ID') }}</span>
+                                <span class="font-semibold text-gray-800">Rp {{ (a.sub_total || 0).toLocaleString('id-ID') }}</span>
                               </div>
                             </div>
                           </div>
@@ -108,9 +108,9 @@
 
                 <!-- Totals -->
                 <div class="bg-gray-50 rounded-2xl p-5 space-y-2">
-                  <div class="flex justify-between text-sm"><span class="text-gray-500">Total Amount</span><span class="font-bold">Rp {{ detail.total_amount.toLocaleString('id-ID') }}</span></div>
-                  <div class="flex justify-between text-sm"><span class="text-gray-500">Paid</span><span class="font-bold text-emerald-600">Rp {{ detail.paid_amount.toLocaleString('id-ID') }}</span></div>
-                  <div class="flex justify-between text-sm"><span class="text-gray-500">Remaining</span><span class="font-bold text-red-500">Rp {{ (detail.total_amount - detail.paid_amount).toLocaleString('id-ID') }}</span></div>
+                  <div class="flex justify-between text-sm"><span class="text-gray-500">Total Amount</span><span class="font-bold">Rp {{ (detail.total_amount || 0).toLocaleString('id-ID') }}</span></div>
+                  <div class="flex justify-between text-sm"><span class="text-gray-500">Paid</span><span class="font-bold text-emerald-600">Rp {{ (detail.paid_amount || 0).toLocaleString('id-ID') }}</span></div>
+                  <div class="flex justify-between text-sm"><span class="text-gray-500">Remaining</span><span class="font-bold text-red-500">Rp {{ ((detail.total_amount || 0) - (detail.paid_amount || 0)).toLocaleString('id-ID') }}</span></div>
                 </div>
               </div>
             </div>
@@ -124,7 +124,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import DataTable from '../../components/admin/DataTable.vue'
-import { orderApi } from '../../api/mockService'
+import { orderApi } from '../../api/apiService'
 
 const loading = ref(false), data = ref([]), meta = ref(null)
 const search = ref(''), perPage = ref(10)

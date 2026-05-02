@@ -18,8 +18,10 @@
         <img :src="value" alt="" class="w-12 h-10 rounded-xl object-cover border border-gray-100" />
       </template>
       <template #cell-name="{ value }"><span class="font-semibold text-gray-800">{{ value }}</span></template>
-      <template #cell-category_name="{ value }">
-        <span class="px-2.5 py-1 rounded-lg bg-gray-100 text-xs font-medium text-gray-600">{{ value }}</span>
+      <template #cell-category_name="{ value, row }">
+        <span class="px-2.5 py-1 rounded-lg bg-gray-100 text-xs font-medium text-gray-600">
+          {{ value || row.category?.name || '-' }}
+        </span>
       </template>
       <template #cell-start_price="{ value }"><span class="font-semibold text-gray-800">Rp {{ value.toLocaleString('id-ID') }}</span></template>
       <template #actions="{ row }">
@@ -50,9 +52,38 @@
             <label class="block text-sm font-medium text-gray-700 mb-1.5">Harga Mulai</label>
             <input v-model.number="form.start_price" type="number" required class="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:border-brand-maroon outline-none" />
           </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1.5">Thumbnail URL</label>
-            <input v-model="form.thumbnail" type="text" class="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:border-brand-maroon outline-none" />
+        </div>
+        <!-- Thumbnail Upload Area -->
+        <div class="col-span-full">
+          <label class="block text-sm font-medium text-gray-700 mb-2.5">Gambar Produk</label>
+          <div 
+            @click="$refs.fileInput.click()"
+            class="relative group cursor-pointer border-2 border-dashed border-gray-200 hover:border-brand-maroon/50 rounded-2xl p-4 transition-all bg-gray-50/50 hover:bg-brand-maroon/2"
+          >
+            <input 
+              type="file" 
+              ref="fileInput" 
+              class="hidden" 
+              accept="image/*"
+              @change="handleFileChange"
+            />
+            
+            <div v-if="previewUrl" class="relative">
+              <img :src="previewUrl" alt="preview" class="w-full h-48 object-cover rounded-xl shadow-sm border border-gray-100" />
+              <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl flex items-center justify-center">
+                <span class="text-white text-xs font-bold flex items-center gap-2 bg-black/20 px-3 py-2 rounded-lg backdrop-blur-md">
+                  <i class="bx bx-camera text-base"></i> Ganti Gambar
+                </span>
+              </div>
+            </div>
+
+            <div v-else class="py-8 flex flex-col items-center justify-center text-center">
+              <div class="w-14 h-14 bg-white rounded-2xl shadow-sm border border-gray-100 flex items-center justify-center text-gray-400 group-hover:text-brand-maroon transition-colors mb-3">
+                <i class="bx bx-cloud-upload text-3xl"></i>
+              </div>
+              <p class="text-sm font-bold text-gray-700">Klik untuk Unggah Gambar Produk</p>
+              <p class="text-xs text-gray-400 mt-1">Saran ukuran: 800x600px (Maks. 2MB)</p>
+            </div>
           </div>
         </div>
       </form>
@@ -74,14 +105,15 @@ import { ref, onMounted } from 'vue'
 import DataTable from '../../components/admin/DataTable.vue'
 import BaseModal from '../../components/admin/BaseModal.vue'
 import ConfirmDialog from '../../components/admin/ConfirmDialog.vue'
-import { productApi } from '../../api/mockService'
+import { productApi } from '../../api/apiService'
 import { useAdminStore } from '../../stores/admin'
 
 const store = useAdminStore()
 const loading = ref(false), data = ref([]), meta = ref(null), cats = ref([])
 const search = ref(''), perPage = ref(10)
 const showForm = ref(false), editItem = ref(null), saving = ref(false)
-const form = ref({ name: '', category_id: '', start_price: 0, thumbnail: '' })
+const previewUrl = ref(null)
+const form = ref({ name: '', category_id: '', start_price: 0, thumbnail: null })
 const showDel = ref(false), delTarget = ref(null), deleting = ref(false)
 
 const columns = [
@@ -100,9 +132,23 @@ const fetchData = async (p = 1) => {
 }
 const onSearch = () => fetchData(1)
 
+const handleFileChange = (e) => {
+  const file = e.target.files[0]
+  if (file) {
+    form.value.thumbnail = file
+    previewUrl.value = URL.createObjectURL(file)
+  }
+}
+
 const openForm = (item = null) => {
   editItem.value = item
-  form.value = item ? { ...item } : { name: '', category_id: '', start_price: 0, thumbnail: '' }
+  if (item) {
+    form.value = { ...item }
+    previewUrl.value = item.thumbnail
+  } else {
+    form.value = { name: '', category_id: '', start_price: 0, thumbnail: null }
+    previewUrl.value = null
+  }
   showForm.value = true
 }
 

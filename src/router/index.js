@@ -19,11 +19,20 @@ const routes = [
     }
   },
   {
+    path: '/register',
+    name: 'Register',
+    component: () => import('../views/auth/Register.vue'),
+    meta: {
+      title: 'Register',
+      requiredGuest: true
+    }
+  },
+  {
     path: '/admin',
     component: () => import('../views/admin/AdminLayout.vue'),
     meta: {
-      requiresAuth: false,
-      requiresAdmin: false
+      requiresAuth: true,
+      requiresAdmin: true
     },
     children: [
       {
