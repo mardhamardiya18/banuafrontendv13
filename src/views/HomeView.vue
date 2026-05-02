@@ -18,7 +18,10 @@
           <a href="#products" class="hover:text-brand-terracotta transition-colors duration-300">Paket</a>
           <a href="#testimonials" class="hover:text-brand-terracotta transition-colors duration-300">Testimoni</a>
         </div>
-        <a href="#footer" class="hidden md:inline-flex bg-brand-terracotta hover:bg-brand-maroon text-white text-sm font-bold px-6 py-2.5 rounded-full transition-all duration-300 active:scale-95 shadow-lg shadow-brand-terracotta/20">Hubungi Kami</a>
+        <a href="#footer" class="hidden md:inline-flex bg-brand-terracotta hover:bg-brand-maroon text-white text-sm font-bold px-6 py-2.5 rounded-full transition-all duration-300 active:scale-95 shadow-lg shadow-brand-terracotta/20 animate-shimmer items-center gap-2 group">
+          Hubungi Kami
+          <i class='bx bx-right-arrow-alt text-lg group-hover:translate-x-1 transition-transform'></i>
+        </a>
         <button @click="mobileMenu = !mobileMenu" class="md:hidden text-brand-maroon">
           <i class='bx bx-menu text-3xl'></i>
         </button>
@@ -47,8 +50,11 @@
             Kami siap maantarakan tumpeng dan catering nang nyaman gasan acara pian di Banjarbaru, Banjarmasin, dan Martapura.
           </p>
           <div class="flex flex-col sm:flex-row gap-4">
-            <a href="#products" class="bg-brand-terracotta hover:bg-brand-maroon text-white font-bold px-8 py-4 rounded-full transition-all duration-300 active:scale-95 shadow-xl shadow-brand-terracotta/30 text-center">Pesan Sekarang</a>
-            <a href="#services" class="border-2 border-brand-maroon/20 hover:border-brand-maroon text-brand-maroon font-bold px-8 py-4 rounded-full transition-all duration-300 text-center">Lihat Paketan</a>
+            <a href="#products" class="bg-brand-terracotta hover:bg-brand-maroon text-white font-bold px-10 py-4 rounded-full transition-all duration-300 active:scale-95 shadow-2xl shadow-brand-terracotta/40 text-center animate-shimmer flex items-center justify-center gap-2 group">
+              Pesan Sekarang
+              <i class='bx bx-chevron-right text-2xl group-hover:translate-x-1 transition-transform'></i>
+            </a>
+            <a href="#services" class="border-2 border-brand-maroon/20 hover:border-brand-maroon text-brand-maroon font-bold px-10 py-4 rounded-full transition-all duration-300 text-center flex items-center justify-center">Lihat Paketan</a>
           </div>
           <div class="flex items-center gap-3 pt-2">
             <div class="flex -space-x-3">
@@ -80,11 +86,17 @@
     <!-- STATS COUNTER STRIP -->
     <section class="relative py-16">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="bg-brand-maroon rounded-3xl p-10 md:p-14 grid grid-cols-2 md:grid-cols-4 gap-8 text-center text-white shadow-2xl shadow-brand-maroon/20">
-          <div v-for="stat in stats" :key="stat.label" class="space-y-2">
-            <i :class="['bx text-3xl text-brand-terracotta mb-2', stat.icon]"></i>
-            <p class="text-3xl md:text-4xl font-extrabold">{{ stat.value }}</p>
-            <p class="text-sm text-white/60">{{ stat.label }}</p>
+        <div class="relative bg-brand-maroon rounded-[2.5rem] p-10 md:p-14 grid grid-cols-2 md:grid-cols-4 gap-8 text-center text-white shadow-2xl shadow-brand-maroon/20 overflow-hidden group">
+          <!-- Ornaments -->
+          <div class="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4 group-hover:scale-110 transition-transform duration-700"></div>
+          <div class="absolute bottom-0 left-0 w-48 h-48 bg-brand-terracotta/20 rounded-full blur-2xl translate-y-1/4 -translate-x-1/4 group-hover:scale-110 transition-transform duration-700"></div>
+          
+          <div v-for="stat in stats" :key="stat.label" class="relative z-10 flex flex-col items-center p-4 hover:-translate-y-2 transition-transform duration-500 rounded-2xl hover:bg-white/5">
+            <div class="w-16 h-16 bg-white/10 backdrop-blur-sm rounded-2xl flex items-center justify-center mb-4 shadow-inner">
+              <i :class="['bx text-3xl text-brand-terracotta', stat.icon]"></i>
+            </div>
+            <p class="text-3xl md:text-4xl font-extrabold mb-1 bg-clip-text text-transparent bg-linear-to-r from-white to-white/70">{{ stat.value }}</p>
+            <p class="text-sm text-white/70 font-medium">{{ stat.label }}</p>
           </div>
         </div>
       </div>
@@ -122,9 +134,10 @@
               <h3 class="text-2xl md:text-3xl font-extrabold text-white">Ada acara spesial dalam waktu dekat?</h3>
               <p class="text-white/60 max-w-md">Konsultasikan kebutuhan catering Anda secara gratis. Kami bantu carikan paket terbaik!</p>
             </div>
-            <a href="https://wa.me/6281234567890" target="_blank" class="shrink-0 bg-brand-terracotta hover:bg-white hover:text-brand-maroon text-white font-bold px-8 py-4 rounded-full transition-all duration-300 active:scale-95 shadow-xl flex items-center gap-2">
+            <a href="https://wa.me/6281234567890" target="_blank" class="shrink-0 bg-brand-terracotta hover:bg-white hover:text-brand-maroon text-white font-bold px-10 py-4 rounded-full transition-all duration-300 active:scale-95 shadow-xl flex items-center gap-2 animate-shimmer group">
               <i class='bx bxl-whatsapp text-2xl'></i>
               Konsultasi Gratis
+              <i class='bx bx-chevron-right text-2xl group-hover:translate-x-1 transition-transform'></i>
             </a>
           </div>
         </div>
@@ -164,19 +177,28 @@
     </section>
 
     <!-- TRUST / WHY US STRIP -->
-    <section class="py-16">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="bg-white/60 backdrop-blur-sm rounded-3xl border border-brand-maroon/5 p-10 md:p-14">
-          <div class="text-center mb-10">
-            <h3 class="text-2xl md:text-3xl font-extrabold text-brand-maroon">Kenapa Memilih Kami?</h3>
-          </div>
-          <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-            <div v-for="reason in whyUs" :key="reason.text" class="text-center space-y-3 p-4">
-              <div class="w-14 h-14 mx-auto bg-brand-terracotta/10 rounded-2xl flex items-center justify-center">
-                <i :class="['bx text-2xl text-brand-terracotta', reason.icon]"></i>
-              </div>
-              <p class="text-sm font-bold text-brand-maroon">{{ reason.text }}</p>
-              <p class="text-xs text-brand-forest-dark/50">{{ reason.sub }}</p>
+    <section class="py-20 relative overflow-hidden">
+      <!-- Background Ornaments -->
+      <div class="absolute top-1/2 left-0 w-72 h-72 bg-brand-terracotta/5 rounded-full blur-3xl -translate-y-1/2 -translate-x-1/2"></div>
+      <div class="absolute bottom-0 right-0 w-96 h-96 bg-brand-maroon/5 rounded-full blur-3xl translate-y-1/4 translate-x-1/4"></div>
+
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div class="text-center mb-14 max-w-2xl mx-auto">
+          <p class="text-sm font-bold uppercase tracking-widest text-brand-terracotta mb-3">Keunggulan Kami</p>
+          <h3 class="text-3xl md:text-4xl font-extrabold text-brand-maroon tracking-tight">Kenapa Memilih Kami?</h3>
+        </div>
+        <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div v-for="(reason, index) in whyUs" :key="reason.text" 
+               class="group bg-white rounded-4xl p-8 border border-brand-maroon/5 shadow-xl shadow-brand-maroon/5 hover:shadow-2xl hover:shadow-brand-terracotta/10 hover:-translate-y-2 transition-all duration-500 relative overflow-hidden">
+            <!-- Card Ornament -->
+            <div class="absolute -right-6 -top-6 w-24 h-24 bg-brand-terracotta/5 rounded-full blur-2xl group-hover:bg-brand-terracotta/10 transition-colors duration-500"></div>
+            
+            <div class="w-16 h-16 bg-brand-cream-light rounded-2xl flex items-center justify-center mb-6 group-hover:bg-brand-terracotta transition-colors duration-500 shadow-sm relative z-10">
+              <i :class="['bx text-3xl text-brand-terracotta group-hover:text-white transition-colors duration-500', reason.icon]"></i>
+            </div>
+            <div class="relative z-10">
+              <h4 class="text-lg font-bold text-brand-maroon mb-2 group-hover:text-brand-terracotta transition-colors duration-300">{{ reason.text }}</h4>
+              <p class="text-sm text-brand-forest-dark/60 leading-relaxed">{{ reason.sub }}</p>
             </div>
           </div>
         </div>

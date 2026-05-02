@@ -19,14 +19,68 @@ const routes = [
     }
   },
   {
-    path: '/admin/dashboard',
-    name: 'AdminDashboard',
-    component: () => import('../views/admin/Dashboard.vue'),
+    path: '/admin',
+    component: () => import('../views/admin/AdminLayout.vue'),
     meta: {
-      title: 'Admin Dashboard',
-      requiresAuth: true,
-      requiresAdmin: true
-    }
+      requiresAuth: false,
+      requiresAdmin: false
+    },
+    children: [
+      {
+        path: 'dashboard',
+        name: 'AdminDashboard',
+        component: () => import('../views/admin/Dashboard.vue'),
+        meta: { title: 'Dashboard' }
+      },
+      {
+        path: 'categories',
+        name: 'AdminCategories',
+        component: () => import('../views/admin/Categories.vue'),
+        meta: { title: 'Kategori' }
+      },
+      {
+        path: 'products',
+        name: 'AdminProducts',
+        component: () => import('../views/admin/Products.vue'),
+        meta: { title: 'Produk' }
+      },
+      {
+        path: 'sub-products',
+        name: 'AdminSubProducts',
+        component: () => import('../views/admin/SubProducts.vue'),
+        meta: { title: 'Sub Produk' }
+      },
+      {
+        path: 'gallery',
+        name: 'AdminGallery',
+        component: () => import('../views/admin/Gallery.vue'),
+        meta: { title: 'Gallery' }
+      },
+      {
+        path: 'menus',
+        name: 'AdminMenus',
+        component: () => import('../views/admin/Menus.vue'),
+        meta: { title: 'Kelola Menu' }
+      },
+      {
+        path: 'orders',
+        name: 'AdminOrders',
+        component: () => import('../views/admin/Orders.vue'),
+        meta: { title: 'Order' }
+      },
+      {
+        path: 'orders/create',
+        name: 'AdminCreateOrder',
+        component: () => import('../views/admin/CreateOrder.vue'),
+        meta: { title: 'Buat Order' }
+      },
+      {
+        path: 'bank-accounts',
+        name: 'AdminBankAccounts',
+        component: () => import('../views/admin/BankAccounts.vue'),
+        meta: { title: 'Bank Account' }
+      }
+    ]
   }
 ]
 

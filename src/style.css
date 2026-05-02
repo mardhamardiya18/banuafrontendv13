@@ -32,6 +32,32 @@ html, body {
 .animate-fade-up-delay { animation: fadeUp 0.8s ease-out 0.2s both; }
 .animate-float { animation: float 4s ease-in-out infinite; }
 
+/* Shimmer effect for buttons */
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+.animate-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+.animate-shimmer::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+  transform: skewX(-20deg);
+  animation: shimmer 3s infinite;
+}
+
 /* Smooth organic blob */
 .blob {
   border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
