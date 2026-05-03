@@ -96,6 +96,19 @@
       </router-link>
     </nav>
 
+    <!-- Website Link (Back to Home) -->
+    <div class="px-3 pb-2">
+      <router-link
+        to="/"
+        class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-emerald-600 hover:bg-emerald-50 transition-all duration-200 group"
+      >
+        <div class="w-9 h-9 rounded-lg flex items-center justify-center bg-emerald-100 text-emerald-600 shrink-0 group-hover:bg-emerald-200">
+          <i class="bx bx-world text-lg"></i>
+        </div>
+        <span v-if="store.sidebarOpen" class="truncate">Lihat Website</span>
+      </router-link>
+    </div>
+
     <!-- Collapse Toggle (Desktop) -->
     <div class="hidden lg:flex p-3 border-t border-gray-100">
       <button

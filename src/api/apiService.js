@@ -74,36 +74,13 @@ function toFormData(payload, method = null) {
 // Dashboard API
 // ═══════════════════════════════════════════════════════
 export const dashboardApi = {
-  async getStats() {
+  async getData() {
     try {
       const response = await api.get('/admin/dashboard')
-      const d = response.data.data || response.data
-      return {
-        status: 'success',
-        data: {
-          totalOrders: d.orders_count || d.totalOrders || 0,
-          totalRevenue: d.total_revenue || d.totalRevenue || 0,
-          totalCustomers: d.customers_count || d.totalCustomers || 0,
-          averageRating: d.average_rating || d.averageRating || 0
-        }
-      }
+      return normalizeItem(response)
     } catch (error) {
-      console.error('Dashboard stats error:', error)
+      console.error('Dashboard data error:', error)
       return { status: 'error', data: null }
-    }
-  },
-  async getSalesChart() {
-    // Chart data mungkin belum ada di API, return data kosong
-    // Bisa ditambahkan endpoint khusus nanti
-    return {
-      status: 'success',
-      data: {
-        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'],
-        datasets: [
-          { label: 'Penjualan 2026', data: [0,0,0,0,0,0,0,0,0,0,0,0] },
-          { label: 'Penjualan 2025', data: [0,0,0,0,0,0,0,0,0,0,0,0] }
-        ]
-      }
     }
   }
 }

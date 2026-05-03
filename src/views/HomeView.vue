@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-brand-cream-light min-h-screen">
+  <div class="bg-[#FDFBF7] min-h-screen">
 
     <!-- NAVBAR -->
     <nav class="fixed top-0 left-0 w-full z-50 bg-white/80 backdrop-blur-md border-b border-brand-maroon/10">
@@ -17,6 +17,16 @@
           <a href="#services" class="hover:text-brand-terracotta transition-colors duration-300">Layanan</a>
           <a href="#products" class="hover:text-brand-terracotta transition-colors duration-300">Paket</a>
           <a href="#testimonials" class="hover:text-brand-terracotta transition-colors duration-300">Testimoni</a>
+          
+          <!-- Admin Link -->
+          <router-link 
+            v-if="authStore.isAuthenticated && authStore.isAdmin" 
+            to="/admin/dashboard" 
+            class="flex items-center gap-1.5 text-brand-maroon font-bold hover:text-brand-terracotta transition-colors"
+          >
+            <i class='bx bxs-dashboard text-lg'></i>
+            Dashboard
+          </router-link>
         </div>
         <a href="#footer" class="hidden md:inline-flex bg-brand-terracotta hover:bg-brand-maroon text-white text-sm font-bold px-6 py-2.5 rounded-full transition-all duration-300 active:scale-95 shadow-lg shadow-brand-terracotta/20 animate-shimmer items-center gap-2 group">
           Hubungi Kami
@@ -31,6 +41,17 @@
         <a href="#services" class="block text-brand-forest-dark" @click="mobileMenu=false">Layanan</a>
         <a href="#products" class="block text-brand-forest-dark" @click="mobileMenu=false">Paket</a>
         <a href="#testimonials" class="block text-brand-forest-dark" @click="mobileMenu=false">Testimoni</a>
+        
+        <!-- Mobile Admin Link -->
+        <router-link 
+          v-if="authStore.isAuthenticated && authStore.isAdmin" 
+          to="/admin/dashboard" 
+          class="block text-brand-maroon font-bold py-2 border-y border-brand-maroon/5" 
+          @click="mobileMenu=false"
+        >
+          <i class='bx bxs-dashboard mr-2'></i> Dashboard Admin
+        </router-link>
+
         <a href="#footer" class="block bg-brand-terracotta text-white text-center py-2.5 rounded-full font-bold" @click="mobileMenu=false">Hubungi Kami</a>
       </div>
     </nav>
@@ -54,7 +75,7 @@
               Pesan Sekarang
               <i class='bx bx-chevron-right text-2xl group-hover:translate-x-1 transition-transform'></i>
             </a>
-            <a href="#services" class="border-2 border-brand-maroon/20 hover:border-brand-maroon text-brand-maroon font-bold px-10 py-4 rounded-full transition-all duration-300 text-center flex items-center justify-center">Lihat Paketan</a>
+            <RouterLink to="/katalog" class="border-2 border-brand-maroon/20 hover:border-brand-maroon text-brand-maroon font-bold px-10 py-4 rounded-full transition-all duration-300 text-center flex items-center justify-center">Lihat Paketan</RouterLink>
           </div>
           <div class="flex items-center gap-3 pt-2">
             <div class="flex -space-x-3">
@@ -305,9 +326,11 @@
 
 <script setup>
 import { ref } from 'vue'
+import { useAuthStore } from '../stores/auth'
 import logo from '../assets/images/logo.png'
 import heroImg from '../assets/images/hero-img.png'
 
+const authStore = useAuthStore()
 const mobileMenu = ref(false)
 
 const services = [

@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 @theme {
-  --font-sans: "Poppins", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
   --color-brand-maroon: #690B22;
   --color-brand-terracotta: #E07A5F;
   --color-brand-cream-light: #F1E3D3;

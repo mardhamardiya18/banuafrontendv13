@@ -10,6 +10,12 @@ const routes = [
     meta: { title: 'Home' }
   },
   {
+    path: '/katalog',
+    name: 'Catalog',
+    component: () => import('../views/CatalogView.vue'),
+    meta: { title: 'Katalog Produk' }
+  },
+  {
     path: '/login',
     name: 'Login',
     component: () => import('../views/auth/Login.vue'),

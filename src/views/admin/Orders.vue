@@ -49,7 +49,7 @@
     <!-- Order Detail Slide-over -->
     <teleport to="body">
       <transition name="slideover-bg">
-        <div v-if="showDetail" class="fixed inset-0 z-[70] flex justify-end" @click.self="showDetail=false">
+        <div v-if="showDetail" class="fixed inset-0 z-70 flex justify-end" @click.self="showDetail=false">
           <div class="absolute inset-0 bg-gray-900/40 backdrop-blur-sm"></div>
           <transition name="slideover-panel">
             <div v-if="showDetail" class="relative bg-white w-full max-w-2xl h-full overflow-y-auto shadow-2xl">

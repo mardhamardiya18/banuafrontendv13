@@ -37,16 +37,16 @@
         <div class="flex items-center justify-between mb-6">
           <div>
             <h3 class="text-lg font-bold text-gray-900">Tren Penjualan</h3>
-            <p class="text-sm text-gray-400">Perbandingan tahun ini vs tahun lalu</p>
+            <p class="text-sm text-gray-400">Statistik omset dan profit bersih tahun ini</p>
           </div>
           <div class="flex items-center gap-4 text-sm">
             <div class="flex items-center gap-1.5">
               <span class="w-3 h-3 rounded-full bg-brand-maroon"></span>
-              <span class="text-gray-500">2026</span>
+              <span class="text-gray-500">Omset</span>
             </div>
             <div class="flex items-center gap-1.5">
               <span class="w-3 h-3 rounded-full bg-brand-terracotta/40"></span>
-              <span class="text-gray-500">2025</span>
+              <span class="text-gray-500">Profit Bersih</span>
             </div>
           </div>
         </div>
@@ -78,18 +78,18 @@
                class="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 transition-colors cursor-pointer group"
                @click="$router.push('/admin/orders')">
             <div class="w-10 h-10 rounded-xl flex items-center justify-center text-sm font-bold shrink-0"
-                 :class="statusColor(order.order_status)">
-              {{ order.customer_name.charAt(0) }}
+                 :class="statusColor(order.status?.order)">
+              {{ (order.customer_snapshot?.name || '?').charAt(0) }}
             </div>
             <div class="flex-1 min-w-0">
-              <p class="text-sm font-semibold text-gray-800 truncate">{{ order.customer_name }}</p>
+              <p class="text-sm font-semibold text-gray-800 truncate">{{ order.customer_snapshot?.name }}</p>
               <p class="text-xs text-gray-400">{{ order.invoice_number }}</p>
             </div>
             <div class="text-right shrink-0">
-              <p class="text-sm font-bold text-gray-800">{{ formatCurrency(order.total_amount) }}</p>
+              <p class="text-sm font-bold text-gray-800">{{ formatCurrency(order.finance?.total_amount || 0) }}</p>
               <span class="text-[10px] font-semibold px-2 py-0.5 rounded-full"
-                    :class="paymentBadge(order.payment_status)">
-                {{ order.payment_status }}
+                    :class="paymentBadge(order.status?.payment)">
+                {{ order.status?.payment }}
               </span>
             </div>
           </div>
@@ -115,10 +115,10 @@ const loading = ref(true)
 const recentOrders = ref([])
 
 const statCards = ref([
-  { title: 'Total Order', value: '-', change: 12, icon: 'bx bxs-cart-alt', color: '#690B22', bg: 'bg-brand-maroon/5' },
-  { title: 'Total Pendapatan', value: '-', change: 8.5, icon: 'bx bxs-wallet', color: '#E07A5F', bg: 'bg-brand-terracotta/10' },
-  { title: 'Total Pelanggan', value: '-', change: 15, icon: 'bx bxs-group', color: '#1B4D3E', bg: 'bg-emerald-50' },
-  { title: 'Rating', value: '-', change: 0.2, icon: 'bx bxs-star', color: '#f59e0b', bg: 'bg-amber-50' }
+  { title: 'Total Order', value: '-', change: 0, icon: 'bx bxs-cart-alt', color: '#690B22', bg: 'bg-brand-maroon/5' },
+  { title: 'Pendapatan Bersih', value: '-', change: 0, icon: 'bx bxs-wallet', color: '#E07A5F', bg: 'bg-brand-terracotta/10' },
+  { title: 'Total Pelanggan', value: '-', change: 0, icon: 'bx bxs-group', color: '#1B4D3E', bg: 'bg-emerald-50' },
+  { title: 'Views Produk', value: '-', change: 0, icon: 'bx bxs-show', color: '#f59e0b', bg: 'bg-amber-50' }
 ])
 
 const chartData = ref({ labels: [], datasets: [] })
@@ -156,7 +156,9 @@ const chartOptions = {
   }
 }
 
-const formatCurrency = (val) => `Rp ${val.toLocaleString('id-ID')}`
+const formatCurrency = (val) => {
+  return 'Rp ' + Number(val || 0).toLocaleString('id-ID')
+}
 
 const statusColor = (s) => ({
   'bg-emerald-50 text-emerald-600': s === 'completed' || s === 'delivered',
@@ -173,27 +175,33 @@ const paymentBadge = (s) => ({
 
 onMounted(async () => {
   try {
-    const [statsRes, chartRes, ordersRes] = await Promise.all([
-      dashboardApi.getStats(),
-      dashboardApi.getSalesChart(),
-      orderApi.getAll(1, 5)
-    ])
+    const res = await dashboardApi.getData()
+    if (res.status === 'success') {
+      const d = res.data
+      
+      const stats = d.stats
+      statCards.value[0].value = Number(stats.total_orders.value || 0).toLocaleString('id-ID')
+      statCards.value[0].change = stats.total_orders.trend
+      
+      statCards.value[1].value = formatCurrency(stats.net_revenue.value)
+      statCards.value[1].change = stats.net_revenue.trend
+      
+      statCards.value[2].value = Number(stats.total_customers.value || 0).toLocaleString('id-ID')
+      statCards.value[2].change = stats.total_customers.trend
+      
+      statCards.value[3].value = Number(stats.total_views.value || 0).toLocaleString('id-ID')
+      statCards.value[3].change = stats.total_views.trend
 
-    if (statsRes.status === 'success') {
-      const d = statsRes.data
-      statCards.value[0].value = d.totalOrders.toLocaleString('id-ID')
-      statCards.value[1].value = formatCurrency(d.totalRevenue)
-      statCards.value[2].value = d.totalCustomers.toString()
-      statCards.value[3].value = d.averageRating.toString()
-    }
-
-    if (chartRes.status === 'success') {
+      const months = d.chart.map(c => c.month)
+      const omset = d.chart.map(c => c.omset)
+      const profit = d.chart.map(c => c.profit)
+      
       chartData.value = {
-        labels: chartRes.data.labels,
+        labels: months,
         datasets: [
           {
-            label: chartRes.data.datasets[0].label,
-            data: chartRes.data.datasets[0].data,
+            label: 'Omset',
+            data: omset,
             borderColor: '#690B22',
             backgroundColor: 'rgba(105, 11, 34, 0.05)',
             fill: true,
@@ -206,9 +214,9 @@ onMounted(async () => {
             pointHoverBorderWidth: 3
           },
           {
-            label: chartRes.data.datasets[1].label,
-            data: chartRes.data.datasets[1].data,
-            borderColor: 'rgba(224, 122, 95, 0.4)',
+            label: 'Profit Bersih',
+            data: profit,
+            borderColor: 'rgba(224, 122, 95, 0.8)',
             backgroundColor: 'transparent',
             fill: false,
             tension: 0.4,
@@ -219,11 +227,11 @@ onMounted(async () => {
           }
         ]
       }
+      
+      recentOrders.value = d.recent_orders || []
     }
-
-    if (ordersRes.status === 'success') {
-      recentOrders.value = ordersRes.data.slice(0, 5)
-    }
+  } catch(e) {
+    console.error('Error fetching dashboard:', e)
   } finally {
     loading.value = false
   }
