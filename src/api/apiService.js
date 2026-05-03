@@ -400,25 +400,11 @@ export const addonApi = {
 // Gallery API — /api/admin/galleries
 // ═══════════════════════════════════════════════════════
 export const galleryApi = {
-  async getAll(page = 1, perPage = 20) {
+  async getAll(page = 1, perPage = 20, search = '') {
     try {
       const params = { page, per_page: perPage }
-      const response = await api.get('/admin/galleries', { params })
-      const res = response.data
-      const items = res.data || res
-      if (Array.isArray(items)) {
-        const start = (page - 1) * perPage
-        return {
-          status: 'success',
-          data: items.slice(start, start + perPage),
-          meta: {
-            current_page: page,
-            per_page: perPage,
-            total: items.length,
-            last_page: Math.ceil(items.length / perPage) || 1
-          }
-        }
-      }
+      if (search) params.search = search
+      const response = await api.get('/admin/galleries/paginated', { params })
       return normalizePaginated(response)
     } catch (error) {
       console.error('Gallery getAll error:', error)
@@ -442,10 +428,12 @@ export const galleryApi = {
 // Order API — /api/admin/orders
 // ═══════════════════════════════════════════════════════
 export const orderApi = {
-  async getAll(page = 1, perPage = 10, search = '') {
+  async getAll(page = 1, perPage = 10, search = '', filterOrderStatus = '', filterPaymentStatus = '') {
     try {
       const params = { page, per_page: perPage }
       if (search) params.search = search
+      if (filterOrderStatus) params.order_status = filterOrderStatus
+      if (filterPaymentStatus) params.payment_status = filterPaymentStatus
       const response = await api.get('/admin/orders', { params })
       return normalizePaginated(response)
     } catch (error) {
@@ -469,12 +457,12 @@ export const orderApi = {
     const response = await api.put(`/admin/orders/${id}`, payload)
     return normalizeItem(response)
   },
-  async updateStatus(id, status) {
-    const response = await api.patch(`/admin/orders/update-status/${id}`, { status })
+  async updateStatus(id, payload) {
+    const response = await api.patch(`/admin/orders/${id}/status`, payload)
     return normalizeItem(response)
   },
   async downloadInvoice(id) {
-    const response = await api.get(`/admin/orders/download-invoice/${id}`, {
+    const response = await api.get(`/invoice/download/${id}`, {
       responseType: 'blob'
     })
     return response

@@ -5,9 +5,24 @@
         <h1 class="text-2xl font-bold text-gray-900">Gallery</h1>
         <p class="text-sm text-gray-500 mt-1">Galeri foto produk — Create, Read, Delete.</p>
       </div>
-      <button @click="showForm=true" class="flex items-center gap-2 bg-brand-maroon hover:bg-brand-maroon/90 text-white text-sm font-semibold px-5 py-2.5 rounded-xl shadow-sm">
-        <i class="bx bx-plus text-lg"></i> Tambah Foto
-      </button>
+      <div class="flex items-center gap-3">
+        <div class="relative group">
+          <i class="bx bx-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-lg group-focus-within:text-brand-maroon transition-colors"></i>
+          <input 
+            v-model="searchQuery" 
+            @keyup.enter="onSearch"
+            type="text" 
+            placeholder="Cari foto..." 
+            class="pl-11 pr-14 py-2.5 bg-white rounded-xl border border-gray-200 text-sm focus:border-brand-maroon focus:ring-4 focus:ring-brand-maroon/10 outline-none w-72 transition-all shadow-sm"
+          />
+          <div class="absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none">
+            <kbd class="hidden sm:inline-block text-[10px] font-sans font-semibold text-gray-400 bg-gray-50 border border-gray-200 px-1.5 py-0.5 rounded shadow-sm">Enter ↵</kbd>
+          </div>
+        </div>
+        <button @click="showForm=true" class="flex items-center gap-2 bg-brand-maroon hover:bg-brand-maroon/90 text-white text-sm font-semibold px-5 py-2.5 rounded-xl shadow-sm">
+          <i class="bx bx-plus text-lg"></i> Tambah Foto
+        </button>
+      </div>
     </div>
 
     <!-- Loading -->
@@ -33,6 +48,42 @@
         </div>
         <button @click="confirmDel(item)" class="absolute top-3 right-3 w-8 h-8 bg-white/90 backdrop-blur rounded-lg flex items-center justify-center text-red-500 opacity-0 group-hover:opacity-100 transition-all hover:bg-red-50 shadow-sm">
           <i class="bx bx-trash text-sm"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Pagination -->
+    <div v-if="meta && meta.last_page > 1" class="mt-6 px-4 flex items-center justify-between">
+      <p class="text-sm text-gray-500">
+        Menampilkan <span class="font-semibold text-gray-700">{{ (meta.current_page - 1) * meta.per_page + 1 }}</span>
+        - <span class="font-semibold text-gray-700">{{ Math.min(meta.current_page * meta.per_page, meta.total) }}</span>
+        dari <span class="font-semibold text-gray-700">{{ meta.total }}</span>
+      </p>
+      <div class="flex items-center gap-1">
+        <button
+          @click="fetchData(meta.current_page - 1)"
+          :disabled="meta.current_page <= 1"
+          class="w-9 h-9 flex items-center justify-center rounded-xl text-gray-500 hover:bg-gray-100 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+        >
+          <i class="bx bx-chevron-left text-xl"></i>
+        </button>
+        <button
+          v-for="p in visiblePages"
+          :key="p"
+          @click="fetchData(p)"
+          class="w-9 h-9 flex items-center justify-center rounded-xl text-sm font-medium transition-colors"
+          :class="p === meta.current_page
+            ? 'bg-brand-maroon text-white shadow-sm'
+            : 'text-gray-500 hover:bg-gray-100'"
+        >
+          {{ p }}
+        </button>
+        <button
+          @click="fetchData(meta.current_page + 1)"
+          :disabled="meta.current_page >= meta.last_page"
+          class="w-9 h-9 flex items-center justify-center rounded-xl text-gray-500 hover:bg-gray-100 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+        >
+          <i class="bx bx-chevron-right text-xl"></i>
         </button>
       </div>
     </div>
@@ -93,39 +144,59 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import BaseModal from '../../components/admin/BaseModal.vue'
 import ConfirmDialog from '../../components/admin/ConfirmDialog.vue'
 import { galleryApi } from '../../api/apiService'
 import { useAdminStore } from '../../stores/admin'
 
 const store = useAdminStore()
-const loading = ref(false), data = ref([]), subs = ref([])
+const loading = ref(false), data = ref([]), meta = ref(null), subs = ref([])
+const searchQuery = ref('')
 const showForm = ref(false), saving = ref(false)
 const previewUrl = ref(null)
-const form = ref({ sub_product_id: '', image_url: null })
+const form = ref({ sub_product_id: '', image: null })
 const showDel = ref(false), delTarget = ref(null), deleting = ref(false)
 
 const handleFileChange = (e) => {
   const file = e.target.files[0]
   if (file) {
-    form.value.image_url = file
+    form.value.image = file
     previewUrl.value = URL.createObjectURL(file)
   }
 }
 
-const fetchData = async () => {
+const visiblePages = computed(() => {
+  if (!meta.value) return []
+  const { current_page, last_page } = meta.value
+  const pages = []
+  const start = Math.max(1, current_page - 2)
+  const end = Math.min(last_page, current_page + 2)
+  for (let i = start; i <= end; i++) pages.push(i)
+  return pages
+})
+
+const fetchData = async (p = 1) => {
   loading.value = true
-  try { const r = await galleryApi.getAll(1, 50); if (r.status === 'success') data.value = r.data }
-  finally { loading.value = false }
+  try { 
+    // Memuat 12 item per halaman agar pas dengan grid yang punya 4 kolom
+    const r = await galleryApi.getAll(p, 12, searchQuery.value); 
+    if (r.status === 'success') {
+      data.value = r.data
+      meta.value = r.meta
+    }
+  } finally { 
+    loading.value = false 
+  }
 }
+const onSearch = () => fetchData(1)
 const save = async () => {
   saving.value = true
   try { 
     await galleryApi.create(form.value)
     store.showToast('Foto ditambahkan')
     showForm.value = false
-    form.value = { sub_product_id: '', image_url: null }
+    form.value = { sub_product_id: '', image: null }
     previewUrl.value = null
     await fetchData() 
   }

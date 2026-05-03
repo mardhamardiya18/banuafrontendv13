@@ -81,8 +81,8 @@
         @page-change="fetchAddons" @search="() => fetchAddons(1)">
         <template #cell-name="{ value }"><span class="font-semibold text-gray-800">{{ value }}</span></template>
         <template #cell-sub_product_name="{ value, row }">
-          <span class="px-2.5 py-1 rounded-lg bg-gray-100 text-xs font-medium text-gray-600">
-            {{ value || row.sub_product?.name || '-' }}
+          <span class="px-2.5 py-1 rounded-lg text-xs font-medium" :class="(!value && !row.sub_product) ? 'bg-brand-maroon/10 text-brand-maroon' : 'bg-gray-100 text-gray-600'">
+            {{ value || row.sub_product?.name || 'Global (Semua)' }}
           </span>
         </template>
         <template #cell-price="{ value }"><span class="font-semibold">Rp {{ (value || 0).toLocaleString('id-ID') }}</span></template>
@@ -200,8 +200,8 @@
       <form @submit.prevent="saveAddon" class="space-y-5">
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1.5">Sub Produk</label>
-          <select v-model="addonForm.sub_product_id" required class="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm outline-none bg-white focus:border-brand-maroon">
-            <option value="" disabled>Pilih</option>
+          <select v-model="addonForm.sub_product_id" class="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm outline-none bg-white focus:border-brand-maroon">
+            <option value="">Semua Sub Produk (Global)</option>
             <option v-for="sp in subList" :key="sp.id" :value="sp.id">{{ sp.name }}</option>
           </select>
         </div>
@@ -305,7 +305,9 @@ const fetchAddons = async (p = 1) => { addonLoading.value = true; try { const r 
 const openAddonForm = (item = null) => { editAddon.value = item; addonForm.value = item ? { ...item } : { sub_product_id: '', name: '', price: 0, is_active: true }; showAddonForm.value = true }
 const saveAddon = async () => {
   saving.value = true
-  try { if (editAddon.value) { await addonApi.update(editAddon.value.id, addonForm.value); store.showToast('Add-on diperbarui') } else { await addonApi.create(addonForm.value); store.showToast('Add-on ditambahkan') }; showAddonForm.value = false; await fetchAddons() } finally { saving.value = false }
+  const payload = { ...addonForm.value }
+  if (!payload.sub_product_id) payload.sub_product_id = null
+  try { if (editAddon.value) { await addonApi.update(editAddon.value.id, payload); store.showToast('Add-on diperbarui') } else { await addonApi.create(payload); store.showToast('Add-on ditambahkan') }; showAddonForm.value = false; await fetchAddons() } finally { saving.value = false }
 }
 
 // --- Delete handler ---

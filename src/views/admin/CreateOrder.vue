@@ -36,9 +36,15 @@
           <input v-model="form.customer_phone" type="tel" required class="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm outline-none focus:border-brand-maroon/40 focus:ring-2 focus:ring-brand-maroon/10 transition-all" placeholder="08xxxxxxxxxx" />
         </div>
       </div>
-      <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1.5">Alamat Pengiriman *</label>
-        <textarea v-model="form.delivery_address" rows="2" class="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm outline-none focus:border-brand-maroon/40 focus:ring-2 focus:ring-brand-maroon/10 transition-all resize-none" placeholder="Alamat lengkap"></textarea>
+      <div class="grid sm:grid-cols-2 gap-5">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1.5">Alamat Pengiriman *</label>
+          <textarea v-model="form.delivery_address" rows="2" class="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm outline-none focus:border-brand-maroon/40 focus:ring-2 focus:ring-brand-maroon/10 transition-all resize-none" placeholder="Alamat lengkap"></textarea>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1.5">Link Google Maps</label>
+          <textarea v-model="form.customer_maps" rows="2" class="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm outline-none focus:border-brand-maroon/40 focus:ring-2 focus:ring-brand-maroon/10 transition-all resize-none" placeholder="Masukkan link Gmaps"></textarea>
+        </div>
       </div>
       <div class="grid sm:grid-cols-3 gap-5">
         <div>
@@ -50,7 +56,6 @@
           <select v-model="form.delivery_type" class="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm outline-none focus:border-brand-maroon/40 focus:ring-2 focus:ring-brand-maroon/10 transition-all bg-white">
             <option value="delivery">Delivery (Antar)</option>
             <option value="pickup">Pickup (Ambil Sendiri)</option>
-            <option value="setup">Setup (Prasmanan)</option>
           </select>
         </div>
         <div>
@@ -92,6 +97,10 @@
                 <option :value="null" disabled>Pilih paket</option>
                 <option v-for="sp in refSubProducts" :key="sp.id" :value="sp.id">{{ sp.name }} — Rp {{ sp.price.toLocaleString('id-ID') }}</option>
               </select>
+              <p v-if="item.sub_product_id" class="text-[10px] text-gray-500 mt-1.5 flex items-start gap-1">
+                <i class="bx bx-info-circle mt-0.5"></i>
+                <span>Min. Order: <strong class="text-gray-700">{{ getSubProductMinOrder(item.sub_product_id) }} pcs</strong>. <br>Order di bawah batas dikenakan fee tambahan 10%.</span>
+              </p>
             </div>
             <div class="grid grid-cols-2 gap-4">
               <div>
@@ -101,6 +110,7 @@
               <div>
                 <label class="block text-xs font-medium text-gray-600 mb-1">Subtotal</label>
                 <p class="text-sm font-bold text-brand-maroon mt-2">Rp {{ itemSubTotal(item).toLocaleString('id-ID') }}</p>
+                <p v-if="getUnderMinOrderFee(item) > 0" class="text-[10px] text-amber-500 mt-0.5 leading-tight">+ Rp {{ getUnderMinOrderFee(item).toLocaleString('id-ID') }} <br>(Fee di bawah min. order)</p>
               </div>
             </div>
           </div>
@@ -132,9 +142,9 @@
             <span class="text-xs font-bold text-gray-500 uppercase tracking-wider block mb-2">Pilihan Menu</span>
             <div class="flex flex-wrap gap-2">
               <label v-for="mi in refMenuItems" :key="mi.id" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-medium cursor-pointer transition-all"
-                :class="isMenuSelected(item, mi.name) ? 'bg-brand-maroon/10 border-brand-maroon/30 text-brand-maroon' : 'bg-white border-gray-200 text-gray-500 hover:border-gray-300'">
-                <input type="checkbox" :checked="isMenuSelected(item, mi.name)" @change="toggleMenu(item, mi.name)" class="sr-only" />
-                <i class="bx" :class="isMenuSelected(item, mi.name) ? 'bx-check-circle' : 'bx-circle'"></i>
+                :class="isMenuSelected(item, mi.id) ? 'bg-brand-maroon/10 border-brand-maroon/30 text-brand-maroon' : 'bg-white border-gray-200 text-gray-500 hover:border-gray-300'">
+                <input type="checkbox" :checked="isMenuSelected(item, mi.id)" @change="toggleMenu(item, mi.id, mi.name)" class="sr-only" />
+                <i class="bx" :class="isMenuSelected(item, mi.id) ? 'bx-check-circle' : 'bx-circle'"></i>
                 {{ mi.name }}
               </label>
             </div>
@@ -196,7 +206,7 @@
             <label class="block text-sm font-medium text-gray-700 mb-1.5">Status Pembayaran</label>
             <select v-model="form.payment_status" class="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm outline-none focus:border-brand-maroon/40 focus:ring-2 focus:ring-brand-maroon/10 transition-all bg-white">
               <option value="unpaid">Belum Bayar</option>
-              <option value="partial">Bayar Sebagian (DP)</option>
+              <option value="dp_received">Bayar Sebagian (DP)</option>
               <option value="paid">Lunas</option>
             </select>
           </div>
@@ -241,7 +251,7 @@ const minutes = String(now.getMinutes()).padStart(2, '0')
 const defaultDateTime = `${year}-${month}-${day}T${hours}:${minutes}`
 
 const form = ref({
-  customer_name: '', customer_phone: '', delivery_address: '',
+  customer_name: '', customer_phone: '', delivery_address: '', customer_maps: '',
   delivery_date: defaultDateTime, delivery_type: 'delivery', delivery_notes: '',
   payment_status: 'unpaid', paid_amount: 0, order_status: 'pending',
   items: []
@@ -251,24 +261,32 @@ const form = ref({
 const getSubProduct = (id) => refSubProducts.value.find(sp => sp.id === id)
 const getSubProductName = (id) => getSubProduct(id)?.name || '-'
 const getSubProductPrice = (id) => getSubProduct(id)?.price || 0
+const getSubProductMinOrder = (id) => getSubProduct(id)?.min_order || 0
 const getAddonName = (id) => refAddons.value.find(a => a.id === id)?.name || '-'
 
 const getAvailableAddons = (item) => {
   if (!item.sub_product_id) return refAddons.value
   const sp = getSubProduct(item.sub_product_id)
   if (!sp) return refAddons.value
-  const filtered = refAddons.value.filter(a => a.sub_product_id === sp.id)
-  return filtered.length ? filtered : refAddons.value
+  return refAddons.value.filter(a => a.sub_product_id === sp.id || !a.sub_product_id)
+}
+
+const getUnderMinOrderFee = (item) => {
+  if (!item.sub_product_id || !item.quantity) return 0
+  const minOrder = getSubProductMinOrder(item.sub_product_id)
+  const price = getSubProductPrice(item.sub_product_id)
+  return (item.quantity > 0 && item.quantity < minOrder) ? (price * item.quantity * 0.1) : 0
 }
 
 const itemSubTotal = (item) => {
   const price = getSubProductPrice(item.sub_product_id)
   const base = price * (item.quantity || 0)
+  const penalty = getUnderMinOrderFee(item)
   const addonTotal = item.addons.reduce((sum, a) => sum + (a.snapshot_price * a.quantity), 0)
-  return base + addonTotal
+  return base + penalty + addonTotal
 }
 
-const grandTotal = computed(() => form.value.items.reduce((sum, item) => sum + getSubProductPrice(item.sub_product_id) * (item.quantity || 0), 0))
+const grandTotal = computed(() => form.value.items.reduce((sum, item) => sum + (getSubProductPrice(item.sub_product_id) * (item.quantity || 0)) + getUnderMinOrderFee(item), 0))
 const addonsTotal = computed(() => form.value.items.reduce((sum, item) => sum + item.addons.reduce((s, a) => s + a.snapshot_price * a.quantity, 0), 0))
 
 // --- Item management ---
@@ -292,10 +310,10 @@ const onAddonChange = (addon) => {
 }
 
 // --- Menu selection ---
-const isMenuSelected = (item, name) => item.menu_selections.some(ms => ms.menu_name === name)
-const toggleMenu = (item, name) => {
-  const idx = item.menu_selections.findIndex(ms => ms.menu_name === name)
-  idx === -1 ? item.menu_selections.push({ menu_name: name }) : item.menu_selections.splice(idx, 1)
+const isMenuSelected = (item, id) => item.menu_selections.some(ms => ms.menu_item_id === id)
+const toggleMenu = (item, id, name) => {
+  const idx = item.menu_selections.findIndex(ms => ms.menu_item_id === id)
+  idx === -1 ? item.menu_selections.push({ menu_item_id: id, menu_name: name }) : item.menu_selections.splice(idx, 1)
 }
 
 // --- Validation & Navigation ---
@@ -321,23 +339,25 @@ const submitOrder = async () => {
     const total = grandTotal.value + addonsTotal.value
 
     const payload = {
-      ...form.value,
-      invoice_number: invNum,
-      total_amount: total,
-      total_cost: Math.round(total * 0.65),
-      items: form.value.items.map((item, idx) => {
-        const sp = getSubProduct(item.sub_product_id)
+      customer_name: form.value.customer_name,
+      customer_phone: form.value.customer_phone,
+      customer_maps: form.value.customer_maps,
+      delivery_address: form.value.delivery_address,
+      delivery_date: form.value.delivery_date,
+      type_delivery: form.value.delivery_type,
+      delivery_notes: form.value.delivery_notes,
+      payment_status: form.value.payment_status,
+      order_status: form.value.order_status,
+      items: form.value.items.map((item) => {
         return {
-          id: idx + 1, sub_product_id: item.sub_product_id,
-          sub_product_name: sp?.name || '-', quantity: item.quantity,
-          snapshot_price: sp?.price || 0, snapshot_cost: sp?.cost || 0,
-          under_min_order_fee: 0, sub_total: itemSubTotal(item),
+          sub_product_id: item.sub_product_id,
+          quantity: item.quantity,
           notes: item.notes,
-          addons: item.addons.filter(a => a.addon_id).map(a => ({
-            id: a.addon_id, name: a.name, quantity: a.quantity,
-            snapshot_price: a.snapshot_price, sub_total: a.snapshot_price * a.quantity
+          add_ons: item.addons.filter(a => a.addon_id).map(a => ({
+            add_on_id: a.addon_id,
+            quantity: a.quantity
           })),
-          menu_selections: item.menu_selections
+          selections: item.menu_selections.map(ms => ms.menu_item_id)
         }
       })
     }
