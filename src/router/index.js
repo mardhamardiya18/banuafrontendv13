@@ -16,6 +16,12 @@ const routes = [
     meta: { title: 'Katalog Produk' }
   },
   {
+    path: '/produk/:slug',
+    name: 'ProductDetail',
+    component: () => import('../views/ProductDetailView.vue'),
+    meta: { title: 'Detail Produk' }
+  },
+  {
     path: '/login',
     name: 'Login',
     component: () => import('../views/auth/Login.vue'),
