@@ -1,60 +1,8 @@
 <template>
   <div class="bg-[#FDFBF7] min-h-screen">
 
-    <!-- NAVBAR -->
-    <nav class="fixed top-0 left-0 w-full z-50 bg-white/80 backdrop-blur-md border-b border-brand-maroon/10">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 flex items-center justify-between">
-        <div class="flex items-center gap-3">
-          <img :src="logo" alt="Logo" class="h-10 w-auto">
-          <div class=" flex flex-col">
-            <span class="text-2xl font-extrabold text-brand-maroon tracking-tight">DMI Catering</span>
-            <small class=" text-xs">By Dapur Mamah Iis</small>
-          </div>
-          
-        </div>
-        <div class="hidden md:flex items-center gap-8 text-sm font-medium text-brand-forest-dark">
-          <a href="#home" class="hover:text-brand-terracotta transition-colors duration-300">Beranda</a>
-          <a href="#services" class="hover:text-brand-terracotta transition-colors duration-300">Layanan</a>
-          <a href="#products" class="hover:text-brand-terracotta transition-colors duration-300">Paket</a>
-          <a href="#testimonials" class="hover:text-brand-terracotta transition-colors duration-300">Testimoni</a>
-          
-          <!-- Admin Link -->
-          <router-link 
-            v-if="authStore.isAuthenticated && authStore.isAdmin" 
-            to="/admin/dashboard" 
-            class="flex items-center gap-1.5 text-brand-maroon font-bold hover:text-brand-terracotta transition-colors"
-          >
-            <i class='bx bxs-dashboard text-lg'></i>
-            Dashboard
-          </router-link>
-        </div>
-        <a href="#footer" class="hidden md:inline-flex bg-brand-terracotta hover:bg-brand-maroon text-white text-sm font-bold px-6 py-2.5 rounded-full transition-all duration-300 active:scale-95 shadow-lg shadow-brand-terracotta/20 animate-shimmer items-center gap-2 group">
-          Hubungi Kami
-          <i class='bx bx-right-arrow-alt text-lg group-hover:translate-x-1 transition-transform'></i>
-        </a>
-        <button @click="mobileMenu = !mobileMenu" class="md:hidden text-brand-maroon">
-          <i class='bx bx-menu text-3xl'></i>
-        </button>
-      </div>
-      <div v-if="mobileMenu" class="md:hidden bg-white border-t border-brand-maroon/10 px-4 py-4 space-y-3 text-sm font-medium">
-        <a href="#home" class="block text-brand-forest-dark" @click="mobileMenu=false">Beranda</a>
-        <a href="#services" class="block text-brand-forest-dark" @click="mobileMenu=false">Layanan</a>
-        <a href="#products" class="block text-brand-forest-dark" @click="mobileMenu=false">Paket</a>
-        <a href="#testimonials" class="block text-brand-forest-dark" @click="mobileMenu=false">Testimoni</a>
-        
-        <!-- Mobile Admin Link -->
-        <router-link 
-          v-if="authStore.isAuthenticated && authStore.isAdmin" 
-          to="/admin/dashboard" 
-          class="block text-brand-maroon font-bold py-2 border-y border-brand-maroon/5" 
-          @click="mobileMenu=false"
-        >
-          <i class='bx bxs-dashboard mr-2'></i> Dashboard Admin
-        </router-link>
-
-        <a href="#footer" class="block bg-brand-terracotta text-white text-center py-2.5 rounded-full font-bold" @click="mobileMenu=false">Hubungi Kami</a>
-      </div>
-    </nav>
+    <!-- NAVBAR (Consistent with Catalog & Detail) -->
+    <TopNav />
 
     <!-- HERO -->
     <section id="home" class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-32 pb-20 md:pt-48 md:pb-32 scroll-mt-24">
@@ -62,12 +10,12 @@
       <div class="absolute top-10 -left-20 w-72 h-72 bg-brand-terracotta/10 blob blur-3xl"></div>
       <div class="absolute bottom-0 right-0 w-96 h-96 bg-brand-maroon/5 blob blur-3xl"></div>
       <div class="relative grid md:grid-cols-2 gap-16 items-center">
-        <div class="space-y-8 animate-fade-up">
+        <div class="space-y-4 lg:space-y-8 animate-fade-up">
           <span class="inline-block bg-brand-terracotta/10 text-brand-terracotta text-xs font-bold uppercase tracking-widest px-4 py-2 rounded-full">🍽️ Tumpeng & Catering Service</span>
-          <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-brand-maroon leading-[1.1] tracking-tight">
+          <h1 class=" text-center lg:text-left text-6xl font-extrabold text-brand-maroon leading-[1.1] tracking-tight">
             Juaranya Tumpeng & Catering <span class="text-brand-terracotta relative">di Banua!</span>
           </h1>
-          <p class="text-lg text-brand-forest-dark/70 leading-relaxed max-w-lg">
+          <p class=" text-center lg:text-left text-base lg:text-lg text-brand-forest-dark/70 leading-relaxed max-w-lg">
             Kami siap maantarakan tumpeng dan catering nang nyaman gasan acara pian di Banjarbaru, Banjarmasin, dan Martapura.
           </p>
           <div class="flex flex-col sm:flex-row gap-4">
@@ -88,17 +36,25 @@
         </div>
         <div class="relative animate-fade-up-delay">
           <div class="relative rounded-4xl overflow-hidden shadow-2xl shadow-brand-maroon/10 ">
-            <img :src="heroImg" alt="Hero" class="w-full h-[500px] object-cover"/>
+            <img :src="heroImg" alt="Hero" class="w-full h-[500px] object-cover scale-105"/>
           </div>
-          <div class="absolute -bottom-6 -left-6 bg-white p-4 rounded-2xl shadow-xl border border-brand-maroon/5 flex items-center gap-3 animate-float">
-            <div class="bg-brand-terracotta/10 p-2.5 rounded-xl">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-brand-terracotta" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+          <div class="absolute -bottom-8 -left-8 bg-white/90 backdrop-blur-md p-5 rounded-3xl shadow-[0_20px_50px_rgba(105,11,34,0.15)] border border-brand-maroon/5 flex items-center gap-4 animate-float group hover:scale-105 transition-transform duration-500">
+            <div class="bg-linear-to-br from-brand-terracotta to-brand-maroon p-3 rounded-2xl shadow-lg shadow-brand-terracotta/20">
+              <i class='bx bxs-dish text-white text-xl'></i>
             </div>
-            <div><p class="font-bold text-brand-maroon text-sm">5.000+</p><p class="text-xs text-brand-forest-dark/50">Porsi Terjual</p></div>
+            <div>
+              <p class="font-black text-brand-maroon text-lg leading-none">5.000+</p>
+              <p class="text-[10px] uppercase tracking-widest font-bold text-brand-forest-dark/40 mt-1">Porsi Terjual</p>
+            </div>
           </div>
-          <div class="absolute -top-5 -right-5 bg-white p-4 rounded-2xl shadow-xl border border-brand-maroon/5 flex items-center gap-2 animate-float" style="animation-delay: 1s;">
-            <span class="text-lg">⭐</span>
-            <div><p class="font-bold text-brand-maroon text-sm">4.9/5</p><p class="text-xs text-brand-forest-dark/50">Rating</p></div>
+          <div class="absolute -top-8 -right-8 bg-white/90 backdrop-blur-md p-5 rounded-3xl shadow-[0_20px_50px_rgba(105,11,34,0.15)] border border-brand-maroon/5 flex items-center gap-4 animate-float" style="animation-delay: 1s;">
+            <div class="bg-brand-cream-light p-3 rounded-2xl">
+              <i class='bx bxs-star text-brand-terracotta text-xl animate-pulse'></i>
+            </div>
+            <div>
+              <p class="font-black text-brand-maroon text-lg leading-none">4.9/5</p>
+              <p class="text-[10px] uppercase tracking-widest font-bold text-brand-forest-dark/40 mt-1">Rating Puas</p>
+            </div>
           </div>
         </div>
       </div>
@@ -247,9 +203,8 @@
       </div>
     </section>
 
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <Footer />
-    </div>
+    <!-- FOOTER (Consistent Modular Component) -->
+    <Footer />
 
     <!-- WHATSAPP FIXED BUTTON -->
     <a 
@@ -275,7 +230,8 @@ import { ref } from 'vue'
 import { useAuthStore } from '../stores/auth'
 import logo from '../assets/images/logo.png'
 import heroImg from '../assets/images/hero-img.png'
-import Footer from '../components/common/Footer.vue'
+import TopNav from '../components/catalog/TopNav.vue'
+import Footer from '../components/catalog/Footer.vue'
 
 const authStore = useAuthStore()
 const mobileMenu = ref(false)

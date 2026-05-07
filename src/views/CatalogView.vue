@@ -1,8 +1,17 @@
 <template>
   <div class="min-h-screen bg-[#FDFBF7] font-sans">
-    <TopNav />
+    <TopNav :showMenu="false" />
     
-    <main class="max-w-7xl mx-auto md:px-6">
+    <!-- Loading Overlay -->
+    <div v-if="loading" class="fixed inset-0 z-[100] bg-white/90 backdrop-blur-lg flex flex-col items-center justify-center">
+      <div class="relative w-20 h-20">
+        <div class="absolute inset-0 border-4 border-brand-terracotta/20 rounded-full"></div>
+        <div class="absolute inset-0 border-4 border-brand-terracotta rounded-full border-t-transparent animate-spin"></div>
+      </div>
+      <p class="mt-6 text-brand-maroon font-bold tracking-widest uppercase text-xs animate-pulse">Menyiapkan Hidangan...</p>
+    </div>
+    
+    <main class="max-w-7xl mx-auto md:px-6 pt-24">
       <!-- Greeting Section -->
       <div class="px-6 mt-8 mb-2">
         <p class="text-lg font-medium text-gray-500">Halo!</p>
@@ -46,11 +55,7 @@
       <CategoryList :categories="categories" v-model="selectedCategory" />
 
       <!-- Product Grid -->
-      <div v-if="loading" class="px-6 mt-12 flex justify-center">
-        <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-brand-terracotta"></div>
-      </div>
-      
-      <div v-else-if="filteredProducts.length > 0" class="px-6 mt-6 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+      <div v-if="!loading && filteredProducts.length > 0" class="px-6 mt-6 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
         <ProductCard v-for="product in filteredProducts" :key="product.id" :product="product" />
       </div>
 
@@ -59,8 +64,10 @@
         <p class="text-gray-400 font-medium">Wah, menu yang kamu cari belum tersedia.</p>
       </div>
 
-      <Footer />
     </main>
+    
+    <!-- FOOTER (Consistent Modular Component) -->
+    <Footer />
 
     <BottomNav />
   </div>
@@ -74,7 +81,7 @@ import SearchBar from '../components/catalog/SearchBar.vue'
 import CategoryList from '../components/catalog/CategoryList.vue'
 import ProductCard from '../components/catalog/ProductCard.vue'
 import BottomNav from '../components/catalog/BottomNav.vue'
-import Footer from '../components/common/Footer.vue'
+import Footer from '../components/catalog/Footer.vue'
 
 const categories = ref([{ id: 'all', name: 'Semua Menu' }])
 const products = ref([])
