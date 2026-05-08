@@ -33,7 +33,7 @@
             <p class="text-[10px] md:text-sm text-gray-500 font-medium leading-relaxed max-w-[140px] md:max-w-xs mb-4 md:mb-6">
               Lorem ipsum dolor sit amet consectetur adipiscing..
             </p>
-            <button class="px-5 md:px-10 py-2 md:py-3.5 bg-gradient-to-r from-orange-400 to-orange-500 text-white text-[11px] md:text-sm font-bold rounded-xl md:rounded-2xl shadow-lg shadow-orange-200 hover:shadow-orange-300 transition-all active:scale-95">
+            <button class="px-5 md:px-10 py-2 md:py-3.5 bg-linear-to-r from-orange-400 to-orange-500 text-white text-[11px] md:text-sm font-bold rounded-xl md:rounded-2xl shadow-lg shadow-orange-200 hover:shadow-orange-300 transition-all active:scale-95">
               Explore
             </button>
           </div>
@@ -46,7 +46,7 @@
               class="h-full w-full object-cover object-center transform scale-110 group-hover:scale-115 transition-transform duration-700"
             />
             <!-- Gradient Overlay for smooth transition -->
-            <div class="absolute inset-0 bg-gradient-to-r from-[#EAF2F5] via-[#EAF2F5]/40 to-transparent"></div>
+            <div class="absolute inset-0 bg-linear-to-r from-[#EAF2F5] via-[#EAF2F5]/40 to-transparent"></div>
           </div>
         </div>
       </div>

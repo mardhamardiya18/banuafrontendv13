@@ -17,22 +17,20 @@
         <a href="/#services" class="hover:text-brand-terracotta transition-colors duration-300">Layanan</a>
         <a href="/#testimonials" class="hover:text-brand-terracotta transition-colors duration-300">Testimoni</a>
         
-        <!-- Admin Dashboard Link -->
-        <router-link 
-          v-if="authStore.isAuthenticated && authStore.isAdmin" 
-          to="/admin/dashboard" 
-          class="flex items-center gap-1.5 text-brand-maroon font-black hover:text-brand-terracotta transition-colors"
-        >
-          <i class='bx bxs-dashboard text-lg'></i>
-          Admin
-        </router-link>
+       
       </div>
 
       <!-- Action Buttons / Profile -->
       <div class="flex items-center gap-4">
-        <a href="https://wa.me/6281234567890" target="_blank" class="hidden md:inline-flex bg-brand-terracotta hover:bg-brand-maroon text-white text-xs font-black px-6 py-2.5 rounded-full transition-all duration-300 active:scale-95 shadow-lg shadow-brand-terracotta/20 items-center gap-2 group uppercase tracking-widest">
-          Hubungi Kami
-          <i class='bx bx-right-arrow-alt text-lg group-hover:translate-x-1 transition-transform'></i>
+        <a 
+          href="https://wa.me/6281234567890" 
+          target="_blank" 
+          class="hidden md:flex items-center gap-3 px-8 py-3 bg-linear-to-r from-brand-terracotta to-brand-maroon text-white rounded-full font-bold text-xs uppercase tracking-[0.2em] shadow-lg shadow-brand-maroon/20 hover:shadow-brand-terracotta/40 hover:-translate-y-0.5 active:scale-95 transition-all duration-500 group"
+        >
+          <span>Hubungi Kami</span>
+          <div class="w-5 h-5 bg-white/20 rounded-full flex items-center justify-center group-hover:bg-white/30 transition-colors">
+            <i class='bx bx-right-arrow-alt text-lg group-hover:translate-x-0.5 transition-transform'></i>
+          </div>
         </a>
         
         <!-- Profile Image (Authenticated Only) -->
@@ -75,14 +73,7 @@
         <a href="/#services" class="block text-sm font-bold text-brand-forest-dark hover:text-brand-terracotta" @click="mobileMenu=false">Layanan</a>
         <a href="/#testimonials" class="block text-sm font-bold text-brand-forest-dark hover:text-brand-terracotta" @click="mobileMenu=false">Testimoni</a>
         
-        <router-link 
-          v-if="authStore.isAuthenticated && authStore.isAdmin" 
-          to="/admin/dashboard" 
-          class="block text-brand-maroon font-black py-2 border-y border-brand-maroon/5 text-sm" 
-          @click="mobileMenu=false"
-        >
-          <i class='bx bxs-dashboard mr-2'></i> Dashboard Admin
-        </router-link>
+       
 
         <a href="https://wa.me/6281234567890" target="_blank" class="block bg-brand-terracotta text-white text-center py-3 rounded-full font-black text-xs uppercase tracking-widest" @click="mobileMenu=false">Hubungi Kami</a>
       </div>

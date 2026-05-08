@@ -22,6 +22,12 @@ const routes = [
     meta: { title: 'Detail Produk' }
   },
   {
+    path: '/pesanan',
+    name: 'Cart',
+    component: () => import('../views/CartView.vue'),
+    meta: { title: 'Checkout Pesanan' }
+  },
+  {
     path: '/login',
     name: 'Login',
     component: () => import('../views/auth/Login.vue'),

@@ -52,9 +52,9 @@
               :centered-slides="true"
               :space-between="20"
               :pagination="{ clickable: true }"
-              class="product-detail-swiper !pb-14"
+              class="product-detail-swiper pb-14!"
             >
-              <swiper-slide v-for="(img, index) in productImages" :key="index" class="!w-[85%] sm:!w-[70%]">
+              <swiper-slide v-for="(img, index) in productImages" :key="index" class="w-[85%]! sm:w-[70%]!">
                 <div class="aspect-[3/4] rounded-[2.5rem] overflow-hidden shadow-2xl shadow-brand-maroon/5 border border-white">
                   <img :src="img" :alt="product.name" class="w-full h-full object-cover" />
                 </div>
@@ -150,12 +150,32 @@
             </div>
 
             <!-- CTA Action -->
-            <div class="pt-6">
-              <button class="w-full bg-brand-maroon hover:bg-brand-terracotta text-white font-black py-6 rounded-[2rem] shadow-2xl shadow-brand-maroon/20 transition-all duration-500 hover:-translate-y-2 active:scale-95 flex items-center justify-center gap-4 group">
-                <span class="uppercase tracking-[0.2em] text-xs">Pesan Sekarang</span>
-                <i class='bx bx-right-arrow-alt text-2xl group-hover:translate-x-2 transition-transform'></i>
+            <div class="pt-8">
+              <button class="w-full relative group rounded-[2rem] overflow-hidden shadow-xl shadow-brand-maroon/20 hover:shadow-brand-maroon/40 transition-all duration-500 hover:-translate-y-1 active:scale-95 cursor-pointer">
+                <!-- Background Gradient -->
+                <div class="absolute inset-0 bg-linear-to-r from-brand-maroon via-brand-maroon to-brand-terracotta group-hover:scale-110 transition-transform duration-700"></div>
+                
+                <!-- Shimmer/Shine Effect -->
+                <div class="absolute inset-0 bg-linear-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+
+                <!-- Button Content -->
+                <div class="relative px-8 py-5 flex items-center justify-between border border-white/10">
+                  <div class="flex flex-col items-start">
+                    
+                    <span class="text-sm font-black text-white uppercase tracking-[0.2em]">Pesan Sekarang</span>
+                  </div>
+                  
+                  <div class="w-11 h-11 bg-white/10 rounded-2xl flex items-center justify-center backdrop-blur-md group-hover:bg-white/20 transition-all duration-500">
+                    <i class='bx bx-right-arrow-alt text-2xl text-white group-hover:translate-x-1 transition-transform'></i>
+                  </div>
+                </div>
               </button>
-              <p class="text-center mt-6 text-[10px] text-gray-400 font-bold uppercase tracking-widest italic">* Harga sewaktu-waktu dapat berubah</p>
+              
+              <div class="mt-8 flex items-center justify-center gap-2 opacity-30">
+                <div class="h-px w-8 bg-brand-forest-dark"></div>
+                <p class="text-[9px] text-brand-forest-dark font-black uppercase tracking-[0.3em] italic">Harga dapat berubah sewaktu-waktu</p>
+                <div class="h-px w-8 bg-brand-forest-dark"></div>
+              </div>
             </div>
           </div>
         </div>
@@ -184,26 +204,54 @@
         <swiper
           v-else
           :slides-per-view="'auto'"
-          :space-between="24"
+          :space-between="16"
           :breakpoints="{
+            '640': {
+              slidesPerView: 3,
+              spaceBetween: 20
+            },
             '1024': {
               slidesPerView: 4,
-              spaceBetween: 32
+              spaceBetween: 24
+            },
+            '1280': {
+              slidesPerView: 5,
+              spaceBetween: 24
+            },
+            '1536': {
+              slidesPerView: 6,
+              spaceBetween: 24
             }
           }"
-          class="similar-products-swiper !overflow-visible"
+          class="similar-products-swiper overflow-visible!"
         >
-          <swiper-slide v-for="item in similarProducts" :key="item.id" class="!w-[280px] lg:!w-auto">
+          <swiper-slide v-for="item in similarProducts" :key="item.id" class="w-[200px]! sm:w-auto!">
             <div 
               @click="router.push(`/produk/${item.slug}`)"
-              class="group cursor-pointer space-y-6"
+              class="group cursor-pointer space-y-4"
             >
-              <div class="aspect-[4/5] rounded-[2.5rem] overflow-hidden bg-white shadow-xl shadow-brand-maroon/5 border border-white transition-all duration-500 group-hover:-translate-y-3 group-hover:shadow-2xl">
-                <img :src="item.image" :alt="item.name" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+              <!-- Card Image -->
+              <div class="relative aspect-[4/5] rounded-[2rem] overflow-hidden bg-white shadow-lg shadow-brand-maroon/5 border border-white transition-all duration-500 group-hover:-translate-y-2 group-hover:shadow-2xl group-hover:border-brand-terracotta/20">
+                <img :src="item.image" :alt="item.name" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" />
+                
+                <!-- Quick Badge on Hover -->
+                <div class="absolute inset-0 bg-brand-maroon/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center">
+                  <div class="bg-white/90 backdrop-blur-md p-3 rounded-2xl scale-50 group-hover:scale-100 transition-transform duration-500">
+                    <i class='bx bx-search-alt text-brand-maroon text-xl'></i>
+                  </div>
+                </div>
               </div>
-              <div class="px-2 text-center">
-                <h4 class="font-black text-brand-forest-dark text-lg truncate mb-1 group-hover:text-brand-terracotta transition-colors">{{ item.name }}</h4>
-                <p class="text-brand-maroon font-black text-sm italic">{{ formatPrice(item.price) }}</p>
+
+              <!-- Card Info -->
+              <div class="px-1 space-y-1">
+                <h4 class="font-bold text-brand-forest-dark text-sm lg:text-base truncate group-hover:text-brand-terracotta transition-colors duration-300">
+                  {{ item.name }}
+                </h4>
+                <div class="flex items-center gap-2">
+                  <span class="text-brand-maroon font-black text-xs lg:text-sm italic">
+                    {{ formatPrice(item.price) }}
+                  </span>
+                </div>
               </div>
             </div>
           </swiper-slide>

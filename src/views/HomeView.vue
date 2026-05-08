@@ -19,7 +19,7 @@
             Kami siap maantarakan tumpeng dan catering nang nyaman gasan acara pian di Banjarbaru, Banjarmasin, dan Martapura.
           </p>
           <div class="flex flex-col sm:flex-row gap-4">
-            <a href="#products" class="bg-brand-terracotta hover:bg-brand-maroon text-white font-bold px-10 py-4 rounded-full transition-all duration-300 active:scale-95 shadow-2xl shadow-brand-terracotta/40 text-center animate-shimmer flex items-center justify-center gap-2 group">
+            <a href="#products" class="bg-linear-to-r from-brand-terracotta to-brand-maroon text-white font-bold px-10 py-4 rounded-full transition-all duration-300 active:scale-95 shadow-2xl shadow-brand-terracotta/40 text-center animate-shimmer flex items-center justify-center gap-2 group">
               Pesan Sekarang
               <i class='bx bx-chevron-right text-2xl group-hover:translate-x-1 transition-transform'></i>
             </a>
@@ -48,8 +48,8 @@
             </div>
           </div>
           <div class="absolute -top-8 -right-8 bg-white/90 backdrop-blur-md p-5 rounded-3xl shadow-[0_20px_50px_rgba(105,11,34,0.15)] border border-brand-maroon/5 flex items-center gap-4 animate-float" style="animation-delay: 1s;">
-            <div class="bg-brand-cream-light p-3 rounded-2xl">
-              <i class='bx bxs-star text-brand-terracotta text-xl animate-pulse'></i>
+            <div class="bg-linear-to-r from-brand-terracotta to-brand-maroon p-3 rounded-2xl">
+              <i class='bx bxs-star text-white text-xl animate-pulse'></i>
             </div>
             <div>
               <p class="font-black text-brand-maroon text-lg leading-none">4.9/5</p>
