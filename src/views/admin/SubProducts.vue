@@ -31,6 +31,10 @@
       </template>
       <template #actions="{ row }">
         <div class="flex items-center justify-end gap-1">
+          <router-link :to="{ name: 'AdminSubProductConfig', params: { id: row.id } }" 
+            class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-brand-maroon/10 text-gray-400 hover:text-brand-maroon">
+            <i class="bx bx-cog"></i>
+          </router-link>
           <button @click="openForm(row)" class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-blue-50 text-gray-400 hover:text-blue-500"><i class="bx bx-edit-alt"></i></button>
           <button @click="confirmDel(row)" class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-red-50 text-gray-400 hover:text-red-500"><i class="bx bx-trash"></i></button>
         </div>

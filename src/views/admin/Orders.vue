@@ -220,15 +220,15 @@ const columns = [
 ]
 
 const statusBadge = (s) => ({
-  'bg-emerald-50 text-emerald-600': s === 'completed' || s === 'delivered',
-  'bg-blue-50 text-blue-600': s === 'processing',
-  'bg-amber-50 text-amber-600': s === 'pending',
-  'bg-red-50 text-red-600': s === 'cancelled'
+  'bg-emerald-50 text-emerald-600 border border-emerald-100': s === 'completed',
+  'bg-blue-50 text-blue-600 border border-blue-100': s === 'processing',
+  'bg-amber-50 text-amber-600 border border-amber-100': s === 'pending',
+  'bg-red-50 text-red-600 border border-red-100': s === 'canceled'
 })
 const payBadge = (s) => ({
-  'bg-emerald-50 text-emerald-600': s === 'paid',
-  'bg-amber-50 text-amber-600': s === 'partial',
-  'bg-red-50 text-red-600': s === 'unpaid'
+  'bg-emerald-50 text-emerald-600 border border-emerald-100': s === 'paid',
+  'bg-amber-50 text-amber-600 border border-amber-100': s === 'dp_received',
+  'bg-red-50 text-red-600 border border-red-100': s === 'unpaid'
 })
 
 const fetchData = async (p = 1) => {

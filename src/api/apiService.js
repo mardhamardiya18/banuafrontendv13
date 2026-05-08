@@ -374,6 +374,87 @@ export const addonApi = {
 }
 
 // ═══════════════════════════════════════════════════════
+// Inclusion API — /api/admin/sub-products/{id}/inclusions
+// ═══════════════════════════════════════════════════════
+export const inclusionApi = {
+  async getAll(subProductId) {
+    try {
+      const response = await api.get(`/admin/sub-products/${subProductId}/inclusions`)
+      return normalizeList(response)
+    } catch (error) {
+      console.error('Inclusion getAll error:', error)
+      return { status: 'error', data: [] }
+    }
+  },
+  async create(subProductId, payload) {
+    const response = await api.post(`/admin/sub-products/${subProductId}/inclusions`, payload)
+    return normalizeItem(response)
+  },
+  async update(inclusionId, payload) {
+    const response = await api.put(`/admin/inclusions/${inclusionId}`, payload)
+    return normalizeItem(response)
+  },
+  async delete(inclusionId) {
+    await api.delete(`/admin/inclusions/${inclusionId}`)
+    return { status: 'success', message: 'Deleted' }
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+// Selection Rule API — /api/admin/sub-products/{id}/rules
+// ═══════════════════════════════════════════════════════
+export const selectionRuleApi = {
+  async getAll(subProductId) {
+    try {
+      const response = await api.get(`/admin/sub-products/${subProductId}/rules`)
+      return normalizeList(response)
+    } catch (error) {
+      console.error('SelectionRule getAll error:', error)
+      return { status: 'error', data: [] }
+    }
+  },
+  async create(subProductId, payload) {
+    const response = await api.post(`/admin/sub-products/${subProductId}/rules`, payload)
+    return normalizeItem(response)
+  },
+  async update(ruleId, payload) {
+    const response = await api.put(`/admin/rules/${ruleId}`, payload)
+    return normalizeItem(response)
+  },
+  async delete(ruleId) {
+    await api.delete(`/admin/rules/${ruleId}`)
+    return { status: 'success', message: 'Deleted' }
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+// Set Menu API — /api/admin/sub-products/{id}/set-menus
+// ═══════════════════════════════════════════════════════
+export const setMenuApi = {
+  async getAll(subProductId) {
+    try {
+      const response = await api.get(`/admin/sub-products/${subProductId}/set-menus`)
+      return normalizeList(response)
+    } catch (error) {
+      console.error('SetMenu getAll error:', error)
+      return { status: 'error', data: [] }
+    }
+  },
+  async create(subProductId, payload) {
+    const response = await api.post(`/admin/sub-products/${subProductId}/set-menus`, payload)
+    return normalizeItem(response)
+  },
+  async update(setMenuId, payload) {
+    const response = await api.put(`/admin/set-menus/${setMenuId}`, payload)
+    return normalizeItem(response)
+  },
+  async delete(setMenuId) {
+    await api.delete(`/admin/set-menus/${setMenuId}`)
+    return { status: 'success', message: 'Deleted' }
+  }
+}
+
+// ═══════════════════════════════════════════════════════
 // Gallery API — /api/admin/galleries
 // ═══════════════════════════════════════════════════════
 export const galleryApi = {

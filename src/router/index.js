@@ -78,6 +78,12 @@ const routes = [
         meta: { title: 'Sub Produk' }
       },
       {
+        path: 'sub-products/:id/config',
+        name: 'AdminSubProductConfig',
+        component: () => import('../views/admin/SubProductConfig.vue'),
+        meta: { title: 'Konfigurasi Paket' }
+      },
+      {
         path: 'gallery',
         name: 'AdminGallery',
         component: () => import('../views/admin/Gallery.vue'),
