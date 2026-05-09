@@ -151,7 +151,11 @@
 
             <!-- CTA Action -->
             <div class="pt-8">
-              <button class="w-full relative group rounded-[2rem] overflow-hidden shadow-xl shadow-brand-maroon/20 hover:shadow-brand-maroon/40 transition-all duration-500 hover:-translate-y-1 active:scale-95 cursor-pointer">
+              <a 
+                href="https://wa.me/6281234567890" 
+                target="_blank"
+                class="w-full relative group rounded-[2rem] overflow-hidden shadow-xl shadow-brand-maroon/20 hover:shadow-brand-maroon/40 transition-all duration-500 hover:-translate-y-1 active:scale-95 flex items-center justify-between"
+              >
                 <!-- Background Gradient -->
                 <div class="absolute inset-0 bg-linear-to-r from-brand-maroon via-brand-maroon to-brand-terracotta group-hover:scale-110 transition-transform duration-700"></div>
                 
@@ -159,17 +163,16 @@
                 <div class="absolute inset-0 bg-linear-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
 
                 <!-- Button Content -->
-                <div class="relative px-8 py-5 flex items-center justify-between border border-white/10">
+                <div class="relative px-8 py-5 flex items-center justify-between border border-white/10 w-full">
                   <div class="flex flex-col items-start">
-                    
                     <span class="text-sm font-black text-white uppercase tracking-[0.2em]">Pesan Sekarang</span>
                   </div>
                   
                   <div class="w-11 h-11 bg-white/10 rounded-2xl flex items-center justify-center backdrop-blur-md group-hover:bg-white/20 transition-all duration-500">
-                    <i class='bx bx-right-arrow-alt text-2xl text-white group-hover:translate-x-1 transition-transform'></i>
+                    <i class='bx bxl-whatsapp text-2xl text-white group-hover:scale-110 transition-transform'></i>
                   </div>
                 </div>
-              </button>
+              </a>
               
               <div class="mt-8 flex items-center justify-center gap-2 opacity-30">
                 <div class="h-px w-8 bg-brand-forest-dark"></div>

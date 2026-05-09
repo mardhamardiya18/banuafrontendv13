@@ -13,11 +13,11 @@
         <i class="bx bx-heart text-2xl group-hover:-translate-y-1 transition-transform"></i>
       </button>
 
-      <!-- Center Floating Button (Cart) -->
+      <!-- Center Floating Button (WhatsApp) -->
       <div class="relative -top-6 mx-2">
-        <button class="w-14 h-14 bg-brand-terracotta hover:bg-brand-maroon text-white rounded-2xl flex items-center justify-center shadow-lg shadow-brand-terracotta/30 transition-all duration-300 active:scale-95 group">
-          <i class="bx bx-shopping-bag text-2xl group-hover:scale-110 transition-transform"></i>
-        </button>
+        <a href="https://wa.me/6281234567890" target="_blank" class="w-14 h-14 bg-brand-terracotta hover:bg-brand-maroon text-white rounded-2xl flex items-center justify-center shadow-lg shadow-brand-terracotta/30 transition-all duration-300 active:scale-95 group">
+          <i class="bx bxl-whatsapp text-2xl group-hover:scale-110 transition-transform"></i>
+        </a>
       </div>
 
       <!-- Profile Menu -->
