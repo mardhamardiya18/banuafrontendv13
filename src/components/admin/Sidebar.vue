@@ -138,9 +138,8 @@ const mainMenu = [
 const catalogMenu = [
   { label: 'Kategori', icon: 'bx bxs-category', route: '/admin/categories' },
   { label: 'Produk', icon: 'bx bxs-box', route: '/admin/products' },
-  { label: 'Sub Produk', icon: 'bx bxs-package', route: '/admin/sub-products' },
-  { label: 'Gallery', icon: 'bx bxs-image', route: '/admin/gallery' },
-  { label: 'Kelola Menu', icon: 'bx bxs-food-menu', route: '/admin/menus' }
+  { label: 'Add-Ons', icon: 'bx bxs-plus-circle', route: '/admin/add-ons' },
+  { label: 'Gallery', icon: 'bx bxs-image', route: '/admin/gallery' }
 ]
 
 const transactionMenu = [

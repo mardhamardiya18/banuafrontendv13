@@ -64,6 +64,9 @@ function toFormData(payload, method = null) {
       // Konversi boolean ke 1/0 agar aman dikirim via FormData ke Laravel
       const finalValue = typeof value === 'boolean' ? (value ? 1 : 0) : value
       fd.append(key, finalValue)
+    } else {
+      // Jika null/undefined, kirim string kosong agar ditangani middleware Laravel
+      fd.append(key, '')
     }
   })
   if (method) fd.append('_method', method)
@@ -172,181 +175,15 @@ export const productApi = {
 }
 
 // ═══════════════════════════════════════════════════════
-// Sub Product API — /api/admin/sub-products
-// ═══════════════════════════════════════════════════════
-export const subProductApi = {
-  async getAll(page = 1, perPage = 10, search = '') {
-    try {
-      const params = { page, per_page: perPage }
-      if (search) params.search = search
-      const response = await api.get('/admin/sub-products/paginated', { params })
-      return normalizePaginated(response)
-    } catch (error) {
-      console.error('SubProduct getAll error:', error)
-      return { status: 'error', data: [], meta: null }
-    }
-  },
-  async getById(id) {
-    try {
-      const response = await api.get(`/admin/sub-products/${id}`)
-      return normalizeItem(response)
-    } catch (error) {
-      return { status: 'error', message: 'Not found' }
-    }
-  },
-  async create(payload) {
-    const fd = toFormData(payload)
-    const response = await api.post('/admin/sub-products', fd, {
-      headers: { 'Content-Type': 'multipart/form-data' }
-    })
-    return normalizeItem(response)
-  },
-  async update(id, payload) {
-    const fd = toFormData(payload, 'PUT')
-    const response = await api.post(`/admin/sub-products/${id}`, fd, {
-      headers: { 'Content-Type': 'multipart/form-data' }
-    })
-    return normalizeItem(response)
-  },
-  async delete(id) {
-    await api.delete(`/admin/sub-products/${id}`)
-    return { status: 'success', message: 'Deleted' }
-  }
-}
-
-// ═══════════════════════════════════════════════════════
-// Menu API — /api/admin/menus
-// ═══════════════════════════════════════════════════════
-export const menuApi = {
-  async getAll(page = 1, perPage = 10, search = '') {
-    try {
-      const params = { page, per_page: perPage }
-      if (search) params.search = search
-      const response = await api.get('/admin/menus', { params })
-      // Jika API mengembalikan list biasa (tanpa pagination)
-      const res = response.data
-      const items = res.data || res
-      if (Array.isArray(items)) {
-        // Client-side pagination jika API tidak support pagination
-        const filtered = search
-          ? items.filter(i => i.name?.toLowerCase().includes(search.toLowerCase()))
-          : items
-        const start = (page - 1) * perPage
-        return {
-          status: 'success',
-          data: filtered.slice(start, start + perPage),
-          meta: {
-            current_page: page,
-            per_page: perPage,
-            total: filtered.length,
-            last_page: Math.ceil(filtered.length / perPage) || 1
-          }
-        }
-      }
-      return normalizePaginated(response)
-    } catch (error) {
-      console.error('Menu getAll error:', error)
-      return { status: 'error', data: [], meta: null }
-    }
-  },
-  async getById(id) {
-    try {
-      const response = await api.get(`/admin/menus/${id}`)
-      return normalizeItem(response)
-    } catch (error) {
-      return { status: 'error', message: 'Not found' }
-    }
-  },
-  async create(payload) {
-    const fd = toFormData(payload)
-    const response = await api.post('/admin/menus', fd, {
-      headers: { 'Content-Type': 'multipart/form-data' }
-    })
-    return normalizeItem(response)
-  },
-  async update(id, payload) {
-    const fd = toFormData(payload, 'PUT')
-    const response = await api.post(`/admin/menus/${id}`, fd, {
-      headers: { 'Content-Type': 'multipart/form-data' }
-    })
-    return normalizeItem(response)
-  },
-  async delete(id) {
-    await api.delete(`/admin/menus/${id}`)
-    return { status: 'success', message: 'Deleted' }
-  }
-}
-
-// ═══════════════════════════════════════════════════════
-// Menu Item API — /api/admin/menu-items
-// ═══════════════════════════════════════════════════════
-export const menuItemApi = {
-  async getAll(page = 1, perPage = 20, search = '') {
-    try {
-      const params = { page, per_page: perPage }
-      if (search) params.search = search
-      const response = await api.get('/admin/menu-items/paginated', { params })
-      return normalizePaginated(response)
-    } catch (error) {
-      console.error('MenuItem getAll error:', error)
-      return { status: 'error', data: [], meta: null }
-    }
-  },
-  async getById(id) {
-    try {
-      const response = await api.get(`/admin/menu-items/${id}`)
-      return normalizeItem(response)
-    } catch (error) {
-      return { status: 'error', message: 'Not found' }
-    }
-  },
-  async create(payload) {
-    const fd = toFormData(payload)
-    const response = await api.post('/admin/menu-items', fd, {
-      headers: { 'Content-Type': 'multipart/form-data' }
-    })
-    return normalizeItem(response)
-  },
-  async update(id, payload) {
-    const fd = toFormData(payload, 'PUT')
-    const response = await api.post(`/admin/menu-items/${id}`, fd, {
-      headers: { 'Content-Type': 'multipart/form-data' }
-    })
-    return normalizeItem(response)
-  },
-  async delete(id) {
-    await api.delete(`/admin/menu-items/${id}`)
-    return { status: 'success', message: 'Deleted' }
-  }
-}
-
-// ═══════════════════════════════════════════════════════
 // Add-on API — /api/admin/add-ons
 // ═══════════════════════════════════════════════════════
 export const addonApi = {
-  async getAll(page = 1, perPage = 20, search = '') {
+  async getAll(page = 1, perPage = 20, search = '', productId = '') {
     try {
       const params = { page, per_page: perPage }
       if (search) params.search = search
+      if (productId) params.product_id = productId
       const response = await api.get('/admin/add-ons', { params })
-      const res = response.data
-      const items = res.data || res
-      if (Array.isArray(items)) {
-        const filtered = search
-          ? items.filter(i => i.name?.toLowerCase().includes(search.toLowerCase()))
-          : items
-        const start = (page - 1) * perPage
-        return {
-          status: 'success',
-          data: filtered.slice(start, start + perPage),
-          meta: {
-            current_page: page,
-            per_page: perPage,
-            total: filtered.length,
-            last_page: Math.ceil(filtered.length / perPage) || 1
-          }
-        }
-      }
       return normalizePaginated(response)
     } catch (error) {
       console.error('Addon getAll error:', error)
@@ -374,94 +211,14 @@ export const addonApi = {
 }
 
 // ═══════════════════════════════════════════════════════
-// Inclusion API — /api/admin/sub-products/{id}/inclusions
-// ═══════════════════════════════════════════════════════
-export const inclusionApi = {
-  async getAll(subProductId) {
-    try {
-      const response = await api.get(`/admin/sub-products/${subProductId}/inclusions`)
-      return normalizeList(response)
-    } catch (error) {
-      console.error('Inclusion getAll error:', error)
-      return { status: 'error', data: [] }
-    }
-  },
-  async create(subProductId, payload) {
-    const response = await api.post(`/admin/sub-products/${subProductId}/inclusions`, payload)
-    return normalizeItem(response)
-  },
-  async update(inclusionId, payload) {
-    const response = await api.put(`/admin/inclusions/${inclusionId}`, payload)
-    return normalizeItem(response)
-  },
-  async delete(inclusionId) {
-    await api.delete(`/admin/inclusions/${inclusionId}`)
-    return { status: 'success', message: 'Deleted' }
-  }
-}
-
-// ═══════════════════════════════════════════════════════
-// Selection Rule API — /api/admin/sub-products/{id}/rules
-// ═══════════════════════════════════════════════════════
-export const selectionRuleApi = {
-  async getAll(subProductId) {
-    try {
-      const response = await api.get(`/admin/sub-products/${subProductId}/rules`)
-      return normalizeList(response)
-    } catch (error) {
-      console.error('SelectionRule getAll error:', error)
-      return { status: 'error', data: [] }
-    }
-  },
-  async create(subProductId, payload) {
-    const response = await api.post(`/admin/sub-products/${subProductId}/rules`, payload)
-    return normalizeItem(response)
-  },
-  async update(ruleId, payload) {
-    const response = await api.put(`/admin/rules/${ruleId}`, payload)
-    return normalizeItem(response)
-  },
-  async delete(ruleId) {
-    await api.delete(`/admin/rules/${ruleId}`)
-    return { status: 'success', message: 'Deleted' }
-  }
-}
-
-// ═══════════════════════════════════════════════════════
-// Set Menu API — /api/admin/sub-products/{id}/set-menus
-// ═══════════════════════════════════════════════════════
-export const setMenuApi = {
-  async getAll(subProductId) {
-    try {
-      const response = await api.get(`/admin/sub-products/${subProductId}/set-menus`)
-      return normalizeList(response)
-    } catch (error) {
-      console.error('SetMenu getAll error:', error)
-      return { status: 'error', data: [] }
-    }
-  },
-  async create(subProductId, payload) {
-    const response = await api.post(`/admin/sub-products/${subProductId}/set-menus`, payload)
-    return normalizeItem(response)
-  },
-  async update(setMenuId, payload) {
-    const response = await api.put(`/admin/set-menus/${setMenuId}`, payload)
-    return normalizeItem(response)
-  },
-  async delete(setMenuId) {
-    await api.delete(`/admin/set-menus/${setMenuId}`)
-    return { status: 'success', message: 'Deleted' }
-  }
-}
-
-// ═══════════════════════════════════════════════════════
 // Gallery API — /api/admin/galleries
 // ═══════════════════════════════════════════════════════
 export const galleryApi = {
-  async getAll(page = 1, perPage = 20, search = '') {
+  async getAll(page = 1, perPage = 20, search = '', productId = '') {
     try {
       const params = { page, per_page: perPage }
       if (search) params.search = search
+      if (productId) params.product_id = productId
       const response = await api.get('/admin/galleries/paginated', { params })
       return normalizePaginated(response)
     } catch (error) {
@@ -602,34 +359,9 @@ export const referenceApi = {
       return { status: 'error', data: [] }
     }
   },
-  async getSubProducts() {
-    try {
-      const response = await api.get('/admin/sub-products')
-      return normalizeList(response)
-    } catch (error) {
-      return { status: 'error', data: [] }
-    }
-  },
-  async getMenus() {
-    try {
-      const response = await api.get('/admin/menus')
-      return normalizeList(response)
-    } catch (error) {
-      return { status: 'error', data: [] }
-    }
-  },
   async getAddons() {
     try {
       const response = await api.get('/admin/add-ons')
-      const items = response.data.data || response.data
-      return { status: 'success', data: Array.isArray(items) ? items : [] }
-    } catch (error) {
-      return { status: 'error', data: [] }
-    }
-  },
-  async getMenuItems() {
-    try {
-      const response = await api.get('/admin/menu-items')
       const items = response.data.data || response.data
       return { status: 'success', data: Array.isArray(items) ? items : [] }
     } catch (error) {

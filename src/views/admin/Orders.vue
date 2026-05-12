@@ -134,16 +134,6 @@
                               </div>
                             </div>
                           </div>
-                          <!-- Menu selections -->
-                          <div v-if="item.selections?.length">
-                            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2">Menu Selection</p>
-                            <div class="flex flex-col gap-1.5">
-                              <span v-for="ms in item.selections" :key="ms.id" class="px-2.5 py-2 bg-brand-maroon/5 text-brand-maroon text-xs font-medium rounded-lg flex justify-between items-center">
-                                <span>{{ ms.name }}</span>
-                                <span class="text-[10px] font-bold opacity-60 uppercase">{{ ms.category }}</span>
-                              </span>
-                            </div>
-                          </div>
                         </div>
                       </transition>
                     </div>

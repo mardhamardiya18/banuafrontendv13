@@ -92,14 +92,14 @@
 
           <div class="grid sm:grid-cols-2 gap-4">
             <div>
-              <label class="block text-xs font-medium text-gray-600 mb-1">Sub Produk *</label>
-              <select v-model="item.sub_product_id" @change="onSubProductChange(item)" class="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm outline-none focus:border-brand-maroon/40 transition-all bg-white">
-                <option :value="null" disabled>Pilih paket</option>
-                <option v-for="sp in refSubProducts" :key="sp.id" :value="sp.id">{{ sp.name }} — Rp {{ sp.price.toLocaleString('id-ID') }}</option>
+              <label class="block text-xs font-medium text-gray-600 mb-1">Produk *</label>
+              <select v-model="item.product_id" @change="onProductChange(item)" class="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm outline-none focus:border-brand-maroon/40 transition-all bg-white">
+                <option :value="null" disabled>Pilih produk</option>
+                <option v-for="p in refProducts" :key="p.id" :value="p.id">{{ p.name }} — Rp {{ p.price.toLocaleString('id-ID') }}</option>
               </select>
-              <p v-if="item.sub_product_id" class="text-[10px] text-gray-500 mt-1.5 flex items-start gap-1">
+              <p v-if="item.product_id" class="text-[10px] text-gray-500 mt-1.5 flex items-start gap-1">
                 <i class="bx bx-info-circle mt-0.5"></i>
-                <span>Min. Order: <strong class="text-gray-700">{{ getSubProductMinOrder(item.sub_product_id) }} pcs</strong>. <br>Order di bawah batas dikenakan fee tambahan 10%.</span>
+                <span>Min. Order: <strong class="text-gray-700">{{ getProductMinOrder(item.product_id) }} pcs</strong>. <br>Order di bawah batas dikenakan fee tambahan 10%.</span>
               </p>
             </div>
             <div class="grid grid-cols-2 gap-4">
@@ -136,19 +136,6 @@
               <button @click="item.addons.splice(aIdx, 1)" class="text-gray-400 hover:text-red-500"><i class="bx bx-x"></i></button>
             </div>
           </div>
-
-          <!-- Menu selections -->
-          <div>
-            <span class="text-xs font-bold text-gray-500 uppercase tracking-wider block mb-2">Pilihan Menu</span>
-            <div class="flex flex-wrap gap-2">
-              <label v-for="mi in refMenuItems" :key="mi.id" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-medium cursor-pointer transition-all"
-                :class="isMenuSelected(item, mi.id) ? 'bg-brand-maroon/10 border-brand-maroon/30 text-brand-maroon' : 'bg-white border-gray-200 text-gray-500 hover:border-gray-300'">
-                <input type="checkbox" :checked="isMenuSelected(item, mi.id)" @change="toggleMenu(item, mi.id, mi.name)" class="sr-only" />
-                <i class="bx" :class="isMenuSelected(item, mi.id) ? 'bx-check-circle' : 'bx-circle'"></i>
-                {{ mi.name }}
-              </label>
-            </div>
-          </div>
         </div>
       </div>
 
@@ -176,15 +163,12 @@
           <p class="text-sm font-bold text-gray-700">Detail Item</p>
           <div v-for="(item, idx) in form.items" :key="idx" class="bg-gray-50 rounded-xl p-4 space-y-2">
             <div class="flex justify-between">
-              <p class="text-sm font-semibold text-gray-800">{{ getSubProductName(item.sub_product_id) }}</p>
+              <p class="text-sm font-semibold text-gray-800">{{ getProductName(item.product_id) }}</p>
               <p class="text-sm font-bold text-brand-maroon">Rp {{ itemSubTotal(item).toLocaleString('id-ID') }}</p>
             </div>
-            <p class="text-xs text-gray-400">{{ item.quantity }} pcs × Rp {{ getSubProductPrice(item.sub_product_id).toLocaleString('id-ID') }}</p>
+            <p class="text-xs text-gray-400">{{ item.quantity }} pcs × Rp {{ getProductPrice(item.product_id).toLocaleString('id-ID') }}</p>
             <div v-if="item.addons.length" class="text-xs text-gray-500">
               <span v-for="(a, i) in item.addons" :key="i">{{ getAddonName(a.addon_id) }} ({{ a.quantity }}x)<span v-if="i < item.addons.length-1">, </span></span>
-            </div>
-            <div v-if="item.menu_selections.length" class="flex flex-wrap gap-1">
-              <span v-for="ms in item.menu_selections" :key="ms.menu_name" class="px-2 py-0.5 bg-brand-maroon/5 text-brand-maroon text-[10px] font-medium rounded">{{ ms.menu_name }}</span>
             </div>
           </div>
         </div>
@@ -237,9 +221,8 @@ const step = ref(1)
 const saving = ref(false)
 const stepLabels = ['Pelanggan', 'Item Pesanan', 'Ringkasan']
 
-const refSubProducts = ref([])
+const refProducts = ref([])
 const refAddons = ref([])
-const refMenuItems = ref([])
 
 // Get today's date and time for datetime-local (format: YYYY-MM-DDTHH:mm)
 const now = new Date()
@@ -258,46 +241,45 @@ const form = ref({
 })
 
 // --- Helpers ---
-const getSubProduct = (id) => refSubProducts.value.find(sp => sp.id === id)
-const getSubProductName = (id) => getSubProduct(id)?.name || '-'
-const getSubProductPrice = (id) => getSubProduct(id)?.price || 0
-const getSubProductMinOrder = (id) => getSubProduct(id)?.min_order || 0
+const getProduct = (id) => refProducts.value.find(p => p.id === id)
+const getProductName = (id) => getProduct(id)?.name || '-'
+const getProductPrice = (id) => getProduct(id)?.price || 0
+const getProductMinOrder = (id) => getProduct(id)?.min_order || 0
 const getAddonName = (id) => refAddons.value.find(a => a.id === id)?.name || '-'
 
 const getAvailableAddons = (item) => {
-  if (!item.sub_product_id) return refAddons.value
-  const sp = getSubProduct(item.sub_product_id)
-  if (!sp) return refAddons.value
-  return refAddons.value.filter(a => a.sub_product_id === sp.id || !a.sub_product_id)
+  if (!item.product_id) return refAddons.value
+  const p = getProduct(item.product_id)
+  if (!p) return refAddons.value
+  return refAddons.value.filter(a => a.product_id === p.id || !a.product_id)
 }
 
 const getUnderMinOrderFee = (item) => {
-  if (!item.sub_product_id || !item.quantity) return 0
-  const minOrder = getSubProductMinOrder(item.sub_product_id)
-  const price = getSubProductPrice(item.sub_product_id)
+  if (!item.product_id || !item.quantity) return 0
+  const minOrder = getProductMinOrder(item.product_id)
+  const price = getProductPrice(item.product_id)
   return (item.quantity > 0 && item.quantity < minOrder) ? (price * item.quantity * 0.1) : 0
 }
 
 const itemSubTotal = (item) => {
-  const price = getSubProductPrice(item.sub_product_id)
+  const price = getProductPrice(item.product_id)
   const base = price * (item.quantity || 0)
   const penalty = getUnderMinOrderFee(item)
   const addonTotal = item.addons.reduce((sum, a) => sum + (a.snapshot_price * a.quantity), 0)
   return base + penalty + addonTotal
 }
 
-const grandTotal = computed(() => form.value.items.reduce((sum, item) => sum + (getSubProductPrice(item.sub_product_id) * (item.quantity || 0)) + getUnderMinOrderFee(item), 0))
+const grandTotal = computed(() => form.value.items.reduce((sum, item) => sum + (getProductPrice(item.product_id) * (item.quantity || 0)) + getUnderMinOrderFee(item), 0))
 const addonsTotal = computed(() => form.value.items.reduce((sum, item) => sum + item.addons.reduce((s, a) => s + a.snapshot_price * a.quantity, 0), 0))
 
 // --- Item management ---
 const addItem = () => {
-  form.value.items.push({ sub_product_id: null, quantity: 1, notes: '', addons: [], menu_selections: [] })
+  form.value.items.push({ product_id: null, quantity: 1, notes: '', addons: [] })
 }
 const removeItem = (idx) => form.value.items.splice(idx, 1)
 
-const onSubProductChange = (item) => {
+const onProductChange = (item) => {
   item.addons = []
-  item.menu_selections = []
 }
 
 // --- Add-on management ---
@@ -309,13 +291,6 @@ const onAddonChange = (addon) => {
   if (ref) { addon.snapshot_price = ref.price; addon.name = ref.name }
 }
 
-// --- Menu selection ---
-const isMenuSelected = (item, id) => item.menu_selections.some(ms => ms.menu_item_id === id)
-const toggleMenu = (item, id, name) => {
-  const idx = item.menu_selections.findIndex(ms => ms.menu_item_id === id)
-  idx === -1 ? item.menu_selections.push({ menu_item_id: id, menu_name: name }) : item.menu_selections.splice(idx, 1)
-}
-
 // --- Validation & Navigation ---
 const goStep2 = () => {
   if (!form.value.customer_name || !form.value.customer_phone || !form.value.delivery_address || !form.value.delivery_date) {
@@ -325,7 +300,7 @@ const goStep2 = () => {
 }
 const goStep3 = () => {
   if (!form.value.items.length) { store.showToast('Tambahkan minimal 1 item pesanan', 'error'); return }
-  const invalid = form.value.items.some(i => !i.sub_product_id || !i.quantity)
+  const invalid = form.value.items.some(i => !i.product_id || !i.quantity)
   if (invalid) { store.showToast('Pastikan semua item memiliki produk dan jumlah', 'error'); return }
   step.value = 3
 }
@@ -334,10 +309,6 @@ const goStep3 = () => {
 const submitOrder = async () => {
   saving.value = true
   try {
-    const now = new Date()
-    const invNum = `INV-${now.getFullYear()}${String(now.getMonth()+1).padStart(2,'0')}${String(now.getDate()).padStart(2,'0')}-${String(Math.floor(Math.random()*999)).padStart(3,'0')}`
-    const total = grandTotal.value + addonsTotal.value
-
     const payload = {
       customer_name: form.value.customer_name,
       customer_phone: form.value.customer_phone,
@@ -348,16 +319,16 @@ const submitOrder = async () => {
       delivery_notes: form.value.delivery_notes,
       payment_status: form.value.payment_status,
       order_status: form.value.order_status,
+      paid_amount: form.value.paid_amount,
       items: form.value.items.map((item) => {
         return {
-          sub_product_id: item.sub_product_id,
+          product_id: item.product_id,
           quantity: item.quantity,
           notes: item.notes,
           add_ons: item.addons.filter(a => a.addon_id).map(a => ({
             add_on_id: a.addon_id,
             quantity: a.quantity
-          })),
-          selections: item.menu_selections.map(ms => ms.menu_item_id)
+          }))
         }
       })
     }
@@ -368,12 +339,11 @@ const submitOrder = async () => {
 }
 
 onMounted(async () => {
-  const [spRes, adRes, miRes] = await Promise.all([
-    referenceApi.getSubProducts(), referenceApi.getAddons(), referenceApi.getMenuItems()
+  const [pRes, adRes] = await Promise.all([
+    referenceApi.getProducts(), referenceApi.getAddons()
   ])
-  if (spRes.status === 'success') refSubProducts.value = spRes.data
+  if (pRes.status === 'success') refProducts.value = pRes.data
   if (adRes.status === 'success') refAddons.value = adRes.data
-  if (miRes.status === 'success') refMenuItems.value = miRes.data
 })
 </script>
 

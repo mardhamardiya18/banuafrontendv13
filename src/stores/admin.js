@@ -10,8 +10,6 @@ export const useAdminStore = defineStore('admin', {
   state: () => ({
     categories: [],
     products: [],
-    subProducts: [],
-    menus: [],
     sidebarOpen: true,
     sidebarMobileOpen: false,
     toasts: []
@@ -28,16 +26,6 @@ export const useAdminStore = defineStore('admin', {
       const res = await referenceApi.getProducts()
       if (res.status === 'success') this.products = res.data
     },
-    async fetchSubProducts() {
-      if (this.subProducts.length) return
-      const res = await referenceApi.getSubProducts()
-      if (res.status === 'success') this.subProducts = res.data
-    },
-    async fetchMenus() {
-      if (this.menus.length) return
-      const res = await referenceApi.getMenus()
-      if (res.status === 'success') this.menus = res.data
-    },
     /** Force refresh reference data (e.g. after CRUD) */
     async refreshCategories() {
       this.categories = []
@@ -46,14 +34,6 @@ export const useAdminStore = defineStore('admin', {
     async refreshProducts() {
       this.products = []
       await this.fetchProducts()
-    },
-    async refreshSubProducts() {
-      this.subProducts = []
-      await this.fetchSubProducts()
-    },
-    async refreshMenus() {
-      this.menus = []
-      await this.fetchMenus()
     },
     toggleSidebar() {
       this.sidebarOpen = !this.sidebarOpen

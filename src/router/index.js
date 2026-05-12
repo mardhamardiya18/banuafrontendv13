@@ -40,6 +40,12 @@ const routes = [
     }
   },
   {
+    path: '/v/:identifier',
+    name: 'InvoiceVerify',
+    component: () => import('../views/InvoiceVerify.vue'),
+    meta: { title: 'Verifikasi Invoice' }
+  },
+  {
     path: '/admin',
     component: () => import('../views/admin/AdminLayout.vue'),
     meta: {
@@ -66,28 +72,16 @@ const routes = [
         meta: { title: 'Produk' }
       },
       {
-        path: 'sub-products',
-        name: 'AdminSubProducts',
-        component: () => import('../views/admin/SubProducts.vue'),
-        meta: { title: 'Sub Produk' }
-      },
-      {
-        path: 'sub-products/:id/config',
-        name: 'AdminSubProductConfig',
-        component: () => import('../views/admin/SubProductConfig.vue'),
-        meta: { title: 'Konfigurasi Paket' }
+        path: 'add-ons',
+        name: 'AdminAddOns',
+        component: () => import('../views/admin/AddOns.vue'),
+        meta: { title: 'Kelola Add-Ons' }
       },
       {
         path: 'gallery',
         name: 'AdminGallery',
         component: () => import('../views/admin/Gallery.vue'),
         meta: { title: 'Gallery' }
-      },
-      {
-        path: 'menus',
-        name: 'AdminMenus',
-        component: () => import('../views/admin/Menus.vue'),
-        meta: { title: 'Kelola Menu' }
       },
       {
         path: 'orders',

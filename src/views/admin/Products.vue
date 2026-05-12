@@ -3,7 +3,7 @@
     <div class="flex items-center justify-between">
       <div>
         <h1 class="text-2xl font-bold text-gray-900">Produk</h1>
-        <p class="text-sm text-gray-500 mt-1">Kelola produk catering.</p>
+        <p class="text-sm text-gray-500 mt-1">Kelola produk catering (API Contract v2 - Simple Mode).</p>
       </div>
       <button @click="openForm()" class="flex items-center gap-2 bg-brand-maroon hover:bg-brand-maroon/90 text-white text-sm font-semibold px-5 py-2.5 rounded-xl transition-colors shadow-sm">
         <i class="bx bx-plus text-lg"></i> Tambah Produk
@@ -23,7 +23,11 @@
           {{ value || row.category?.name || '-' }}
         </span>
       </template>
-      <template #cell-start_price="{ value }"><span class="font-semibold text-gray-800">Rp {{ value.toLocaleString('id-ID') }}</span></template>
+      <template #cell-price="{ value }"><span class="font-semibold text-gray-800">Rp {{ value.toLocaleString('id-ID') }}</span></template>
+      <template #cell-is_recommended="{ value }">
+        <span v-if="value" class="px-2 py-0.5 rounded-md bg-amber-50 text-amber-600 text-[10px] font-bold uppercase">Star</span>
+        <span v-else class="text-gray-300">-</span>
+      </template>
       <template #actions="{ row }">
         <div class="flex items-center justify-end gap-1">
           <button @click="openForm(row)" class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-blue-50 text-gray-400 hover:text-blue-500 transition-colors"><i class="bx bx-edit-alt"></i></button>
@@ -35,8 +39,8 @@
     <BaseModal v-model="showForm" :title="editItem ? 'Edit Produk' : 'Tambah Produk'" size="lg">
       <form @submit.prevent="save" class="space-y-5">
         <div class="grid sm:grid-cols-2 gap-5">
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1.5">Nama</label>
+          <div class="col-span-full">
+            <label class="block text-sm font-medium text-gray-700 mb-1.5">Nama Produk</label>
             <input v-model="form.name" type="text" required class="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:border-brand-maroon focus:ring-2 focus:ring-brand-maroon/10 outline-none transition-all" />
           </div>
           <div>
@@ -46,16 +50,55 @@
               <option v-for="c in cats" :key="c.id" :value="c.id">{{ c.name }}</option>
             </select>
           </div>
-        </div>
-        <div class="grid sm:grid-cols-2 gap-5">
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1.5">Harga Mulai</label>
-            <input v-model.number="form.start_price" type="number" required class="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:border-brand-maroon outline-none" />
+            <label class="block text-sm font-medium text-gray-700 mb-1.5">Min. Order (Porsi)</label>
+            <input v-model.number="form.min_order" type="number" required class="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:border-brand-maroon outline-none" />
           </div>
         </div>
+
+        <div class="grid sm:grid-cols-3 gap-5">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1.5">Harga Jual</label>
+            <input v-model.number="form.price" type="number" required class="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:border-brand-maroon outline-none" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1.5">Harga Modal (Cost)</label>
+            <input v-model.number="form.cost" type="number" required class="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:border-brand-maroon outline-none" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1.5">Diskon (%)</label>
+            <input v-model.number="form.discount" type="number" class="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:border-brand-maroon outline-none" />
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1.5">Deskripsi Produk</label>
+          <div class="quill-container">
+            <QuillEditor 
+              v-model:content="form.description" 
+              contentType="html" 
+              theme="snow"
+              toolbar="essential"
+              placeholder="Jelaskan isi menu di sini (Nasi, Lauk, Sayur, dll)..."
+              class="min-h-[200px] bg-white rounded-b-xl"
+            />
+          </div>
+        </div>
+
+        <div class="flex items-center gap-6">
+          <label class="flex items-center gap-2 cursor-pointer group">
+            <input v-model="form.is_recommended" type="checkbox" class="w-4 h-4 text-brand-maroon border-gray-300 rounded focus:ring-brand-maroon" />
+            <span class="text-sm font-medium text-gray-700 group-hover:text-brand-maroon transition-colors">Tampilkan sebagai Rekomendasi</span>
+          </label>
+          <label class="flex items-center gap-2 cursor-pointer group">
+            <input v-model="form.is_active" type="checkbox" class="w-4 h-4 text-brand-maroon border-gray-300 rounded focus:ring-brand-maroon" />
+            <span class="text-sm font-medium text-gray-700 group-hover:text-brand-maroon transition-colors">Aktif</span>
+          </label>
+        </div>
+
         <!-- Thumbnail Upload Area -->
         <div class="col-span-full">
-          <label class="block text-sm font-medium text-gray-700 mb-2.5">Gambar Produk</label>
+          <label class="block text-sm font-medium text-gray-700 mb-2.5">Gambar Produk (Thumbnail)</label>
           <div 
             @click="$refs.fileInput.click()"
             class="relative group cursor-pointer border-2 border-dashed border-gray-200 hover:border-brand-maroon/50 rounded-2xl p-4 transition-all bg-gray-50/50 hover:bg-brand-maroon/2"
@@ -105,6 +148,8 @@ import { ref, onMounted } from 'vue'
 import DataTable from '../../components/admin/DataTable.vue'
 import BaseModal from '../../components/admin/BaseModal.vue'
 import ConfirmDialog from '../../components/admin/ConfirmDialog.vue'
+import { QuillEditor } from '@vueup/vue-quill'
+import '@vueup/vue-quill/dist/vue-quill.snow.css'
 import { productApi } from '../../api/apiService'
 import { useAdminStore } from '../../stores/admin'
 
@@ -113,14 +158,18 @@ const loading = ref(false), data = ref([]), meta = ref(null), cats = ref([])
 const search = ref(''), perPage = ref(10)
 const showForm = ref(false), editItem = ref(null), saving = ref(false)
 const previewUrl = ref(null)
-const form = ref({ name: '', category_id: '', start_price: 0, thumbnail: null })
+const form = ref({ 
+  name: '', category_id: '', price: 0, cost: 0, description: '', 
+  min_order: 15, is_active: true, is_recommended: false, discount: 0, thumbnail: null 
+})
 const showDel = ref(false), delTarget = ref(null), deleting = ref(false)
 
 const columns = [
   { key: 'thumbnail', label: 'Gambar' },
   { key: 'name', label: 'Nama Produk' },
   { key: 'category_name', label: 'Kategori' },
-  { key: 'start_price', label: 'Harga Mulai' }
+  { key: 'price', label: 'Harga Jual' },
+  { key: 'is_recommended', label: 'Reco' }
 ]
 
 const fetchData = async (p = 1) => {
@@ -146,7 +195,10 @@ const openForm = (item = null) => {
     form.value = { ...item }
     previewUrl.value = item.thumbnail
   } else {
-    form.value = { name: '', category_id: '', start_price: 0, thumbnail: null }
+    form.value = { 
+      name: '', category_id: '', price: 0, cost: 0, description: '', 
+      min_order: 15, is_active: true, is_recommended: false, discount: 0, thumbnail: null 
+    }
     previewUrl.value = null
   }
   showForm.value = true
@@ -155,8 +207,14 @@ const openForm = (item = null) => {
 const save = async () => {
   saving.value = true
   try {
-    if (editItem.value) { await productApi.update(editItem.value.id, form.value); store.showToast('Produk diperbarui') }
-    else { await productApi.create(form.value); store.showToast('Produk ditambahkan') }
+    if (editItem.value) { 
+      await productApi.update(editItem.value.id, form.value)
+      store.showToast('Produk diperbarui') 
+    }
+    else { 
+      await productApi.create(form.value)
+      store.showToast('Produk ditambahkan') 
+    }
     showForm.value = false; await fetchData(); await store.refreshProducts()
   } finally { saving.value = false }
 }
@@ -170,3 +228,26 @@ const handleDel = async () => {
 
 onMounted(async () => { await store.fetchCategories(); cats.value = store.categories; await fetchData() })
 </script>
+
+<style scoped>
+:deep(.ql-toolbar.ql-snow) {
+  border-top-left-radius: 0.75rem;
+  border-top-right-radius: 0.75rem;
+  border-color: #e5e7eb;
+  background-color: #f9fafb;
+}
+:deep(.ql-container.ql-snow) {
+  border-bottom-left-radius: 0.75rem;
+  border-bottom-right-radius: 0.75rem;
+  border-color: #e5e7eb;
+  font-family: inherit;
+}
+:deep(.ql-editor) {
+  min-height: 200px;
+  font-size: 0.875rem;
+}
+:deep(.ql-editor.ql-blank::before) {
+  font-style: normal;
+  color: #9ca3af;
+}
+</style>

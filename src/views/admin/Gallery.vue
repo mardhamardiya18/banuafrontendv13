@@ -44,7 +44,7 @@
         <img :src="item.image_url" alt="" class="w-full aspect-4/3 object-cover group-hover:scale-105 transition-transform duration-500" />
         <div class="absolute inset-0 bg-linear-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
         <div class="absolute bottom-0 left-0 right-0 p-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-          <p class="text-white text-xs font-medium truncate">{{ item.sub_product_name }}</p>
+          <p class="text-white text-xs font-medium truncate">{{ item.product_name }}</p>
         </div>
         <button @click="confirmDel(item)" class="absolute top-3 right-3 w-8 h-8 bg-white/90 backdrop-blur rounded-lg flex items-center justify-center text-red-500 opacity-0 group-hover:opacity-100 transition-all hover:bg-red-50 shadow-sm">
           <i class="bx bx-trash text-sm"></i>
@@ -91,11 +91,12 @@
     <BaseModal v-model="showForm" title="Tambah Foto" size="md">
       <form @submit.prevent="save" class="space-y-5">
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1.5">Sub Produk</label>
-          <select v-model="form.sub_product_id" required class="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm outline-none bg-white focus:border-brand-maroon">
-            <option value="" disabled>Pilih</option>
-            <option v-for="sp in subs" :key="sp.id" :value="sp.id">{{ sp.name }}</option>
-          </select>
+          <label class="block text-sm font-medium text-gray-700 mb-1.5">Produk</label>
+          <SearchableSelect 
+            v-model="form.product_id" 
+            :options="products"
+            placeholder="Pilih Produk..."
+          />
         </div>
         <!-- Image Upload Area -->
         <div>
@@ -147,15 +148,16 @@
 import { ref, computed, onMounted } from 'vue'
 import BaseModal from '../../components/admin/BaseModal.vue'
 import ConfirmDialog from '../../components/admin/ConfirmDialog.vue'
+import SearchableSelect from '../../components/admin/SearchableSelect.vue'
 import { galleryApi } from '../../api/apiService'
 import { useAdminStore } from '../../stores/admin'
 
 const store = useAdminStore()
-const loading = ref(false), data = ref([]), meta = ref(null), subs = ref([])
+const loading = ref(false), data = ref([]), meta = ref(null), products = ref([])
 const searchQuery = ref('')
 const showForm = ref(false), saving = ref(false)
 const previewUrl = ref(null)
-const form = ref({ sub_product_id: '', image: null })
+const form = ref({ product_id: '', image: null })
 const showDel = ref(false), delTarget = ref(null), deleting = ref(false)
 
 const handleFileChange = (e) => {
@@ -196,7 +198,7 @@ const save = async () => {
     await galleryApi.create(form.value)
     store.showToast('Foto ditambahkan')
     showForm.value = false
-    form.value = { sub_product_id: '', image: null }
+    form.value = { product_id: '', image: null }
     previewUrl.value = null
     await fetchData() 
   }
@@ -208,5 +210,5 @@ const handleDel = async () => {
   try { await galleryApi.delete(delTarget.value.id); store.showToast('Foto dihapus'); showDel.value = false; await fetchData() }
   finally { deleting.value = false }
 }
-onMounted(async () => { await store.fetchSubProducts(); subs.value = store.subProducts; await fetchData() })
+onMounted(async () => { await store.fetchProducts(); products.value = store.products; await fetchData() })
 </script>

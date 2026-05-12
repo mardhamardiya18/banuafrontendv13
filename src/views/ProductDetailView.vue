@@ -1,7 +1,5 @@
 <template>
-  <div class="min-h-screen bg-[#FDFBF7] font-sans text-brand-forest-dark selection:bg-brand-terracotta/20 pb-24">
-    
-    <!-- Top Navigation (Consistent with Catalog) -->
+  <div class="min-h-screen bg-[#FDFBF7] font-sans text-brand-forest-dark selection:bg-brand-terracotta/20">
     <TopNav :showMenu="false" />
 
     <!-- Loading Overlay -->
@@ -17,7 +15,7 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pt-28 lg:pt-32">
       
       <!-- Quick Navigation & Breadcrumb -->
-      <div class="mb-10 lg:mb-16  flex flex-col md:flex-row md:items-center justify-between gap-6 ">
+      <div class="mb-10 lg:mb-16 flex flex-col md:flex-row md:items-center justify-between gap-6">
         <button 
           @click="$router.back()" 
           class="group flex items-center gap-3 text-gray-400 hover:text-brand-maroon transition-all duration-300 shrink-0"
@@ -41,10 +39,10 @@
       <!-- MAIN CONTENT GRID -->
       <div class="grid lg:grid-cols-12 gap-12 lg:gap-20 items-start">
         
-        <!-- LEFT COLUMN: Gallery & Description (8/12) -->
+        <!-- LEFT COLUMN: Gallery & Description -->
         <div class="lg:col-span-7 xl:col-span-8 space-y-5 lg:space-y-24">
           
-          <!-- Gallery Slider (Portrait Centered) -->
+          <!-- Gallery Slider -->
           <div class="relative -mx-4 sm:mx-0">
             <swiper
               :modules="modules"
@@ -69,100 +67,79 @@
               <h3 class="text-xs font-black uppercase tracking-[0.3em] text-gray-400">Deskripsi Produk</h3>
               <div class="h-px flex-1 bg-gray-300"></div>
             </div>
-            <p class="text-gray-500 leading-[1.8] text-lg font-medium whitespace-pre-line">
-              {{ product.description }}
-            </p>
+            <div class="text-gray-500 leading-[1.8] text-lg font-medium description-content" v-html="product.description">
+            </div>
           </div>
         </div>
 
-        <!-- RIGHT COLUMN: Sidebar Info (4/12) -->
-        <div class="lg:col-span-5 xl:col-span-4 lg:sticky lg:top-12">
+        <!-- RIGHT COLUMN: Sidebar Info -->
+        <div class="lg:col-span-5 xl:col-span-4 lg:sticky lg:top-12 space-y-8">
           <div class="bg-white rounded-[3rem] p-8 lg:p-12 shadow-[0_30px_100px_rgba(105,11,34,0.06)] border border-brand-maroon/5 space-y-10">
             
             <!-- Tags & Badge -->
             <div class="flex flex-wrap gap-2">
-              <span class="bg-brand-terracotta/10 text-brand-terracotta text-[8px] font-bold uppercase tracking-[0.2em] px-4 py-2 rounded-full">
-                Best Seller
+              <span v-if="product.is_recommended" class="bg-brand-terracotta/10 text-brand-terracotta text-[8px] font-bold uppercase tracking-[0.2em] px-4 py-2 rounded-full">
+                Rekomendasi
               </span>
               <span class="bg-brand-maroon/5 text-brand-maroon text-[8px] font-bold uppercase tracking-[0.2em] px-4 py-2 rounded-full">
-                Catering Banua
+                {{ product.category?.name || 'Catering Banua' }}
               </span>
             </div>
 
-            <!-- Title & Rating -->
+            <!-- Title -->
             <div class="space-y-4">
               <h1 class="text-4xl font-black text-brand-maroon leading-[1.1] tracking-tight">
                 {{ product.name }}
               </h1>
-              <div class="flex items-center gap-4">
-                <div class="flex text-orange-400 gap-0.5">
-                  <i v-for="i in 5" :key="i" class='bx bxs-star text-lg'></i>
-                </div>
-                <div class="h-4 w-px bg-gray-200"></div>
-                <p class="text-sm font-bold text-gray-400">
-                  <span class="text-brand-forest-dark">{{ product.rating }}</span> ({{ product.reviews }} reviews)
-                </p>
-              </div>
             </div>
 
             <!-- Price Card -->
             <div class="p-8 bg-brand-cream-light/30 rounded-[2rem] border border-brand-cream-light/50">
-              <p class="text-[10px] uppercase tracking-[0.2em] font-black text-gray-400 mb-3">Harga Mulai Dari</p>
+              <p class="text-[10px] uppercase tracking-[0.2em] font-black text-gray-400 mb-3">Harga Per Porsi</p>
               <div class="flex items-baseline gap-2">
                 <span class="text-brand-terracotta font-black text-xl italic">Rp</span>
                 <span class="text-4xl font-black text-brand-maroon tracking-tighter">
                   {{ formatPriceValue(product.price) }}
                 </span>
               </div>
+              <p v-if="product.discount > 0" class="mt-2 text-xs font-bold text-green-600 italic">
+                <i class='bx bxs-discount'></i> Diskon {{ product.discount }}% Tersedia
+              </p>
             </div>
 
             <!-- Highlight Points -->
-            <div class="grid grid-cols-1 gap-6 ">
+            <div class="grid grid-cols-1 gap-6">
               <div class="flex items-center gap-5 group">
                 <div class="w-14 h-14 bg-white rounded-2xl shadow-lg shadow-brand-maroon/5 flex items-center justify-center text-brand-terracotta border border-gray-50 transition-all duration-500 group-hover:scale-110">
                   <i class='bx bx-package text-2xl'></i>
                 </div>
                 <div>
                   <p class="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-1">Min. Order</p>
-                  <p class="font-extrabold text-brand-forest-dark">{{ product.minOrder }} Porsi</p>
+                  <p class="font-extrabold text-brand-forest-dark">{{ product.min_order || 20 }} Porsi</p>
                 </div>
               </div>
 
               <div class="flex items-center gap-5 group">
                 <div class="w-14 h-14 bg-white rounded-2xl shadow-lg shadow-brand-maroon/5 flex items-center justify-center text-brand-maroon border border-gray-50 transition-all duration-500 group-hover:scale-110">
-                  <i class='bx bx-calendar-check text-2xl'></i>
+                  <i class='bx bx-timer text-2xl'></i>
                 </div>
                 <div>
                   <p class="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-1">Waktu Tunggu</p>
-                  <p class="font-extrabold text-brand-forest-dark">PO {{ product.preOrder }} Hari</p>
-                </div>
-              </div>
-
-              <div class="flex items-center gap-5 group">
-                <div class="w-14 h-14 bg-white rounded-2xl shadow-lg shadow-brand-maroon/5 flex items-center justify-center text-green-600 border border-gray-50 transition-all duration-500 group-hover:scale-110">
-                  <i class='bx bx-leaf text-2xl'></i>
-                </div>
-                <div>
-                  <p class="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-1">Kualitas</p>
-                  <p class="font-extrabold text-brand-forest-dark">100% Fresh & Higienis</p>
+                  <p class="font-extrabold text-brand-forest-dark">Pre-Order (PO)</p>
                 </div>
               </div>
             </div>
 
-            <!-- CTA Action -->
+            <!-- CTA Action (Direct to WhatsApp as per Business Flow) -->
             <div class="pt-8">
               <a 
-                href="https://wa.me/6281234567890" 
+                :href="whatsappLink" 
                 target="_blank"
                 class="w-full relative group rounded-[2rem] overflow-hidden shadow-xl shadow-brand-maroon/20 hover:shadow-brand-maroon/40 transition-all duration-500 hover:-translate-y-1 active:scale-95 flex items-center justify-between"
               >
-                <!-- Background Gradient -->
                 <div class="absolute inset-0 bg-linear-to-r from-brand-maroon via-brand-maroon to-brand-terracotta group-hover:scale-110 transition-transform duration-700"></div>
-                
-                <!-- Shimmer/Shine Effect -->
                 <div class="absolute inset-0 bg-linear-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
 
-                <!-- Button Content -->
                 <div class="relative px-8 py-5 flex items-center justify-between border border-white/10 w-full">
                   <div class="flex flex-col items-start">
                     <span class="text-sm font-black text-white uppercase tracking-[0.2em]">Pesan Sekarang</span>
@@ -173,58 +150,34 @@
                   </div>
                 </div>
               </a>
-              
-              <div class="mt-8 flex items-center justify-center gap-2 opacity-30">
-                <div class="h-px w-8 bg-brand-forest-dark"></div>
-                <p class="text-[9px] text-brand-forest-dark font-black uppercase tracking-[0.3em] italic">Harga dapat berubah sewaktu-waktu</p>
-                <div class="h-px w-8 bg-brand-forest-dark"></div>
-              </div>
             </div>
           </div>
+
+
+
         </div>
       </div>
 
-      <!-- SIMILAR PRODUCTS SECTION -->
-      <div class="mt-24 lg:mt-48 space-y-12">
+      <!-- SIMILAR PRODUCTS (Based on Contract v2 related_products) -->
+      <div v-if="similarProducts.length > 0" class="mt-24 lg:mt-48 space-y-12">
         <div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div class="space-y-2">
             <span class="text-brand-terracotta text-[10px] font-black uppercase tracking-[0.3em]">Rekomendasi</span>
             <h3 class="text-3xl lg:text-4xl font-black text-brand-maroon tracking-tight">Produk Serupa</h3>
           </div>
-          <button v-if="similarProducts.length > 0" class="group flex items-center gap-3 text-brand-maroon font-black text-xs uppercase tracking-widest hover:text-brand-terracotta transition-colors">
+          <router-link to="/katalog" class="group flex items-center gap-3 text-brand-maroon font-black text-xs uppercase tracking-widest hover:text-brand-terracotta transition-colors">
             Lihat Semua Katalog
             <i class='bx bx-right-top-arrow-circle text-2xl group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform'></i>
-          </button>
-        </div>
-
-        <div v-if="similarProducts.length === 0 && !loading" class="bg-white rounded-[3rem] p-16 text-center border border-dashed border-gray-200">
-          <div class="w-20 h-20 bg-gray-50 rounded-3xl flex items-center justify-center mx-auto mb-6">
-            <i class='bx bx-package text-gray-300 text-4xl'></i>
-          </div>
-          <p class="text-gray-400 font-bold uppercase tracking-[0.2em] text-sm">Belum ada produk serupa</p>
+          </router-link>
         </div>
 
         <swiper
-          v-else
           :slides-per-view="'auto'"
           :space-between="16"
           :breakpoints="{
-            '640': {
-              slidesPerView: 3,
-              spaceBetween: 20
-            },
-            '1024': {
-              slidesPerView: 4,
-              spaceBetween: 24
-            },
-            '1280': {
-              slidesPerView: 5,
-              spaceBetween: 24
-            },
-            '1536': {
-              slidesPerView: 6,
-              spaceBetween: 24
-            }
+            '640': { slidesPerView: 3, spaceBetween: 20 },
+            '1024': { slidesPerView: 4, spaceBetween: 24 },
+            '1280': { slidesPerView: 5, spaceBetween: 24 }
           }"
           class="similar-products-swiper overflow-visible!"
         >
@@ -233,19 +186,10 @@
               @click="router.push(`/produk/${item.slug}`)"
               class="group cursor-pointer space-y-4"
             >
-              <!-- Card Image -->
               <div class="relative aspect-[4/5] rounded-[2rem] overflow-hidden bg-white shadow-lg shadow-brand-maroon/5 border border-white transition-all duration-500 group-hover:-translate-y-2 group-hover:shadow-2xl group-hover:border-brand-terracotta/20">
                 <img :src="item.image" :alt="item.name" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" />
-                
-                <!-- Quick Badge on Hover -->
-                <div class="absolute inset-0 bg-brand-maroon/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center">
-                  <div class="bg-white/90 backdrop-blur-md p-3 rounded-2xl scale-50 group-hover:scale-100 transition-transform duration-500">
-                    <i class='bx bx-search-alt text-brand-maroon text-xl'></i>
-                  </div>
-                </div>
               </div>
 
-              <!-- Card Info -->
               <div class="px-1 space-y-1">
                 <h4 class="font-bold text-brand-forest-dark text-sm lg:text-base truncate group-hover:text-brand-terracotta transition-colors duration-300">
                   {{ item.name }}
@@ -262,43 +206,35 @@
       </div>
     </div>
 
-    <!-- FOOTER (Consistent Modular Component) -->
     <Footer />
-
-    <!-- Bottom Navigation (Consistent with Catalog) -->
-    <BottomNav />
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { Swiper, SwiperSlide } from 'swiper/vue'
 import { Pagination } from 'swiper/modules'
-import api from '../utils/axios'
+import catalogApi from '../api/catalogApi'
 import TopNav from '../components/catalog/TopNav.vue'
-import BottomNav from '../components/catalog/BottomNav.vue'
 import Footer from '../components/catalog/Footer.vue'
 
-// Import Swiper styles
 import 'swiper/css'
 import 'swiper/css/pagination'
 
 const route = useRoute()
 const router = useRouter()
 const modules = [Pagination]
-
-const isFavorite = ref(false)
 const loading = ref(true)
 
 const product = ref({
   name: 'Memuat...',
-  rating: 4.8,
-  reviews: 124,
   price: 0,
-  minOrder: 1,
-  preOrder: 1,
   description: '',
+  category: null,
+  add_ons: [],
+  is_recommended: false,
+  discount: 0
 })
 
 const productImages = ref([])
@@ -308,37 +244,27 @@ const fetchProductDetail = async () => {
   loading.value = true
   try {
     const slug = route.params.slug
-    const response = await api.get(`/catalog/sub-products/${slug}`)
+    const res = await catalogApi.getProductDetail(slug)
     
-    if (response.data.success) {
-      const data = response.data.data
+    if (res.success && res.data) {
+      const data = res.data
+      product.value = data
       
-      product.value = {
-        name: data.name,
-        rating: 4.9, // Default
-        reviews: 312, // Default
-        price: data.price,
-        minOrder: data.min_order || 20,
-        preOrder: 1, // Default or find in data
-        description: data.description || 'Tidak ada deskripsi.',
-      }
-      
-      // Gallery mapping
+      // Images mapping from Contract v2 galleries
       if (data.galleries && data.galleries.length > 0) {
         productImages.value = data.galleries.map(g => g.image_url)
       } else {
-        // Fallback to placeholder if no galleries
         productImages.value = ['https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=1000&auto=format&fit=crop']
       }
       
       // Related products mapping
-      if (data.related_sub_products && data.related_sub_products.length > 0) {
-        similarProducts.value = data.related_sub_products.map(p => ({
+      if (data.related_products && data.related_products.length > 0) {
+        similarProducts.value = data.related_products.map(p => ({
           id: p.id,
           slug: p.slug,
           name: p.name,
           price: p.price,
-          image: p.galleries?.[0]?.image_url || 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=500&auto=format&fit=crop'
+          image: p.image || 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=500&auto=format&fit=crop'
         }))
       } else {
         similarProducts.value = []
@@ -365,11 +291,11 @@ const formatPriceValue = (value) => {
   }).format(value)
 }
 
-const toggleFavorite = () => {
-  isFavorite.value = !isFavorite.value
-}
+const whatsappLink = computed(() => {
+  const message = `Halo Banua Catering, saya ingin memesan produk "${product.value.name}". Mohon informasi selanjutnya.`
+  return `https://wa.me/6281234567890?text=${encodeURIComponent(message)}`
+})
 
-// Watch for slug changes to refresh data
 watch(() => route.params.slug, (newSlug) => {
   if (newSlug) {
     fetchProductDetail()
@@ -383,7 +309,6 @@ onMounted(() => {
 </script>
 
 <style scoped>
-/* Swiper Customization (Product Detail Gallery) */
 :deep(.product-detail-swiper .swiper-pagination) {
   bottom: 0px !important;
   z-index: 50;
@@ -402,25 +327,21 @@ onMounted(() => {
   opacity: 1;
   border-radius: 10px;
 }
-
-/* Animations */
 .animate-fade-up {
   animation: fadeUp 1s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
-
 @keyframes fadeUp {
-  from {
-    opacity: 0;
-    transform: translateY(40px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: translateY(0); }
 }
-
-/* Glassmorphism utility if needed */
 .backdrop-blur-lg {
   backdrop-filter: blur(16px);
 }
+.description-content :deep(b), .description-content :deep(strong) { font-weight: 800; color: #1f2937; }
+.description-content :deep(p) { margin-bottom: 1rem; }
+.description-content :deep(ul) { list-style-type: disc; margin-left: 1.5rem; margin-bottom: 1rem; }
+.description-content :deep(ol) { list-style-type: decimal; margin-left: 1.5rem; margin-bottom: 1rem; }
+.description-content :deep(h1) { font-size: 1.5rem; font-weight: 800; margin-bottom: 1rem; }
+.description-content :deep(h2) { font-size: 1.25rem; font-weight: 700; margin-bottom: 0.75rem; }
+.description-content :deep(h3) { font-size: 1.125rem; font-weight: 600; margin-bottom: 0.5rem; }
 </style>

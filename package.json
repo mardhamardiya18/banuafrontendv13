@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.2.4",
+    "@vueup/vue-quill": "^1.2.0",
     "axios": "^1.15.2",
     "chart.js": "^4.5.1",
     "js-cookie": "^3.0.5",

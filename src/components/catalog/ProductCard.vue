@@ -22,13 +22,18 @@
     <div class="flex-1 flex flex-col px-1">
       <h3 class="text-[15px] font-bold text-gray-900 mb-1 line-clamp-2 leading-tight tracking-tight group-hover:text-brand-terracotta transition-colors">{{ product.name }}</h3>
       
-      <div class="flex items-center gap-3 mt-auto mb-3">
-        <div class="flex items-center gap-1 text-gray-400">
-          <span class="text-[11px] font-medium">{{ product.time }}</span>
+      <div class="flex items-start justify-between gap-2 mt-auto mb-3 w-full">
+        <div class="flex-1 flex items-center min-w-0">
+          <span 
+            class="inline-block text-[9px] sm:text-[10px] font-bold px-2 sm:px-2.5 py-0.5 rounded-full w-auto max-w-full break-words text-left leading-tight"
+            :class="getCategoryBadgeClass(product.categoryName)"
+          >
+            {{ product.categoryName }}
+          </span>
         </div>
-        <div class="flex items-center gap-1 ml-auto">
-          <i class="bx bxs-star text-amber-400 text-xs"></i>
-          <span class="text-[11px] font-medium text-gray-400">{{ product.rating }}</span>
+        <div class="flex items-center gap-1 shrink-0 ml-auto pt-0.5">
+          <i class="bx bxs-star text-amber-400 text-[10px] sm:text-xs"></i>
+          <span class="text-[10px] sm:text-[11px] font-medium text-gray-400">{{ product.rating }}</span>
         </div>
       </div>
 
@@ -53,4 +58,29 @@ defineProps({
     required: true
   }
 })
+
+const getCategoryBadgeClass = (categoryName) => {
+  if (!categoryName) return 'bg-gray-50 text-gray-500 border border-gray-200'
+  
+  const colors = [
+    'bg-blue-50 text-blue-700 border-blue-200',
+    'bg-emerald-50 text-emerald-700 border-emerald-200',
+    'bg-amber-50 text-amber-700 border-amber-200',
+    'bg-rose-50 text-rose-700 border-rose-200',
+    'bg-purple-50 text-purple-700 border-purple-200',
+    'bg-cyan-50 text-cyan-700 border-cyan-200',
+    'bg-orange-50 text-orange-700 border-orange-200',
+    'bg-teal-50 text-teal-700 border-teal-200',
+    'bg-indigo-50 text-indigo-700 border-indigo-200',
+    'bg-pink-50 text-pink-700 border-pink-200',
+  ]
+  
+  let hash = 0
+  for (let i = 0; i < categoryName.length; i++) {
+    hash = categoryName.charCodeAt(i) + ((hash << 5) - hash)
+  }
+  
+  const index = Math.abs(hash) % colors.length
+  return `${colors[index]} border`
+}
 </script>
