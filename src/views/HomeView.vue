@@ -11,15 +11,15 @@
       <div class="absolute bottom-0 right-0 w-96 h-96 bg-brand-maroon/5 blob blur-3xl"></div>
       <div class="relative grid md:grid-cols-2 gap-16 items-center">
         <div class="space-y-4 lg:space-y-8 animate-fade-up">
-          <span class="inline-block bg-brand-terracotta/10 text-brand-terracotta text-xs font-bold uppercase tracking-widest px-4 py-2 rounded-full">🍽️ Tumpeng & Catering Service</span>
-          <h1 class=" text-center lg:text-left text-6xl font-extrabold text-brand-maroon leading-[1.1] tracking-tight">
-            Juaranya Tumpeng & Catering <span class="text-brand-terracotta relative">di Banua!</span>
+          <span class="inline-block bg-brand-terracotta/10 text-brand-terracotta text-xs font-bold uppercase tracking-widest px-4 py-2 rounded-full">🍽️ Layanan Catering Banjarbaru & Sekitarnya</span>
+          <h1 class=" text-center lg:text-left text-5xl font-extrabold text-brand-maroon leading-[1.3] tracking-tight">
+            Pesan Tumpeng & Catering No.1 di Banjarbaru & Banjarmasin
           </h1>
-          <p class=" text-center lg:text-left text-base lg:text-lg text-brand-forest-dark/70 leading-relaxed max-w-lg">
-            Kami siap maantarakan tumpeng dan catering nang nyaman gasan acara pian di Banjarbaru, Banjarmasin, dan Martapura.
+          <p class=" text-center lg:text-left text-base  text-brand-forest-dark/70 leading-relaxed max-w-lg">
+            Juaranya se-Banua! Kami siap maantarakan tumpeng, prasmanan, dan nasi kotak nang nyaman gasan berbagai acara pian di Banjarbaru, Banjarmasin, hingga Martapura.
           </p>
-          <div class="flex flex-col sm:flex-row gap-4">
-            <a href="#products" class="bg-linear-to-r from-brand-terracotta to-brand-maroon text-white font-bold px-10 py-4 rounded-full transition-all duration-300 active:scale-95 shadow-2xl shadow-brand-terracotta/40 text-center animate-shimmer flex items-center justify-center gap-2 group">
+          <div class="flex flex-col sm:flex-row gap-4 mt-10 lg:mt-0">
+            <a href="https://wa.me/6285156253408?text=Halo%20Min!%20Liat-liat%20webnya%20nih,%20mau%20nanya-nanya%20pricelist%20cateringnya%20dong." target="_blank" class="bg-linear-to-r from-brand-terracotta to-brand-maroon text-white font-bold px-10 py-4 rounded-full transition-all duration-300 active:scale-95 shadow-2xl shadow-brand-terracotta/40 text-center animate-shimmer flex items-center justify-center gap-2 group">
               Pesan Sekarang
               <i class='bx bx-chevron-right text-2xl group-hover:translate-x-1 transition-transform'></i>
             </a>
@@ -111,7 +111,7 @@
               <h3 class="text-2xl md:text-3xl font-extrabold text-white">Ada acara spesial dalam waktu dekat?</h3>
               <p class="text-white/60 max-w-md">Konsultasikan kebutuhan catering Anda secara gratis. Kami bantu carikan paket terbaik!</p>
             </div>
-            <a href="https://wa.me/6281234567890" target="_blank" class="shrink-0 bg-brand-terracotta hover:bg-white hover:text-brand-maroon text-white font-bold px-10 py-4 rounded-full transition-all duration-300 active:scale-95 shadow-xl flex items-center gap-2 animate-shimmer group">
+            <a href="https://wa.me/6285156253408?text=Halo%20Min!%20Ada%20rencana%20bikin%20acara%20nih,%20bisa%20bantu%20rekomendasiin%20paket%20yang%20pas%20ngga%3F" target="_blank" class="shrink-0 bg-brand-terracotta hover:bg-white hover:text-brand-maroon text-white font-bold px-10 py-4 rounded-full transition-all duration-300 active:scale-95 shadow-xl flex items-center gap-2 animate-shimmer group">
               <i class='bx bxl-whatsapp text-2xl'></i>
               Konsultasi Gratis
               <i class='bx bx-chevron-right text-2xl group-hover:translate-x-1 transition-transform'></i>
@@ -144,7 +144,7 @@
             <div class="p-6 space-y-3">
               <h3 class="text-lg font-bold text-brand-maroon group-hover:text-brand-terracotta transition-colors duration-300">{{ product.name }}</h3>
               <p class="text-sm text-brand-forest-dark/60 leading-relaxed line-clamp-2">{{ product.desc }}</p>
-              <button class="w-full bg-brand-cream-light hover:bg-brand-terracotta text-brand-maroon hover:text-white font-semibold py-3 rounded-xl transition-all duration-300 text-sm">
+              <button @click="$router.push({ path: '/katalog', query: { category: product.cat } })" class="w-full bg-brand-cream-light hover:bg-brand-terracotta text-brand-maroon hover:text-white font-semibold py-3 rounded-xl transition-all duration-300 text-sm">
                 Lihat Detail
               </button>
             </div>
@@ -193,6 +193,9 @@
         <div class="columns-1 sm:columns-2 lg:columns-3 gap-6 space-y-6">
           <div v-for="t in testimonials" :key="t.name" class="break-inside-avoid bg-white/80 backdrop-blur-sm p-6 rounded-4xl border border-white hover:border-brand-terracotta/10 hover:shadow-xl transition-all duration-500">
             <img v-if="t.img" :src="t.img" :alt="t.name" class="w-full rounded-2xl mb-5 object-cover" :class="t.tall ? 'h-56' : 'h-40'"/>
+            <div class="flex items-center gap-1 mb-3">
+              <i v-for="i in 5" :key="i" class='bx bxs-star text-amber-400 text-[15px]'></i>
+            </div>
             <p class="text-brand-forest-dark/70 text-sm leading-relaxed italic mb-5">"{{ t.quote }}"</p>
             <div class="flex items-center gap-3">
               <div class="w-10 h-10 rounded-full bg-brand-terracotta/10 flex items-center justify-center font-bold text-brand-terracotta text-sm">{{ t.name.charAt(0) }}</div>
@@ -208,7 +211,7 @@
 
     <!-- WHATSAPP FIXED BUTTON -->
     <a 
-      href="https://wa.me/6281234567890" 
+      href="https://wa.me/6285156253408?text=Halo%20Min!%20Mau%20nanya-nanya%20dulu%20nih%20soal%20cateringnya,%20boleh%3F" 
       target="_blank" 
       class="fixed bottom-8 right-8 z-50 flex items-center justify-center w-16 h-16 bg-[#25D366] text-white rounded-full shadow-2xl hover:scale-110 active:scale-95 transition-all duration-300 group"
     >
@@ -230,38 +233,43 @@ import { ref } from 'vue'
 import { useAuthStore } from '../stores/auth'
 import logo from '../assets/images/logo.png'
 import heroImg from '../assets/images/hero-img.png'
+import naskotImg from '../assets/images/naskot.webp'
+import tumpengImg from '../assets/images/tumpeng.webp'
+import tuminiImg from '../assets/images/tumini.webp'
+import prasmananImg from '../assets/images/prasmanan.webp'
+import testi1Img from '../assets/images/testi1.webp'
+import testi2Img from '../assets/images/testi2.webp'
 import TopNav from '../components/catalog/TopNav.vue'
 import Footer from '../components/catalog/Footer.vue'
 
 const authStore = useAuthStore()
-const mobileMenu = ref(false)
 
 const services = [
-  { title: 'Pesan Antar / Delivery', desc: 'Pengiriman tepat waktu dengan packaging aman dan higienis. Makanan sampai dalam kondisi segar.', icon: 'bxs-truck' },
-  { title: 'Set Dekorasi Prasmanan', desc: 'Dekorasi meja prasmanan yang elegan dan aesthetic. Hidangan tertata mewah dan menggugah selera.', icon: 'bxs-magic-wand' },
-  { title: 'Pramusaji Profesional', desc: 'Tim pelayan terlatih dan berpenampilan rapi. Pelayanan ramah untuk kenyamanan tamu undangan.', icon: 'bxs-user-voice' }
+  { title: 'Pesan Antar / Delivery', desc: 'Pengiriman tepat waktu dengan packaging aman dan higienis. Makanan sampai dalam kondisi segar dan siap dinikmati untuk segala acara.', icon: 'bxs-truck' },
+  { title: 'Cita Rasa Autentik & Menu Beragam', desc: 'Menghadirkan ragam pilihan menu masakan nusantara hingga modern. Dimasak dari bahan segar berkualitas dengan standar kebersihan tinggi untuk rasa yang memanjakan lidah.', icon: 'bxs-magic-wand' },
+  { title: 'Presentasi Elegan & Eksklusif', desc: 'Tampilan hidangan yang menggugah selera; mulai dari set meja prasmanan yang mewah, kreasi tumpeng yang artistik, hingga kemasan nasi kotak yang rapi dan premium.', icon: 'bxs-user-voice' }
 ]
 
 const products = [
-  { name: 'Nasi Kotak', desc: 'Paket nasi kotak lengkap dengan lauk pilihan, cocok untuk meeting dan seminar.', price: 'Mulai Rp 25.000', img: 'https://placehold.co/400x300/E07A5F/fff?text=Nasi+Kotak' },
-  { name: 'Tumpeng Besar', desc: 'Tumpeng nasi kuning megah dengan aneka lauk tradisional untuk acara spesial.', price: 'Mulai Rp 350.000', img: 'https://placehold.co/400x300/690B22/fff?text=Tumpeng+Besar' },
-  { name: 'Tumpeng Kecil', desc: 'Tumpeng mini elegan, sempurna untuk ulang tahun dan syukuran keluarga.', price: 'Mulai Rp 150.000', img: 'https://placehold.co/400x300/1B4D3E/fff?text=Tumpeng+Kecil' },
-  { name: 'Prasmanan', desc: 'Paket prasmanan lengkap dengan dekorasi meja mewah untuk pernikahan.', price: 'Mulai Rp 75.000/pax', img: 'https://placehold.co/400x300/F1E3D3/690B22?text=Prasmanan' }
+  { name: 'Nasi Kotak', desc: 'Paket nasi kotak lengkap dengan lauk pilihan, cocok untuk meeting dan seminar.', price: 'Mulai Rp 20.000', img: naskotImg, cat: 'nasi-kotak' },
+  { name: 'Tumpeng Besar', desc: 'Tumpeng nasi kuning megah dengan aneka lauk tradisional untuk acara spesial.', price: 'Mulai Rp 245.000', img: tumpengImg, cat: 'tumpeng' },
+  { name: 'Tumpeng Kecil', desc: 'Tumpeng mini elegan, sempurna untuk ulang tahun dan syukuran keluarga.', price: 'Mulai Rp 22.500', img: tuminiImg, cat: 'tumpeng' },
+  { name: 'Prasmanan', desc: 'Paket prasmanan lengkap dengan dekorasi meja mewah untuk pernikahan.', price: 'Mulai Rp 25.000/pax', img: prasmananImg, cat: 'prasmanan' }
 ]
 
 const testimonials = [
-  { name: 'Ibu Sari', org: 'PT. Maju Bersama', quote: 'Rasa makanannya luar biasa dan pelayanannya sangat profesional. Semua tamu puas!', img: 'https://placehold.co/400x250/E07A5F/fff?text=Event+Photo', tall: false },
+  { name: 'Ibu Sari', org: 'PT. Maju Bersama', quote: 'Rasa makanannya luar biasa dan pelayanannya sangat profesional. Semua tamu puas!', img: testi1Img, tall: false },
   { name: 'Pak Ahmad', org: 'Dinas Pendidikan', quote: 'Sudah 3 tahun berlangganan untuk acara dinas. Tidak pernah mengecewakan.', img: null, tall: false },
   { name: 'Bella & Rizky', org: 'Wedding Reception', quote: 'Prasmanan pernikahan kami ditangani dengan sempurna. Dekorasinya cantik!', img: 'https://placehold.co/400x320/690B22/fff?text=Wedding', tall: true },
   { name: 'Hj. Fatimah', org: 'Arisan RT 05', quote: 'Nasi kotaknya enak dan harganya sangat terjangkau. Cocok untuk pengajian.', img: null, tall: false },
-  { name: 'David Chen', org: 'StartUp Borneo', quote: 'Tim kami selalu order tumpeng untuk perayaan milestone. Kualitas terbaik!', img: 'https://placehold.co/400x200/1B4D3E/fff?text=Office+Party', tall: false }
+  { name: 'David Chen', org: 'StartUp Borneo', quote: 'Tim kami selalu order tumpeng untuk perayaan milestone. Kualitas terbaik!', img: testi2Img, tall: false }
 ]
 
 const stats = [
   { value: '5.000+', label: 'Porsi Terjual', icon: 'bxs-bowl-hot' },
   { value: '1.200+', label: 'Acara Dilayani', icon: 'bxs-calendar-check' },
   { value: '4.9/5', label: 'Rating Pelanggan', icon: 'bxs-star' },
-  { value: '8+', label: 'Tahun Pengalaman', icon: 'bxs-award' }
+  { value: '5+', label: 'Tahun Pengalaman', icon: 'bxs-award' }
 ]
 
 const whyUs = [

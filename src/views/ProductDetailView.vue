@@ -43,7 +43,7 @@
         <div class="lg:col-span-7 xl:col-span-8 space-y-5 lg:space-y-24">
           
           <!-- Gallery Slider -->
-          <div class="relative -mx-4 sm:mx-0">
+          <div class="relative -mx-4 sm:mx-0 ">
             <swiper
               :modules="modules"
               :slides-per-view="'auto'"
@@ -53,7 +53,7 @@
               class="product-detail-swiper pb-14!"
             >
               <swiper-slide v-for="(img, index) in productImages" :key="index" class="w-[85%]! sm:w-[70%]!">
-                <div class="aspect-[3/4] rounded-[2.5rem] overflow-hidden shadow-2xl shadow-brand-maroon/5 border border-white">
+                <div class="aspect-[3/4] rounded-4xl overflow-hidden shadow-2xl shadow-brand-maroon/5 border border-white isolate">
                   <img :src="img" :alt="product.name" class="w-full h-full object-cover" />
                 </div>
               </swiper-slide>
@@ -87,14 +87,24 @@
             </div>
 
             <!-- Title -->
-            <div class="space-y-4">
+            <div class="space-y-6">
               <h1 class="text-4xl font-black text-brand-maroon leading-[1.1] tracking-tight">
                 {{ product.name }}
               </h1>
+              
+              <!-- Rating (Design Only, without total review) -->
+              <div class="flex items-center gap-3">
+                <div class="flex items-center bg-amber-50 px-3 py-1.5 rounded-2xl border border-amber-100 shadow-sm shadow-amber-900/5">
+                  <i class='bx bxs-star text-amber-400 text-base mr-2'></i>
+                  <span class="text-amber-800 font-black text-sm">4.9</span>
+                </div>
+                <div class="h-4 w-px bg-gray-200"></div>
+                <span class="text-gray-400 text-[10px] font-black uppercase tracking-[0.2em]">Semua pada suka😍</span>
+              </div>
             </div>
 
             <!-- Price Card -->
-            <div class="p-8 bg-brand-cream-light/30 rounded-[2rem] border border-brand-cream-light/50">
+            <div class="p-8 bg-brand-cream-light/30 rounded-4xl border border-brand-cream-light/50">
               <p class="text-[10px] uppercase tracking-[0.2em] font-black text-gray-400 mb-3">Harga Per Porsi</p>
               <div class="flex items-baseline gap-2">
                 <span class="text-brand-terracotta font-black text-xl italic">Rp</span>
@@ -135,19 +145,15 @@
               <a 
                 :href="whatsappLink" 
                 target="_blank"
-                class="w-full relative group rounded-[2rem] overflow-hidden shadow-xl shadow-brand-maroon/20 hover:shadow-brand-maroon/40 transition-all duration-500 hover:-translate-y-1 active:scale-95 flex items-center justify-between"
+                class="group w-full flex items-center justify-between p-2 pl-8 bg-brand-maroon rounded-full shadow-[0_20px_40px_-15px_rgba(105,11,34,0.5)] hover:shadow-[0_20px_40px_-10px_rgba(105,11,34,0.7)] hover:-translate-y-1 active:scale-95 transition-all duration-500 border border-white/10 relative overflow-hidden"
               >
-                <div class="absolute inset-0 bg-linear-to-r from-brand-maroon via-brand-maroon to-brand-terracotta group-hover:scale-110 transition-transform duration-700"></div>
-                <div class="absolute inset-0 bg-linear-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
-
-                <div class="relative px-8 py-5 flex items-center justify-between border border-white/10 w-full">
-                  <div class="flex flex-col items-start">
-                    <span class="text-sm font-black text-white uppercase tracking-[0.2em]">Pesan Sekarang</span>
-                  </div>
-                  
-                  <div class="w-11 h-11 bg-white/10 rounded-2xl flex items-center justify-center backdrop-blur-md group-hover:bg-white/20 transition-all duration-500">
-                    <i class='bx bxl-whatsapp text-2xl text-white group-hover:scale-110 transition-transform'></i>
-                  </div>
+                <!-- Premium Shimmer Effect -->
+                <div class="absolute inset-0 bg-linear-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out"></div>
+                
+                <span class="text-[13px] font-black text-white uppercase tracking-[0.2em] relative z-10">Pesan Sekarang</span>
+                
+                <div class="w-12 h-12 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center relative z-10 shadow-inner group-hover:scale-105 group-hover:bg-[#25D366] transition-all duration-500">
+                  <i class='bx bxl-whatsapp text-2xl text-white group-hover:scale-110 transition-transform duration-300'></i>
                 </div>
               </a>
             </div>
@@ -172,22 +178,23 @@
         </div>
 
         <swiper
-          :slides-per-view="'auto'"
+          :slides-per-view="1.3"
           :space-between="16"
           :breakpoints="{
-            '640': { slidesPerView: 3, spaceBetween: 20 },
+            '640': { slidesPerView: 2.2, spaceBetween: 20 },
+            '768': { slidesPerView: 3.2, spaceBetween: 20 },
             '1024': { slidesPerView: 4, spaceBetween: 24 },
-            '1280': { slidesPerView: 5, spaceBetween: 24 }
+            '1280': { slidesPerView: 4, spaceBetween: 24 }
           }"
           class="similar-products-swiper overflow-visible!"
         >
-          <swiper-slide v-for="item in similarProducts" :key="item.id" class="w-[200px]! sm:w-auto!">
+          <swiper-slide v-for="item in similarProducts" :key="item.id">
             <div 
               @click="router.push(`/produk/${item.slug}`)"
               class="group cursor-pointer space-y-4"
             >
-              <div class="relative aspect-[4/5] rounded-[2rem] overflow-hidden bg-white shadow-lg shadow-brand-maroon/5 border border-white transition-all duration-500 group-hover:-translate-y-2 group-hover:shadow-2xl group-hover:border-brand-terracotta/20">
-                <img :src="item.image" :alt="item.name" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" />
+              <div class="relative aspect-4/5 rounded-4xl overflow-hidden bg-white shadow-lg shadow-brand-maroon/5 border border-white transition-all duration-500 group-hover:-translate-y-2 group-hover:shadow-2xl group-hover:border-brand-terracotta/20">
+                <img :src="item.image" :alt="item.name" class="w-full h-full object-cover transition-transform duration-1000 scale-105 group-hover:scale-115" />
               </div>
 
               <div class="px-1 space-y-1">
@@ -292,8 +299,8 @@ const formatPriceValue = (value) => {
 }
 
 const whatsappLink = computed(() => {
-  const message = `Halo Banua Catering, saya ingin memesan produk "${product.value.name}". Mohon informasi selanjutnya.`
-  return `https://wa.me/6281234567890?text=${encodeURIComponent(message)}`
+  const message = `Halo Min! Rencananya mau pesen "${product.value.name}" nih. Kira-kira buat ordernya gimana ya?`
+  return `https://wa.me/6285156253408?text=${encodeURIComponent(message)}`
 })
 
 watch(() => route.params.slug, (newSlug) => {

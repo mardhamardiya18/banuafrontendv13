@@ -216,6 +216,12 @@ const save = async () => {
       store.showToast('Produk ditambahkan') 
     }
     showForm.value = false; await fetchData(); await store.refreshProducts()
+  } catch (error) {
+    let msg = 'Terjadi kesalahan saat menyimpan data produk.'
+    if (error.response?.data?.message) {
+      msg = error.response.data.message
+    }
+    store.showToast(msg, 'error')
   } finally { saving.value = false }
 }
 

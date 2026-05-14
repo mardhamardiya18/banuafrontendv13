@@ -23,7 +23,7 @@
       <!-- Action Buttons / Profile -->
       <div class="flex items-center gap-4">
         <a 
-          href="https://wa.me/6281234567890" 
+          href="https://wa.me/6285156253408?text=Halo%20Min!%20Mau%20nanya-nanya%20dulu%20nih%20soal%20cateringnya,%20boleh%3F" 
           target="_blank" 
           class="hidden md:flex items-center gap-3 px-8 py-3 bg-linear-to-r from-brand-terracotta to-brand-maroon text-white rounded-full font-bold text-xs uppercase tracking-[0.2em] shadow-lg shadow-brand-maroon/20 hover:shadow-brand-terracotta/40 hover:-translate-y-0.5 active:scale-95 transition-all duration-500 group"
         >
@@ -75,7 +75,7 @@
         
        
 
-        <a href="https://wa.me/6281234567890" target="_blank" class="block bg-brand-terracotta text-white text-center py-3 rounded-full font-black text-xs uppercase tracking-widest" @click="mobileMenu=false">Hubungi Kami</a>
+        <a href="https://wa.me/6285156253408?text=Halo%20Min!%20Mau%20nanya-nanya%20dulu%20nih%20soal%20cateringnya,%20boleh%3F" target="_blank" class="block bg-brand-terracotta text-white text-center py-3 rounded-full font-black text-xs uppercase tracking-widest" @click="mobileMenu=false">Hubungi Kami</a>
       </div>
     </transition>
   </nav>

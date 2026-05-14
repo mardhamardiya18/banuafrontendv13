@@ -15,7 +15,7 @@
       <!-- Greeting Section -->
       <div class="px-6 mt-8 mb-2">
         <p class="text-lg font-medium text-gray-500">Halo!</p>
-        <h2 class="text-3xl font-black text-gray-900 leading-tight tracking-tight">Lapar Hari Ini?<br/>Cari Menu Favoritmu</h2>
+        <h2 class="text-3xl font-black text-gray-900 leading-tight tracking-tight">Ada Acara Spesial?<br/>Temukan Menu Favoritmu</h2>
       </div>
 
       <!-- Search & Filter -->
@@ -23,27 +23,27 @@
 
       <!-- New Banner Section -->
       <div class="px-6 mt-6">
-        <div class="relative bg-[#EAF2F5] rounded-[2rem] p-6 md:p-10 overflow-hidden flex items-center min-h-[160px] md:min-h-[220px] shadow-sm border border-white/50 group">
+        <div class="relative bg-gray-900 rounded-[2rem] p-6 md:p-10 overflow-hidden flex items-center min-h-[160px] md:min-h-[220px] shadow-xl border border-white/10 group">
           <div class="relative z-10 w-[60%] md:w-1/2">
-            <h3 class="text-lg md:text-3xl font-extrabold text-gray-900 leading-tight mb-1.5 md:mb-3">
-              Best Healthy <br class="hidden md:block"/> 
-              food near you!
+            <h3 class="text-lg md:text-3xl font-extrabold text-white leading-tight mb-1.5 md:mb-3">
+              Sajian Istimewa <br class="hidden md:block"/> 
+              Untuk Acaramu!
             </h3>
-            <p class="text-[10px] md:text-sm text-gray-500 font-medium leading-relaxed max-w-[140px] md:max-w-xs mb-4 md:mb-6">
-              Nikmati hidangan sehat dan higienis dari Banua Catering.
+            <p class="text-[10px] md:text-sm text-gray-300 font-medium leading-relaxed max-w-[140px] md:max-w-xs mb-4 md:mb-6">
+              Nikmati aneka tumpeng, nasi kotak, dan catering dengan cita rasa juara dari DMI Catering.
             </p>
-            <button class="px-5 md:px-10 py-2 md:py-3.5 bg-linear-to-r from-orange-400 to-orange-500 text-white text-[11px] md:text-sm font-bold rounded-xl md:rounded-2xl shadow-lg shadow-orange-200 hover:shadow-orange-300 transition-all active:scale-95">
-              Explore
-            </button>
+            <a href="https://wa.me/6285156253408?text=Halo%20Min!%20Liat%20banner%20promo%20di%20katalog%20nih,%20boleh%20minta%20info%20promonya%3F" target="_blank" class="inline-block px-5 md:px-10 py-2 md:py-3.5 bg-linear-to-r from-brand-terracotta to-brand-maroon text-white text-[11px] md:text-sm font-bold rounded-xl md:rounded-2xl shadow-lg shadow-brand-terracotta/30 hover:-translate-y-0.5 transition-all active:scale-95">
+              Lihat Promo
+            </a>
           </div>
           
-          <div class="absolute right-0 top-0 bottom-0 w-[50%] md:w-[45%] flex items-center justify-end pointer-events-none">
+          <div class="absolute inset-0 pointer-events-none">
             <img 
-              src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&q=80&w=600" 
-              alt="Healthy Food" 
-              class="h-full w-full object-cover object-center transform scale-110 group-hover:scale-115 transition-transform duration-700"
+              :src="bannerImg" 
+              alt="Promo Banner" 
+              class="h-full w-full object-cover object-right md:object-center transform scale-105 group-hover:scale-110 transition-transform duration-700"
             />
-            <div class="absolute inset-0 bg-linear-to-r from-[#EAF2F5] via-[#EAF2F5]/40 to-transparent"></div>
+            <div class="absolute inset-0 bg-linear-to-r from-gray-950 via-gray-950/80 to-transparent"></div>
           </div>
         </div>
       </div>
@@ -69,14 +69,17 @@
 
 <script setup>
 import { ref, onMounted, computed, watch } from 'vue'
+import { useRoute } from 'vue-router'
 import catalogApi from '../api/catalogApi'
 import TopNav from '../components/catalog/TopNav.vue'
 import SearchBar from '../components/catalog/SearchBar.vue'
 import CategoryList from '../components/catalog/CategoryList.vue'
 import ProductCard from '../components/catalog/ProductCard.vue'
 import Footer from '../components/catalog/Footer.vue'
+import bannerImg from "../assets/images/banner.jpg"
 
 const categories = ref([{ id: 'all', name: 'Semua Menu' }])
+const route = useRoute()
 const products = ref([])
 const selectedCategory = ref('all')
 const searchQuery = ref('')
@@ -137,8 +140,24 @@ watch(selectedCategory, () => {
   fetchProducts()
 })
 
-onMounted(() => {
-  fetchCategories()
+onMounted(async () => {
+  await fetchCategories()
+  
+  if (route.query.category) {
+    const q = route.query.category.toLowerCase()
+    const found = categories.value.find(c => 
+      (c.slug && c.slug.toLowerCase() === q) || 
+      c.name.toLowerCase().includes(q) ||
+      (q === 'nasi-kotak' && c.name.toLowerCase().includes('kotak'))
+    )
+    
+    if (found && found.id !== 'all') {
+      selectedCategory.value = found.id
+      // The watcher on selectedCategory will automatically trigger fetchProducts()
+      return
+    }
+  }
+  
   fetchProducts()
 })
 </script>

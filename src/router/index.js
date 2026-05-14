@@ -7,13 +7,13 @@ const routes = [
     path: '/',
     name: 'Home',
     component: () => import('../views/HomeView.vue'),
-    meta: { title: 'Home' }
+    meta: { title: 'Catering & Tumpeng No.1 di Banjarbaru dan sekitarnya' }
   },
   {
     path: '/katalog',
     name: 'Catalog',
     component: () => import('../views/CatalogView.vue'),
-    meta: { title: 'Katalog Produk' }
+    meta: { title: 'Daftar Menu' }
   },
   {
     path: '/produk/:slug',
@@ -125,7 +125,7 @@ const router = createRouter({
  */
 router.beforeEach(async (to, from, next) => {
   // 1. SET TITLE
-  const siteTitle = 'Banua Frontend'
+  const siteTitle = 'Dapur Mamah Iis'
   document.title = to.meta.title ? `${to.meta.title} - ${siteTitle}` : siteTitle
 
   const authStore = useAuthStore()
