@@ -16,16 +16,10 @@ const route = useRoute()
 
 onMounted(() => {
   const identifier = route.params.identifier
-  // Ambil BASE URL Backend dari env atau default
-  const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000/api'
+  const apiUrl = import.meta.env.VITE_API_URL
   
-  // Hilangkan '/api' jika ada di akhir (karena rute verify di luar prefix api admin, 
-  // tapi rute publik invoice kita di api.php tetap butuh /api jika di localhost)
-  // Di api.php kita rutenya: Route::get('/invoice/verify/{identifier}', ...)
-  
-  const backendUrl = apiUrl.replace(/\/api$/, '')
-  
-  // Redirect ke halaman verifikasi backend (Blade View)
-  window.location.href = `${backendUrl}/api/invoice/verify/${identifier}`
+  // Redirect to backend verification (Blade View)
+  // Logic: https://api.banuatumpeng.com/api/invoice/verify/{identifier}
+  window.location.href = `${apiUrl}/invoice/verify/${identifier}`
 })
 </script>

@@ -95,7 +95,7 @@
               <label class="block text-xs font-medium text-gray-600 mb-1">Produk *</label>
               <select v-model="item.product_id" @change="onProductChange(item)" class="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm outline-none focus:border-brand-maroon/40 transition-all bg-white">
                 <option :value="null" disabled>Pilih produk</option>
-                <option v-for="p in refProducts" :key="p.id" :value="p.id">{{ p.name }} — Rp {{ p.price.toLocaleString('id-ID') }}</option>
+                <option v-for="p in refProducts" :key="p.id" :value="p.id">{{ p.name_full }} — Rp {{ p.price.toLocaleString('id-ID') }}</option>
               </select>
               <p v-if="item.product_id" class="text-[10px] text-gray-500 mt-1.5 flex items-start gap-1">
                 <i class="bx bx-info-circle mt-0.5"></i>
@@ -124,16 +124,18 @@
           <div>
             <div class="flex items-center justify-between mb-2">
               <span class="text-xs font-bold text-gray-500 uppercase tracking-wider">Add-ons</span>
-              <button @click="addAddon(item)" class="text-xs font-semibold text-brand-maroon hover:text-brand-terracotta">+ Add-on</button>
+              <button @click="addAddon(item)" class="text-xs font-semibold text-brand-maroon hover:text-brand-terracotta transition-colors">+ Add-on</button>
             </div>
-            <div v-for="(addon, aIdx) in item.addons" :key="aIdx" class="flex items-center gap-3 mb-2">
-              <select v-model="addon.addon_id" @change="onAddonChange(addon, item)" class="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm outline-none focus:border-brand-maroon/40 transition-all bg-white flex-1">
+            <div v-for="(addon, aIdx) in item.addons" :key="aIdx" class="flex items-center gap-2 sm:gap-3 mb-2">
+              <select v-model="addon.addon_id" @change="onAddonChange(addon)" class="flex-1 min-w-0 px-3 py-2 rounded-lg border border-gray-200 text-sm outline-none focus:border-brand-maroon/40 transition-all bg-white">
                 <option :value="null" disabled>Pilih add-on</option>
                 <option v-for="a in getAvailableAddons(item)" :key="a.id" :value="a.id">{{ a.name }} — Rp {{ a.price.toLocaleString('id-ID') }}</option>
               </select>
-              <input v-model.number="addon.quantity" type="number" min="1" class="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm outline-none focus:border-brand-maroon/40 transition-all" placeholder="Qty" />
-              <span class="text-xs font-semibold text-gray-500 w-28 text-right">Rp {{ (addon.snapshot_price * addon.quantity).toLocaleString('id-ID') }}</span>
-              <button @click="item.addons.splice(aIdx, 1)" class="text-gray-400 hover:text-red-500"><i class="bx bx-x"></i></button>
+              <div class="w-20 shrink-0">
+                <input v-model.number="addon.quantity" type="number" min="1" class="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm outline-none focus:border-brand-maroon/40 transition-all text-center" placeholder="Qty" />
+              </div>
+              <span class="text-xs font-semibold text-gray-500 w-24 shrink-0 text-right truncate">Rp {{ (addon.snapshot_price * addon.quantity).toLocaleString('id-ID') }}</span>
+              <button @click="item.addons.splice(aIdx, 1)" class="w-8 h-8 flex items-center justify-center shrink-0 rounded-lg hover:bg-red-50 text-gray-400 hover:text-red-500 transition-colors"><i class="bx bx-trash text-sm"></i></button>
             </div>
           </div>
         </div>
@@ -242,7 +244,7 @@ const form = ref({
 
 // --- Helpers ---
 const getProduct = (id) => refProducts.value.find(p => p.id === id)
-const getProductName = (id) => getProduct(id)?.name || '-'
+const getProductName = (id) => getProduct(id)?.name_full || '-'
 const getProductPrice = (id) => getProduct(id)?.price || 0
 const getProductMinOrder = (id) => getProduct(id)?.min_order || 0
 const getAddonName = (id) => refAddons.value.find(a => a.id === id)?.name || '-'

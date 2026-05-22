@@ -96,20 +96,34 @@
         </div>
       </div>
     </div>
+
+    <!-- Product Trend Chart -->
+    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
+      <div class="flex items-center justify-between mb-6">
+        <div>
+          <h3 class="text-lg font-bold text-gray-900">Tren Penjualan Produk</h3>
+          <p class="text-sm text-gray-400">Distribusi produk terlaris setiap bulan</p>
+        </div>
+      </div>
+      <div v-if="loading" class="h-[350px] bg-gray-50 rounded-xl animate-pulse"></div>
+      <div v-else class="h-[350px]">
+        <Bar :data="productChartData" :options="productChartOptions" />
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import { Line } from 'vue-chartjs'
+import { Line, Bar } from 'vue-chartjs'
 import {
   Chart as ChartJS,
-  CategoryScale, LinearScale, PointElement, LineElement,
+  CategoryScale, LinearScale, PointElement, LineElement, BarElement,
   Title, Tooltip, Legend, Filler
 } from 'chart.js'
 import { dashboardApi, orderApi } from '../../api/apiService'
 
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Filler)
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend, Filler)
 
 const loading = ref(true)
 const recentOrders = ref([])
@@ -152,6 +166,49 @@ const chartOptions = {
         font: { family: 'Poppins', size: 12 }, color: '#9ca3af',
         callback: (v) => `${(v / 1_000_000).toFixed(0)}jt`
       }
+    }
+  }
+}
+
+const productChartData = ref({ labels: [], datasets: [] })
+const productChartOptions = {
+  responsive: true,
+  maintainAspectRatio: false,
+  interaction: { intersect: false, mode: 'index' },
+  plugins: {
+    legend: {
+      position: 'bottom',
+      labels: {
+        usePointStyle: true,
+        padding: 20,
+        font: { family: 'Poppins', size: 12 },
+        color: '#4b5563'
+      }
+    },
+    tooltip: {
+      backgroundColor: '#1f2937',
+      titleFont: { family: 'Poppins', weight: '600' },
+      bodyFont: { family: 'Poppins' },
+      padding: 12,
+      cornerRadius: 12,
+      usePointStyle: true,
+      callbacks: {
+        label: (ctx) => ` ${ctx.dataset.label}: ${ctx.raw} porsi`
+      }
+    }
+  },
+  scales: {
+    x: {
+      stacked: true,
+      grid: { display: false },
+      ticks: { font: { family: 'Poppins', size: 12 }, color: '#9ca3af' }
+    },
+    y: {
+      stacked: true,
+      border: { dash: [5, 5] },
+      grid: { color: '#f3f4f6' },
+      ticks: { font: { family: 'Poppins', size: 12 }, color: '#9ca3af' },
+      beginAtZero: true
     }
   }
 }
@@ -228,6 +285,56 @@ onMounted(async () => {
         ]
       }
       
+      // Product Chart
+      if (d.product_chart) {
+        const productTotals = {}
+        const productNames = {}
+        
+        d.product_chart.forEach(month => {
+          month.products.forEach(p => {
+            productTotals[p.product_id] = (productTotals[p.product_id] || 0) + p.total_sold
+            productNames[p.product_id] = p.name
+          })
+        })
+        
+        const sortedProductIds = Object.keys(productTotals).sort((a, b) => productTotals[b] - productTotals[a])
+        const top5Ids = sortedProductIds.slice(0, 5)
+        
+        const colors = ['#690B22', '#E07A5F', '#1B4D3E', '#F59E0B', '#3B82F6', '#9CA3AF']
+        
+        const datasets = top5Ids.map((id, index) => {
+          return {
+            label: productNames[id],
+            data: d.product_chart.map(month => {
+              const prod = month.products.find(p => p.product_id === id)
+              return prod ? prod.total_sold : 0
+            }),
+            backgroundColor: colors[index],
+            barThickness: 32
+          }
+        })
+        
+        const othersData = d.product_chart.map(month => {
+          return month.products
+            .filter(p => !top5Ids.includes(p.product_id))
+            .reduce((sum, p) => sum + p.total_sold, 0)
+        })
+        
+        if (othersData.some(val => val > 0)) {
+          datasets.push({
+            label: 'Lainnya',
+            data: othersData,
+            backgroundColor: colors[5],
+            barThickness: 32
+          })
+        }
+        
+        productChartData.value = {
+          labels: d.product_chart.map(c => c.month),
+          datasets: datasets
+        }
+      }
+
       recentOrders.value = d.recent_orders || []
     }
   } catch(e) {

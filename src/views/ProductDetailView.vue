@@ -105,7 +105,7 @@
 
             <!-- Price Card -->
             <div class="p-8 bg-brand-cream-light/30 rounded-4xl border border-brand-cream-light/50">
-              <p class="text-[10px] uppercase tracking-[0.2em] font-black text-gray-400 mb-3">Harga Per Porsi</p>
+              <p class="text-[10px] uppercase tracking-[0.2em] font-black text-gray-400 mb-3">Harga Mulai dari</p>
               <div class="flex items-baseline gap-2">
                 <span class="text-brand-terracotta font-black text-xl italic">Rp</span>
                 <span class="text-4xl font-black text-brand-maroon tracking-tighter">

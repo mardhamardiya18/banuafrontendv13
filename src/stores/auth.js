@@ -33,8 +33,11 @@ export const useAuthStore = defineStore('auth', {
 
     async login(credentials) {
       try {
+       await api.get('/sanctum/csrf-cookie', {
+            baseURL: import.meta.env.VITE_BASE_URL // Timpa baseURL global di sini!
+        });
+
         const response = await api.post('/login', credentials)
-        console.log('Login Response:', response.data) // Debugging
 
         // Berdasarkan screenshot:
         // data.access_token
@@ -60,6 +63,9 @@ export const useAuthStore = defineStore('auth', {
 
     async register(userData) {
       try {
+        await api.get('/sanctum/csrf-cookie', {
+          baseURL: import.meta.env.VITE_BASE_URL
+        });
         const response = await api.post('/register', userData)
         return response
       } catch (error) {
@@ -68,15 +74,24 @@ export const useAuthStore = defineStore('auth', {
     },
 
     async logout() {
-      try {
-        // Panggil endpoint logout di server jika ada
-        await api.post('/logout').catch(() => {})
-      } finally {
-        this.token = null
-        this.user = null
-        Cookies.remove('token')
-        window.location.href = '/login'
-      }
+  try {
+    // 1. Tembak endpoint logout (Pastikan pakai /api/logout jika route ada di api.php)
+    // Server akan otomatis menghancurkan session dan menghapus HTTP-Only cookie dari browser
+    await api.post('/api/logout');
+  } catch (error) {
+    console.error("Gagal logout dari server:", error);
+  } finally {
+    // 2. Bersihkan state Pinia/Vue
+    this.user = null;
+    
+    // (Opsional) Jika Anda masih punya state 'this.token', bisa dikosongkan juga
+    // this.token = null; 
+
+    // Tidak perlu lagi: Cookies.remove('token')
+
+    // 3. Tendang kembali ke halaman login
+    window.location.href = '/login';
+  }
     }
   }
 })

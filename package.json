@@ -25,6 +25,7 @@
     "autoprefixer": "^10.5.0",
     "postcss": "^8.5.13",
     "tailwindcss": "^4.2.4",
-    "vite": "^8.0.10"
+    "vite": "^8.0.10",
+    "vite-plugin-sitemap": "^0.8.2"
   }
 }

@@ -9,12 +9,17 @@ import Cookies from 'js-cookie'
  */
 
 const axiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'https://api.banuatumpeng.com/api',
+  // BIANG KEROK 2 FIX: Hapus '/api' di ujung baseURL
+  // Pastikan VITE_API_URL di .env frontend Anda juga TANPA '/api' di belakangnya.
+  baseURL: import.meta.env.VITE_API_URL,
   headers: {
     'X-Requested-With': 'XMLHttpRequest',
     'Content-Type': 'application/json',
     'Accept': 'application/json'
-  }
+  },
+  // BIANG KEROK 1 FIX: WAJIB ADA UNTUK SANCTUM SPA!
+  withCredentials: true,
+  withXSRFToken: true
 })
 
 // Request Interceptor: Menambahkan token sebelum request dikirim

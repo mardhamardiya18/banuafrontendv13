@@ -17,7 +17,7 @@
       <template #cell-thumbnail="{ value }">
         <img :src="value" alt="" class="w-12 h-10 rounded-xl object-cover border border-gray-100" />
       </template>
-      <template #cell-name="{ value }"><span class="font-semibold text-gray-800">{{ value }}</span></template>
+      <template #cell-name_full="{ value }"><span class="font-semibold text-gray-800">{{ value }}</span></template>
       <template #cell-category_name="{ value, row }">
         <span class="px-2.5 py-1 rounded-lg bg-gray-100 text-xs font-medium text-gray-600">
           {{ value || row.category?.name || '-' }}
@@ -48,6 +48,13 @@
             <select v-model="form.category_id" required class="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:border-brand-maroon outline-none bg-white">
               <option value="" disabled>Pilih</option>
               <option v-for="c in cats" :key="c.id" :value="c.id">{{ c.name }}</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1.5">Induk Produk (Opsional)</label>
+            <select v-model="form.parent_id" class="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:border-brand-maroon outline-none bg-white">
+              <option :value="null">-- Produk Utama --</option>
+              <option v-for="p in parentProducts" :key="p.id" :value="p.id">{{ p.name }}</option>
             </select>
           </div>
           <div>
@@ -144,7 +151,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import DataTable from '../../components/admin/DataTable.vue'
 import BaseModal from '../../components/admin/BaseModal.vue'
 import ConfirmDialog from '../../components/admin/ConfirmDialog.vue'
@@ -159,14 +166,14 @@ const search = ref(''), perPage = ref(10)
 const showForm = ref(false), editItem = ref(null), saving = ref(false)
 const previewUrl = ref(null)
 const form = ref({ 
-  name: '', category_id: '', price: 0, cost: 0, description: '', 
+  name: '', category_id: '', parent_id: null, price: 0, cost: 0, description: '', 
   min_order: 15, is_active: true, is_recommended: false, discount: 0, thumbnail: null 
 })
 const showDel = ref(false), delTarget = ref(null), deleting = ref(false)
 
 const columns = [
   { key: 'thumbnail', label: 'Gambar' },
-  { key: 'name', label: 'Nama Produk' },
+  { key: 'name_full', label: 'Nama Produk' },
   { key: 'category_name', label: 'Kategori' },
   { key: 'price', label: 'Harga Jual' },
   { key: 'is_recommended', label: 'Reco' }
@@ -179,6 +186,13 @@ const fetchData = async (p = 1) => {
     if (r.status === 'success') { data.value = r.data; meta.value = r.meta }
   } finally { loading.value = false }
 }
+
+const parentProducts = computed(() => {
+  // Hanya tampilkan produk yang bukan turunan (parent_id null) 
+  // Dan sembunyikan diri sendiri saat edit untuk menghindari circular dependency
+  return store.products.filter(p => !p.parent_id && (!editItem.value || p.id !== editItem.value.id))
+})
+
 const onSearch = () => fetchData(1)
 
 const handleFileChange = (e) => {
@@ -196,7 +210,7 @@ const openForm = (item = null) => {
     previewUrl.value = item.thumbnail
   } else {
     form.value = { 
-      name: '', category_id: '', price: 0, cost: 0, description: '', 
+      name: '', category_id: '', parent_id: null, price: 0, cost: 0, description: '', 
       min_order: 15, is_active: true, is_recommended: false, discount: 0, thumbnail: null 
     }
     previewUrl.value = null
@@ -232,7 +246,12 @@ const handleDel = async () => {
   finally { deleting.value = false }
 }
 
-onMounted(async () => { await store.fetchCategories(); cats.value = store.categories; await fetchData() })
+onMounted(async () => { 
+  await store.fetchCategories(); 
+  cats.value = store.categories; 
+  await store.fetchProducts(); // Ambil data untuk dropdown parent
+  await fetchData() 
+})
 </script>
 
 <style scoped>

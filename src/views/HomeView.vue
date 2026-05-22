@@ -36,11 +36,11 @@
         </div>
         <div class="relative animate-fade-up-delay">
           <div class="relative rounded-4xl overflow-hidden shadow-2xl shadow-brand-maroon/10 ">
-            <img :src="heroImg" alt="Hero" class="w-full h-[500px] object-cover scale-105"/>
+            <img :src="heroImg" alt="Dapur Mamah Iis Hero" fetchpriority="high" class="w-full h-[500px] object-cover scale-105"/>
           </div>
           <div class="absolute -bottom-8 -left-8 bg-white/90 backdrop-blur-md p-5 rounded-3xl shadow-[0_20px_50px_rgba(105,11,34,0.15)] border border-brand-maroon/5 flex items-center gap-4 animate-float group hover:scale-105 transition-transform duration-500">
             <div class="bg-linear-to-br from-brand-terracotta to-brand-maroon p-3 rounded-2xl shadow-lg shadow-brand-terracotta/20">
-              <i class='bx bxs-dish text-white text-xl'></i>
+              <i class='bx bxs-dish text-white text-xl' aria-hidden="true"></i>
             </div>
             <div>
               <p class="font-black text-brand-maroon text-lg leading-none">5.000+</p>
@@ -49,7 +49,7 @@
           </div>
           <div class="absolute -top-8 -right-8 bg-white/90 backdrop-blur-md p-5 rounded-3xl shadow-[0_20px_50px_rgba(105,11,34,0.15)] border border-brand-maroon/5 flex items-center gap-4 animate-float" style="animation-delay: 1s;">
             <div class="bg-linear-to-r from-brand-terracotta to-brand-maroon p-3 rounded-2xl">
-              <i class='bx bxs-star text-white text-xl animate-pulse'></i>
+              <i class='bx bxs-star text-white text-xl animate-pulse' aria-hidden="true"></i>
             </div>
             <div>
               <p class="font-black text-brand-maroon text-lg leading-none">4.9/5</p>
@@ -70,7 +70,7 @@
           
           <div v-for="stat in stats" :key="stat.label" class="relative z-10 flex flex-col items-center p-4 hover:-translate-y-2 transition-transform duration-500 rounded-2xl hover:bg-white/5">
             <div class="w-16 h-16 bg-white/10 backdrop-blur-sm rounded-2xl flex items-center justify-center mb-4 shadow-inner">
-              <i :class="['bx text-3xl text-brand-terracotta', stat.icon]"></i>
+              <i :class="['bx text-3xl text-brand-terracotta', stat.icon]" aria-hidden="true"></i>
             </div>
             <p class="text-3xl md:text-4xl font-extrabold mb-1 bg-clip-text text-transparent bg-linear-to-r from-white to-white/70">{{ stat.value }}</p>
             <p class="text-sm text-white/70 font-medium">{{ stat.label }}</p>
@@ -91,7 +91,7 @@
         <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
           <div v-for="(service, i) in services" :key="service.title" class="bg-white/70 backdrop-blur-sm p-8 rounded-4xl border border-white hover:border-brand-terracotta/20 hover:shadow-2xl hover:shadow-brand-terracotta/5 hover:-translate-y-2 transition-all duration-500 group">
             <div class="w-14 h-14 bg-brand-terracotta/10 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-brand-terracotta group-hover:text-white transition-all duration-500">
-              <i :class="['bx text-3xl transition-colors duration-500', service.icon, 'text-brand-terracotta group-hover:text-white']"></i>
+              <i :class="['bx text-3xl transition-colors duration-500', service.icon, 'text-brand-terracotta group-hover:text-white']" aria-hidden="true"></i>
             </div>
             <h3 class="text-xl font-bold text-brand-maroon mb-3">{{ service.title }}</h3>
             <p class="text-brand-forest-dark/60 leading-relaxed text-sm">{{ service.desc }}</p>
@@ -111,10 +111,10 @@
               <h3 class="text-2xl md:text-3xl font-extrabold text-white">Ada acara spesial dalam waktu dekat?</h3>
               <p class="text-white/60 max-w-md">Konsultasikan kebutuhan catering Anda secara gratis. Kami bantu carikan paket terbaik!</p>
             </div>
-            <a href="https://wa.me/6285156253408?text=Halo%20Min!%20Ada%20rencana%20bikin%20acara%20nih,%20bisa%20bantu%20rekomendasiin%20paket%20yang%20pas%20ngga%3F" target="_blank" class="shrink-0 bg-brand-terracotta hover:bg-white hover:text-brand-maroon text-white font-bold px-10 py-4 rounded-full transition-all duration-300 active:scale-95 shadow-xl flex items-center gap-2 animate-shimmer group">
-              <i class='bx bxl-whatsapp text-2xl'></i>
+            <a href="https://wa.me/6285156253408?text=Halo%20Min!%20Ada%20rencana%20bikin%20acara%20nih,%20bisa%20bantu%20rekomendasiin%20paket%20yang%20pas%20ngga%3F" target="_blank" class="shrink-0 bg-brand-terracotta hover:bg-white hover:text-brand-maroon text-white font-bold px-10 py-4 rounded-full transition-all duration-300 active:scale-95 shadow-xl flex items-center gap-2 animate-shimmer group" aria-label="Konsultasi Gratis via WhatsApp">
+              <i class='bx bxl-whatsapp text-2xl' aria-hidden="true"></i>
               Konsultasi Gratis
-              <i class='bx bx-chevron-right text-2xl group-hover:translate-x-1 transition-transform'></i>
+              <i class='bx bx-chevron-right text-2xl group-hover:translate-x-1 transition-transform' aria-hidden="true"></i>
             </a>
           </div>
         </div>
@@ -133,7 +133,7 @@
           <div v-for="product in products" :key="product.name" class="group relative bg-white rounded-4xl overflow-hidden border border-white hover:border-brand-terracotta/20 hover:shadow-2xl hover:shadow-brand-terracotta/10 transition-all duration-500 hover:-translate-y-2">
             <!-- Image with overlay -->
             <div class="relative aspect-4/3 overflow-hidden">
-              <img :src="product.img" :alt="product.name" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"/>
+              <img :src="product.img" :alt="product.name" loading="lazy" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"/>
               <div class="absolute inset-0 bg-linear-to-t from-brand-maroon/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
               <!-- Price badge floating -->
               <div class="absolute top-4 right-4 bg-white/90 backdrop-blur-sm text-brand-terracotta text-xs font-bold px-3 py-1.5 rounded-full shadow-lg">
@@ -144,7 +144,7 @@
             <div class="p-6 space-y-3">
               <h3 class="text-lg font-bold text-brand-maroon group-hover:text-brand-terracotta transition-colors duration-300">{{ product.name }}</h3>
               <p class="text-sm text-brand-forest-dark/60 leading-relaxed line-clamp-2">{{ product.desc }}</p>
-              <button @click="$router.push({ path: '/katalog', query: { category: product.cat } })" class="w-full bg-brand-cream-light hover:bg-brand-terracotta text-brand-maroon hover:text-white font-semibold py-3 rounded-xl transition-all duration-300 text-sm">
+              <button @click="$router.push({ path: '/katalog', query: { category: product.cat } })" class="w-full bg-brand-cream-light hover:bg-brand-terracotta text-brand-maroon hover:text-white font-semibold py-3 rounded-xl transition-all duration-300 text-sm" :aria-label="'Lihat detail ' + product.name">
                 Lihat Detail
               </button>
             </div>
@@ -171,7 +171,7 @@
             <div class="absolute -right-6 -top-6 w-24 h-24 bg-brand-terracotta/5 rounded-full blur-2xl group-hover:bg-brand-terracotta/10 transition-colors duration-500"></div>
             
             <div class="w-16 h-16 bg-brand-cream-light rounded-2xl flex items-center justify-center mb-6 group-hover:bg-brand-terracotta transition-colors duration-500 shadow-sm relative z-10">
-              <i :class="['bx text-3xl text-brand-terracotta group-hover:text-white transition-colors duration-500', reason.icon]"></i>
+              <i :class="['bx text-3xl text-brand-terracotta group-hover:text-white transition-colors duration-500', reason.icon]" aria-hidden="true"></i>
             </div>
             <div class="relative z-10">
               <h4 class="text-lg font-bold text-brand-maroon mb-2 group-hover:text-brand-terracotta transition-colors duration-300">{{ reason.text }}</h4>
@@ -192,9 +192,9 @@
         </div>
         <div class="columns-1 sm:columns-2 lg:columns-3 gap-6 space-y-6">
           <div v-for="t in testimonials" :key="t.name" class="break-inside-avoid bg-white/80 backdrop-blur-sm p-6 rounded-4xl border border-white hover:border-brand-terracotta/10 hover:shadow-xl transition-all duration-500">
-            <img v-if="t.img" :src="t.img" :alt="t.name" class="w-full rounded-2xl mb-5 object-cover" :class="t.tall ? 'h-56' : 'h-40'"/>
+            <img v-if="t.img" :src="t.img" :alt="'Foto pelanggan ' + t.name" loading="lazy" class="w-full rounded-2xl mb-5 object-cover" :class="t.tall ? 'h-56' : 'h-40'"/>
             <div class="flex items-center gap-1 mb-3">
-              <i v-for="i in 5" :key="i" class='bx bxs-star text-amber-400 text-[15px]'></i>
+              <i v-for="i in 5" :key="i" class='bx bxs-star text-amber-400 text-[15px]' aria-hidden="true"></i>
             </div>
             <p class="text-brand-forest-dark/70 text-sm leading-relaxed italic mb-5">"{{ t.quote }}"</p>
             <div class="flex items-center gap-3">
@@ -214,11 +214,12 @@
       href="https://wa.me/6285156253408?text=Halo%20Min!%20Mau%20nanya-nanya%20dulu%20nih%20soal%20cateringnya,%20boleh%3F" 
       target="_blank" 
       class="fixed bottom-8 right-8 z-50 flex items-center justify-center w-16 h-16 bg-[#25D366] text-white rounded-full shadow-2xl hover:scale-110 active:scale-95 transition-all duration-300 group"
+      aria-label="Hubungi Admin via WhatsApp"
     >
       <!-- Ripple Effect Animation -->
       <span class="absolute inset-0 rounded-full bg-[#25D366] animate-ping opacity-20"></span>
       
-      <i class='bx bxl-whatsapp text-4xl relative z-10'></i>
+      <i class='bx bxl-whatsapp text-4xl relative z-10' aria-hidden="true"></i>
       
       <!-- Tooltip effect on hover -->
       <span class="absolute right-full mr-4 bg-brand-maroon text-white text-xs font-bold px-3 py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap shadow-xl">
