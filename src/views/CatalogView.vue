@@ -40,7 +40,11 @@
           <div class="absolute inset-0 pointer-events-none">
             <img 
               :src="bannerImg" 
-              alt="Promo Banner" 
+              alt="Promo Banner DMI Catering" 
+              loading="lazy"
+              decoding="async"
+              width="800"
+              height="400"
               class="h-full w-full object-cover object-right md:object-center transform scale-105 group-hover:scale-110 transition-transform duration-700"
             />
             <div class="absolute inset-0 bg-linear-to-r from-gray-950 via-gray-950/80 to-transparent"></div>

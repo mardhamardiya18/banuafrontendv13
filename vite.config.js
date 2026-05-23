@@ -45,6 +45,16 @@ export default defineConfig(async () => {
     build: {
       // Menggunakan pengaturan default untuk menghindari konflik esbuild di Vite v8
       chunkSizeWarningLimit: 1000,
+      cssCodeSplit: true,
+      rollupOptions: {
+        output: {
+          manualChunks(id) {
+            if (id.includes('node_modules/vue') || id.includes('node_modules/vue-router') || id.includes('node_modules/pinia')) {
+              return 'vendor-vue'
+            }
+          }
+        }
+      }
     },
     server: {
       host: '127.0.0.1',

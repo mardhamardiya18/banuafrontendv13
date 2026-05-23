@@ -13,6 +13,28 @@ html, body {
   overflow-x: hidden;
 }
 
+/* Override external Boxicons to ensure font-display: swap is used */
+@font-face {
+  font-family: 'boxicons';
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+  src: url('https://unpkg.com/boxicons@2.1.4/fonts/boxicons.woff2') format('woff2');
+}
+
+/* Accessibility: Skip navigation link */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
 @layer base {
   body {
     @apply bg-brand-cream-light text-brand-forest-dark;

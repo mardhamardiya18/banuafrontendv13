@@ -4,8 +4,8 @@
     class="bg-white rounded-4xl p-4 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all duration-300 relative group flex flex-col h-full decoration-none"
   >
     <!-- Heart Icon -->
-    <button @click.prevent.stop class="absolute top-4 right-4 z-10 text-gray-300 hover:text-brand-terracotta transition-colors">
-      <i class="bx bx-heart text-xl"></i>
+    <button @click.prevent.stop class="absolute top-4 right-4 z-10 text-gray-300 hover:text-brand-terracotta transition-colors" aria-label="Tandai sebagai favorit">
+      <i class="bx bx-heart text-xl" aria-hidden="true"></i>
     </button>
 
     <!-- Product Image in Circular Inset -->
@@ -13,6 +13,10 @@
       <img 
         :src="product.img" 
         :alt="product.name" 
+        loading="lazy"
+        decoding="async"
+        width="160"
+        height="160"
         class="w-full h-full object-cover rounded-full bg-gray-100" 
         @error="(e) => e.target.src = 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&q=80&w=400'"
       />
@@ -32,7 +36,7 @@
           </span>
         </div>
         <div class="flex items-center gap-1 shrink-0 ml-auto pt-0.5">
-          <i class="bx bxs-star text-amber-400 text-[10px] sm:text-xs"></i>
+          <i class="bx bxs-star text-amber-400 text-[10px] sm:text-xs" aria-hidden="true"></i>
           <span class="text-[10px] sm:text-[11px] font-medium text-gray-400">{{ product.rating }}</span>
         </div>
       </div>
@@ -43,8 +47,8 @@
           <span class="text-[10px] text-gray-400 font-medium -mb-1">Mulai dari</span>
           <p class="text-[15px] font-extrabold text-gray-900">Rp {{ Number(product.price || 0).toLocaleString('id-ID') }}</p>
         </div>
-        <button @click.prevent.stop class="w-8 h-8 rounded-xl bg-brand-terracotta text-white flex items-center justify-center hover:bg-brand-maroon transition-colors shadow-sm active:scale-90">
-          <i class="bx bx-plus text-lg"></i>
+        <button @click.prevent.stop class="w-8 h-8 rounded-xl bg-brand-terracotta text-white flex items-center justify-center hover:bg-brand-maroon transition-colors shadow-sm active:scale-90" :aria-label="'Tambah ' + product.name + ' ke keranjang'">
+          <i class="bx bx-plus text-lg" aria-hidden="true"></i>
         </button>
       </div>
     </div>

@@ -3,10 +3,10 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 flex items-center justify-between">
       <!-- Logo Section -->
       <router-link to="/" class="flex items-center gap-3 group">
-        <img :src="logo" alt="Logo" class="h-10 w-auto group-hover:scale-110 transition-transform duration-300">
+        <img :src="logo" alt="Logo DMI Catering" width="40" height="40" class="h-10 w-auto group-hover:scale-110 transition-transform duration-300">
         <div class="flex flex-col">
           <span class="text-2xl font-extrabold text-brand-maroon tracking-tight">DMI Catering</span>
-          <small class="text-xs text-brand-forest-dark/60 font-medium">By Dapur Mamah Iis</small>
+          <small class="text-xs text-brand-forest-dark/80 font-semibold">By Dapur Mamah Iis</small>
         </div>
       </router-link>
 
@@ -42,18 +42,18 @@
             class="w-10 h-10 rounded-full overflow-hidden border-2 border-brand-maroon/20 shadow-sm shrink-0 hover:scale-110 hover:border-brand-maroon transition-all duration-300 cursor-pointer group/avatar"
             title="Dashboard Admin"
           >
-            <img src="https://placehold.co/100x100/690B22/fff?text=Admin" alt="Admin" class="w-full h-full object-cover" />
+            <img src="https://placehold.co/100x100/690B22/fff?text=Admin" alt="Admin" width="40" height="40" class="w-full h-full object-cover" />
           </router-link>
           
           <!-- Regular User Profile -->
           <div v-else class="w-10 h-10 rounded-full overflow-hidden border-2 border-white shadow-sm shrink-0">
-            <img src="https://placehold.co/100x100/E07A5F/fff?text=User" alt="Profile" class="w-full h-full object-cover" />
+            <img src="https://placehold.co/100x100/E07A5F/fff?text=User" alt="Profile" width="40" height="40" class="w-full h-full object-cover" />
           </div>
         </template>
 
         <!-- Mobile Toggle (Only if menu is shown) -->
-        <button v-if="showMenu" @click="mobileMenu = !mobileMenu" class="md:hidden text-brand-maroon">
-          <i :class="['bx text-3xl transition-transform duration-300', mobileMenu ? 'bx-x rotate-90' : 'bx-menu']"></i>
+        <button v-if="showMenu" @click="mobileMenu = !mobileMenu" class="md:hidden text-brand-maroon" aria-label="Buka menu navigasi">
+          <i :class="['bx text-3xl transition-transform duration-300', mobileMenu ? 'bx-x rotate-90' : 'bx-menu']" aria-hidden="true"></i>
         </button>
       </div>
     </div>
@@ -84,7 +84,7 @@
 <script setup>
 import { ref, defineProps } from 'vue'
 import { useAuthStore } from '../../stores/auth'
-import logo from '../../assets/images/logo.png'
+import logo from '../../assets/images/logo.webp'
 
 const props = defineProps({
   showMenu: {

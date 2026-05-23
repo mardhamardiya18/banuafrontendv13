@@ -1,9 +1,13 @@
 <template>
   <div class="bg-[#FDFBF7] min-h-screen">
 
+    <!-- Skip to main content for accessibility -->
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[100] focus:bg-brand-maroon focus:text-white focus:px-4 focus:py-2 focus:rounded-lg">Langsung ke konten utama</a>
+
     <!-- NAVBAR (Consistent with Catalog & Detail) -->
     <TopNav />
 
+    <main id="main-content">
     <!-- HERO -->
     <section id="home" class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-32 pb-20 md:pt-48 md:pb-32 scroll-mt-24">
       <!-- Decorative blobs -->
@@ -11,11 +15,11 @@
       <div class="absolute bottom-0 right-0 w-96 h-96 bg-brand-maroon/5 blob blur-3xl"></div>
       <div class="relative grid md:grid-cols-2 gap-16 items-center">
         <div class="space-y-4 lg:space-y-8 animate-fade-up">
-          <span class="inline-block bg-brand-terracotta/10 text-brand-terracotta text-xs font-bold uppercase tracking-widest px-4 py-2 rounded-full">🍽️ Layanan Catering Banjarbaru & Sekitarnya</span>
+          <span class="inline-block bg-brand-terracotta/10 text-brand-terracotta text-xs font-bold uppercase tracking-widest px-4 py-2 rounded-full" aria-label="Layanan Catering Banjarbaru dan Sekitarnya">🍽️ Layanan Catering Banjarbaru & Sekitarnya</span>
           <h1 class=" text-center lg:text-left text-5xl font-extrabold text-brand-maroon leading-[1.3] tracking-tight">
             Pesan Tumpeng & Catering No.1 di Banjarbaru & Banjarmasin
           </h1>
-          <p class=" text-center lg:text-left text-base  text-brand-forest-dark/70 leading-relaxed max-w-lg">
+          <p class=" text-center lg:text-left text-base text-brand-forest-dark/85 leading-relaxed max-w-lg">
             Juaranya se-Banua! Kami siap maantarakan tumpeng, prasmanan, dan nasi kotak nang nyaman gasan berbagai acara pian di Banjarbaru, Banjarmasin, hingga Martapura.
           </p>
           <div class="flex flex-col sm:flex-row gap-4 mt-10 lg:mt-0">
@@ -27,16 +31,16 @@
           </div>
           <div class="flex items-center gap-3 pt-2">
             <div class="flex -space-x-3">
-              <img src="https://placehold.co/40x40/690B22/fff?text=A" class="w-10 h-10 rounded-full border-2 border-brand-cream-light" alt="avatar"/>
-              <img src="https://placehold.co/40x40/E07A5F/fff?text=B" class="w-10 h-10 rounded-full border-2 border-brand-cream-light" alt="avatar"/>
-              <img src="https://placehold.co/40x40/1B4D3E/fff?text=C" class="w-10 h-10 rounded-full border-2 border-brand-cream-light" alt="avatar"/>
+              <span class="w-10 h-10 rounded-full border-2 border-brand-cream-light bg-brand-maroon text-white text-xs font-bold flex items-center justify-center" aria-hidden="true">A</span>
+              <span class="w-10 h-10 rounded-full border-2 border-brand-cream-light bg-brand-terracotta text-white text-xs font-bold flex items-center justify-center" aria-hidden="true">B</span>
+              <span class="w-10 h-10 rounded-full border-2 border-brand-cream-light bg-brand-forest-dark text-white text-xs font-bold flex items-center justify-center" aria-hidden="true">C</span>
             </div>
-            <p class="text-sm text-brand-forest-dark/60"><span class="font-bold text-brand-maroon">1.000+</span> pelanggan puas</p>
+            <p class="text-sm text-brand-forest-dark/80"><span class="font-bold text-brand-maroon">1.000+</span> pelanggan puas</p>
           </div>
         </div>
         <div class="relative animate-fade-up-delay">
           <div class="relative rounded-4xl overflow-hidden shadow-2xl shadow-brand-maroon/10 ">
-            <img :src="heroImg" alt="Dapur Mamah Iis Hero" fetchpriority="high" class="w-full h-[500px] object-cover scale-105"/>
+            <img :src="heroImg" alt="Sajian tumpeng dan catering Dapur Mamah Iis" fetchpriority="high" width="600" height="500" class="w-full h-[500px] object-cover scale-105"/>
           </div>
           <div class="absolute -bottom-8 -left-8 bg-white/90 backdrop-blur-md p-5 rounded-3xl shadow-[0_20px_50px_rgba(105,11,34,0.15)] border border-brand-maroon/5 flex items-center gap-4 animate-float group hover:scale-105 transition-transform duration-500">
             <div class="bg-linear-to-br from-brand-terracotta to-brand-maroon p-3 rounded-2xl shadow-lg shadow-brand-terracotta/20">
@@ -73,7 +77,7 @@
               <i :class="['bx text-3xl text-brand-terracotta', stat.icon]" aria-hidden="true"></i>
             </div>
             <p class="text-3xl md:text-4xl font-extrabold mb-1 bg-clip-text text-transparent bg-linear-to-r from-white to-white/70">{{ stat.value }}</p>
-            <p class="text-sm text-white/70 font-medium">{{ stat.label }}</p>
+            <p class="text-sm text-white/80 font-medium">{{ stat.label }}</p>
           </div>
         </div>
       </div>
@@ -86,7 +90,7 @@
         <div class="text-center mb-16 max-w-2xl mx-auto">
           <p class="text-sm font-bold uppercase tracking-widest text-brand-terracotta mb-4">Layanan Kami</p>
           <h2 class="text-3xl sm:text-4xl font-extrabold text-brand-maroon tracking-tight mb-4">Solusi Lengkap untuk Acara Anda</h2>
-          <p class="text-brand-forest-dark/60">Dari persiapan hingga pelaksanaan, kami siap membantu.</p>
+          <p class="text-brand-forest-dark/80">Dari persiapan hingga pelaksanaan, kami siap membantu.</p>
         </div>
         <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
           <div v-for="(service, i) in services" :key="service.title" class="bg-white/70 backdrop-blur-sm p-8 rounded-4xl border border-white hover:border-brand-terracotta/20 hover:shadow-2xl hover:shadow-brand-terracotta/5 hover:-translate-y-2 transition-all duration-500 group">
@@ -94,7 +98,7 @@
               <i :class="['bx text-3xl transition-colors duration-500', service.icon, 'text-brand-terracotta group-hover:text-white']" aria-hidden="true"></i>
             </div>
             <h3 class="text-xl font-bold text-brand-maroon mb-3">{{ service.title }}</h3>
-            <p class="text-brand-forest-dark/60 leading-relaxed text-sm">{{ service.desc }}</p>
+            <p class="text-brand-forest-dark/80 leading-relaxed text-sm">{{ service.desc }}</p>
           </div>
         </div>
       </div>
@@ -109,7 +113,7 @@
           <div class="relative flex flex-col md:flex-row items-center justify-between gap-8">
             <div class="space-y-3 text-center md:text-left">
               <h3 class="text-2xl md:text-3xl font-extrabold text-white">Ada acara spesial dalam waktu dekat?</h3>
-              <p class="text-white/60 max-w-md">Konsultasikan kebutuhan catering Anda secara gratis. Kami bantu carikan paket terbaik!</p>
+              <p class="text-white/80 max-w-md">Konsultasikan kebutuhan catering Anda secara gratis. Kami bantu carikan paket terbaik!</p>
             </div>
             <a href="https://wa.me/6285156253408?text=Halo%20Min!%20Ada%20rencana%20bikin%20acara%20nih,%20bisa%20bantu%20rekomendasiin%20paket%20yang%20pas%20ngga%3F" target="_blank" class="shrink-0 bg-brand-terracotta hover:bg-white hover:text-brand-maroon text-white font-bold px-10 py-4 rounded-full transition-all duration-300 active:scale-95 shadow-xl flex items-center gap-2 animate-shimmer group" aria-label="Konsultasi Gratis via WhatsApp">
               <i class='bx bxl-whatsapp text-2xl' aria-hidden="true"></i>
@@ -127,13 +131,13 @@
         <div class="text-center mb-16 max-w-2xl mx-auto">
           <p class="text-sm font-bold uppercase tracking-widest text-brand-terracotta mb-4">Menu Pilihan</p>
           <h2 class="text-3xl sm:text-4xl font-extrabold text-brand-maroon tracking-tight mb-4">Produk Unggulan Kami</h2>
-          <p class="text-brand-forest-dark/60">Dibuat dari bahan terbaik dengan cinta dan keahlian.</p>
+          <p class="text-brand-forest-dark/80">Dibuat dari bahan terbaik dengan cinta dan keahlian.</p>
         </div>
         <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
           <div v-for="product in products" :key="product.name" class="group relative bg-white rounded-4xl overflow-hidden border border-white hover:border-brand-terracotta/20 hover:shadow-2xl hover:shadow-brand-terracotta/10 transition-all duration-500 hover:-translate-y-2">
             <!-- Image with overlay -->
             <div class="relative aspect-4/3 overflow-hidden">
-              <img :src="product.img" :alt="product.name" loading="lazy" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"/>
+              <img :src="product.img" :alt="product.name" loading="lazy" decoding="async" width="400" height="300" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"/>
               <div class="absolute inset-0 bg-linear-to-t from-brand-maroon/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
               <!-- Price badge floating -->
               <div class="absolute top-4 right-4 bg-white/90 backdrop-blur-sm text-brand-terracotta text-xs font-bold px-3 py-1.5 rounded-full shadow-lg">
@@ -143,7 +147,7 @@
             <!-- Content -->
             <div class="p-6 space-y-3">
               <h3 class="text-lg font-bold text-brand-maroon group-hover:text-brand-terracotta transition-colors duration-300">{{ product.name }}</h3>
-              <p class="text-sm text-brand-forest-dark/60 leading-relaxed line-clamp-2">{{ product.desc }}</p>
+              <p class="text-sm text-brand-forest-dark/80 leading-relaxed line-clamp-2">{{ product.desc }}</p>
               <button @click="$router.push({ path: '/katalog', query: { category: product.cat } })" class="w-full bg-brand-cream-light hover:bg-brand-terracotta text-brand-maroon hover:text-white font-semibold py-3 rounded-xl transition-all duration-300 text-sm" :aria-label="'Lihat detail ' + product.name">
                 Lihat Detail
               </button>
@@ -162,7 +166,7 @@
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div class="text-center mb-14 max-w-2xl mx-auto">
           <p class="text-sm font-bold uppercase tracking-widest text-brand-terracotta mb-3">Keunggulan Kami</p>
-          <h3 class="text-3xl md:text-4xl font-extrabold text-brand-maroon tracking-tight">Kenapa Memilih Kami?</h3>
+          <h2 class="text-3xl md:text-4xl font-extrabold text-brand-maroon tracking-tight">Kenapa Memilih Kami?</h2>
         </div>
         <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
           <div v-for="(reason, index) in whyUs" :key="reason.text" 
@@ -174,8 +178,8 @@
               <i :class="['bx text-3xl text-brand-terracotta group-hover:text-white transition-colors duration-500', reason.icon]" aria-hidden="true"></i>
             </div>
             <div class="relative z-10">
-              <h4 class="text-lg font-bold text-brand-maroon mb-2 group-hover:text-brand-terracotta transition-colors duration-300">{{ reason.text }}</h4>
-              <p class="text-sm text-brand-forest-dark/60 leading-relaxed">{{ reason.sub }}</p>
+              <h3 class="text-lg font-bold text-brand-maroon mb-2 group-hover:text-brand-terracotta transition-colors duration-300">{{ reason.text }}</h3>
+              <p class="text-sm text-brand-forest-dark/80 leading-relaxed">{{ reason.sub }}</p>
             </div>
           </div>
         </div>
@@ -192,19 +196,21 @@
         </div>
         <div class="columns-1 sm:columns-2 lg:columns-3 gap-6 space-y-6">
           <div v-for="t in testimonials" :key="t.name" class="break-inside-avoid bg-white/80 backdrop-blur-sm p-6 rounded-4xl border border-white hover:border-brand-terracotta/10 hover:shadow-xl transition-all duration-500">
-            <img v-if="t.img" :src="t.img" :alt="'Foto pelanggan ' + t.name" loading="lazy" class="w-full rounded-2xl mb-5 object-cover" :class="t.tall ? 'h-56' : 'h-40'"/>
+            <img v-if="t.img" :src="t.img" :alt="'Foto pelanggan ' + t.name" loading="lazy" decoding="async" width="400" :height="t.tall ? 224 : 160" class="w-full rounded-2xl mb-5 object-cover" :class="t.tall ? 'h-56' : 'h-40'"/>
             <div class="flex items-center gap-1 mb-3">
               <i v-for="i in 5" :key="i" class='bx bxs-star text-amber-400 text-[15px]' aria-hidden="true"></i>
             </div>
-            <p class="text-brand-forest-dark/70 text-sm leading-relaxed italic mb-5">"{{ t.quote }}"</p>
+            <p class="text-brand-forest-dark/85 text-sm leading-relaxed italic mb-5">"{{ t.quote }}"</p>
             <div class="flex items-center gap-3">
               <div class="w-10 h-10 rounded-full bg-brand-terracotta/10 flex items-center justify-center font-bold text-brand-terracotta text-sm">{{ t.name.charAt(0) }}</div>
-              <div><p class="font-bold text-brand-maroon text-sm">{{ t.name }}</p><p class="text-xs text-brand-forest-dark/40">{{ t.org }}</p></div>
+              <div><p class="font-bold text-brand-maroon text-sm">{{ t.name }}</p><p class="text-xs text-brand-forest-dark/70">{{ t.org }}</p></div>
             </div>
           </div>
         </div>
       </div>
     </section>
+
+    </main>
 
     <!-- FOOTER (Consistent Modular Component) -->
     <Footer />
@@ -232,8 +238,8 @@
 <script setup>
 import { ref } from 'vue'
 import { useAuthStore } from '../stores/auth'
-import logo from '../assets/images/logo.png'
-import heroImg from '../assets/images/hero-img.png'
+import logo from '../assets/images/logo.webp'
+const heroImg = '/hero-img.webp'
 import naskotImg from '../assets/images/naskot.webp'
 import tumpengImg from '../assets/images/tumpeng.webp'
 import tuminiImg from '../assets/images/tumini.webp'
@@ -261,7 +267,7 @@ const products = [
 const testimonials = [
   { name: 'Ibu Sari', org: 'PT. Maju Bersama', quote: 'Rasa makanannya luar biasa dan pelayanannya sangat profesional. Semua tamu puas!', img: testi1Img, tall: false },
   { name: 'Pak Ahmad', org: 'Dinas Pendidikan', quote: 'Sudah 3 tahun berlangganan untuk acara dinas. Tidak pernah mengecewakan.', img: null, tall: false },
-  { name: 'Bella & Rizky', org: 'Wedding Reception', quote: 'Prasmanan pernikahan kami ditangani dengan sempurna. Dekorasinya cantik!', img: 'https://placehold.co/400x320/690B22/fff?text=Wedding', tall: true },
+  { name: 'Bella & Rizky', org: 'Wedding Reception', quote: 'Prasmanan pernikahan kami ditangani dengan sempurna. Dekorasinya cantik!', img: null, tall: true },
   { name: 'Hj. Fatimah', org: 'Arisan RT 05', quote: 'Nasi kotaknya enak dan harganya sangat terjangkau. Cocok untuk pengajian.', img: null, tall: false },
   { name: 'David Chen', org: 'StartUp Borneo', quote: 'Tim kami selalu order tumpeng untuk perayaan milestone. Kualitas terbaik!', img: testi2Img, tall: false }
 ]
