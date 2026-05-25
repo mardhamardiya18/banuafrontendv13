@@ -96,7 +96,7 @@ const showDel = ref(false), delTarget = ref(null), deleting = ref(false)
 const selectOptions = computed(() => {
   return [
     { id: null, name: 'Add-on Umum (Semua Produk)' },
-    ...products.value
+    ...products.value.filter(p => p.parent_id === null)
   ]
 })
 

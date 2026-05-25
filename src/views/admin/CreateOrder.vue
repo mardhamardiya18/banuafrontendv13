@@ -261,7 +261,11 @@ const getAvailableAddons = (item) => {
   if (!item.product_id) return refAddons.value
   const p = getProduct(item.product_id)
   if (!p) return refAddons.value
-  return refAddons.value.filter(a => a.product_id === p.id || !a.product_id)
+  return refAddons.value.filter(a => 
+    !a.product_id || 
+    a.product_id === p.id || 
+    (p.parent_id && a.product_id === p.parent_id)
+  )
 }
 
 const getUnderMinOrderFee = (item) => {
