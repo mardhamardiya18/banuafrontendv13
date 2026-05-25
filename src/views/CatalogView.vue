@@ -3,7 +3,7 @@
     <TopNav :showMenu="false" />
     
     <!-- Loading Overlay -->
-    <div v-if="loading" class="fixed inset-0 z-[100] bg-white/90 backdrop-blur-lg flex flex-col items-center justify-center">
+    <div v-if="loading" class="fixed inset-0 z-100 bg-white/90 backdrop-blur-lg flex flex-col items-center justify-center">
       <div class="relative w-20 h-20">
         <div class="absolute inset-0 border-4 border-brand-terracotta/20 rounded-full"></div>
         <div class="absolute inset-0 border-4 border-brand-terracotta rounded-full border-t-transparent animate-spin"></div>
@@ -23,7 +23,7 @@
 
       <!-- New Banner Section -->
       <div class="px-6 mt-6">
-        <div class="relative bg-gray-900 rounded-[2rem] p-6 md:p-10 overflow-hidden flex items-center min-h-[160px] md:min-h-[220px] shadow-xl border border-white/10 group">
+        <div class="relative bg-gray-900 rounded-4xl p-6 md:p-10 overflow-hidden flex items-center min-h-[160px] md:min-h-[220px] shadow-xl border border-white/10 group">
           <div class="relative z-10 w-[60%] md:w-1/2">
             <h3 class="text-lg md:text-3xl font-extrabold text-white leading-tight mb-1.5 md:mb-3">
               Sajian Istimewa <br class="hidden md:block"/> 

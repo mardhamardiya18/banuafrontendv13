@@ -186,7 +186,7 @@
         <div class="grid sm:grid-cols-2 gap-5">
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1.5">Jumlah Dibayar</label>
-            <input v-model.number="form.paid_amount" type="number" min="0" class="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm outline-none focus:border-brand-maroon/40 focus:ring-2 focus:ring-brand-maroon/10 transition-all" placeholder="0" />
+            <input v-model="formattedPaidAmount" type="text" class="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm outline-none focus:border-brand-maroon/40 focus:ring-2 focus:ring-brand-maroon/10 transition-all" placeholder="0" />
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1.5">Status Pembayaran</label>
@@ -240,6 +240,14 @@ const form = ref({
   delivery_date: defaultDateTime, delivery_type: 'delivery', delivery_notes: '',
   payment_status: 'unpaid', paid_amount: 0, order_status: 'pending',
   items: []
+})
+
+const formattedPaidAmount = computed({
+  get() { return form.value.paid_amount ? form.value.paid_amount.toLocaleString('id-ID') : '' },
+  set(val) {
+    const rawValue = val.toString().replace(/\D/g, '')
+    form.value.paid_amount = rawValue ? parseInt(rawValue, 10) : 0
+  }
 })
 
 // --- Helpers ---
@@ -334,7 +342,30 @@ const submitOrder = async () => {
         }
       })
     }
-    await orderApi.create(payload)
+    const res = await orderApi.create(payload)
+    
+    // Workaround: Jika REST API backend mengabaikan input status & paid_amount saat create order awal
+    // (seringkali otomatis di-set ke pending/unpaid/0), kita paksa update via endpoint status 
+    // jika user mengisinya dengan nilai yang berbeda.
+    if (res.status === 'success' && res.data && res.data.id) {
+      const createdOrder = res.data
+      const currentOrderStat = createdOrder.status?.order || 'pending'
+      const currentPayStat = createdOrder.status?.payment || 'unpaid'
+      const currentPaid = createdOrder.finance?.paid_amount || 0
+
+      if (
+        currentOrderStat !== form.value.order_status || 
+        currentPayStat !== form.value.payment_status || 
+        currentPaid !== form.value.paid_amount
+      ) {
+        await orderApi.updateStatus(createdOrder.id, {
+          order_status: form.value.order_status,
+          payment_status: form.value.payment_status,
+          paid_amount: form.value.paid_amount
+        })
+      }
+    }
+
     store.showToast('Order berhasil dibuat!')
     router.push({ name: 'AdminOrders' })
   } finally { saving.value = false }

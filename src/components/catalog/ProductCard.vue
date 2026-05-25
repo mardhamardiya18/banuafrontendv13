@@ -29,7 +29,7 @@
       <div class="flex items-start justify-between gap-2 mt-auto mb-3 w-full">
         <div class="flex-1 flex items-center min-w-0">
           <span 
-            class="inline-block text-[9px] sm:text-[10px] font-bold px-2 sm:px-2.5 py-0.5 rounded-full w-auto max-w-full break-words text-left leading-tight"
+            class="inline-block text-[9px] sm:text-[10px] font-bold px-2 sm:px-2.5 py-0.5 rounded-full w-auto max-w-full wrap-break-words text-left leading-tight"
             :class="getCategoryBadgeClass(product.categoryName)"
           >
             {{ product.categoryName }}

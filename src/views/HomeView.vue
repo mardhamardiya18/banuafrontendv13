@@ -2,7 +2,7 @@
   <div class="bg-[#FDFBF7] min-h-screen">
 
     <!-- Skip to main content for accessibility -->
-    <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[100] focus:bg-brand-maroon focus:text-white focus:px-4 focus:py-2 focus:rounded-lg">Langsung ke konten utama</a>
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-100 focus:bg-brand-maroon focus:text-white focus:px-4 focus:py-2 focus:rounded-lg">Langsung ke konten utama</a>
 
     <!-- NAVBAR (Consistent with Catalog & Detail) -->
     <TopNav />

@@ -46,7 +46,7 @@
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1.5">Harga Jual (Rp)</label>
-          <input v-model.number="form.price" type="number" required class="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:border-brand-maroon outline-none" />
+          <input v-model="formattedPrice" type="text" required class="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:border-brand-maroon outline-none" />
         </div>
         <div>
           <label class="flex items-center gap-2 cursor-pointer group">
@@ -82,6 +82,15 @@ const loading = ref(false), data = ref([]), meta = ref(null), products = ref([])
 const search = ref(''), perPage = ref(10)
 const showForm = ref(false), editItem = ref(null), saving = ref(false)
 const form = ref({ name: '', product_id: null, price: 0, is_active: true })
+
+const formattedPrice = computed({
+  get() { return form.value.price ? form.value.price.toLocaleString('id-ID') : '' },
+  set(val) {
+    const rawValue = val.toString().replace(/\D/g, '')
+    form.value.price = rawValue ? parseInt(rawValue, 10) : 0
+  }
+})
+
 const showDel = ref(false), delTarget = ref(null), deleting = ref(false)
 
 const selectOptions = computed(() => {

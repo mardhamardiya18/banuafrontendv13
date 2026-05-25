@@ -66,11 +66,11 @@
         <div class="grid sm:grid-cols-3 gap-5">
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1.5">Harga Jual</label>
-            <input v-model.number="form.price" type="number" required class="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:border-brand-maroon outline-none" />
+            <input v-model="formattedPrice" type="text" required class="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:border-brand-maroon outline-none" />
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1.5">Harga Modal (Cost)</label>
-            <input v-model.number="form.cost" type="number" required class="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:border-brand-maroon outline-none" />
+            <input v-model="formattedCost" type="text" required class="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:border-brand-maroon outline-none" />
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1.5">Diskon (%)</label>
@@ -169,6 +169,23 @@ const form = ref({
   name: '', category_id: '', parent_id: null, price: 0, cost: 0, description: '', 
   min_order: 15, is_active: true, is_recommended: false, discount: 0, thumbnail: null 
 })
+
+const formattedPrice = computed({
+  get() { return form.value.price ? form.value.price.toLocaleString('id-ID') : '' },
+  set(val) {
+    const rawValue = val.toString().replace(/\D/g, '')
+    form.value.price = rawValue ? parseInt(rawValue, 10) : 0
+  }
+})
+
+const formattedCost = computed({
+  get() { return form.value.cost ? form.value.cost.toLocaleString('id-ID') : '' },
+  set(val) {
+    const rawValue = val.toString().replace(/\D/g, '')
+    form.value.cost = rawValue ? parseInt(rawValue, 10) : 0
+  }
+})
+
 const showDel = ref(false), delTarget = ref(null), deleting = ref(false)
 
 const columns = [
