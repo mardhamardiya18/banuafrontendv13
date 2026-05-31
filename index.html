@@ -41,13 +41,16 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
     <link rel="preload" as="style" href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet' media="print" onload="this.media='all'">
+    <!-- Preload Boxicons font file to fix font-display warning -->
+    <link rel="preload" as="font" href="https://unpkg.com/boxicons@2.1.4/fonts/boxicons.woff2" type="font/woff2" crossorigin>
     <noscript>
       <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
       <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     </noscript>
     
-    <!-- Preload LCP Image for Mobile & Desktop -->
-    <link rel="preload" as="image" href="/hero-img.webp" type="image/webp" fetchpriority="high">
+    <!-- Preload LCP Image: mobile-first (smaller image) -->
+    <link rel="preload" as="image" href="/hero-img-mobile.webp" type="image/webp" media="(max-width: 767px)" fetchpriority="high">
+    <link rel="preload" as="image" href="/hero-img.webp" type="image/webp" media="(min-width: 768px)" fetchpriority="high">
   </head>
   <body>
     <div id="app"></div>

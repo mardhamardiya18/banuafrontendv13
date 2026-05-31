@@ -1,230 +1,247 @@
 <template>
-  <div class="space-y-6 max-w-5xl">
+  <div class="h-full min-h-[calc(100vh-6rem)] flex flex-col gap-4">
     <!-- Header -->
-    <div class="flex items-center gap-4">
-      <router-link :to="{ name: 'AdminOrders' }" class="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-white text-gray-400 hover:text-gray-700 transition-colors">
-        <i class="bx bx-arrow-back text-xl"></i>
-      </router-link>
-      <div>
-        <h1 class="text-2xl font-bold text-gray-900">Buat Order Manual</h1>
-        <p class="text-sm text-gray-500 mt-0.5">Catat pesanan dari customer yang order langsung.</p>
+    <div class="flex items-center justify-between shrink-0">
+      <div class="flex items-center gap-4">
+        <router-link :to="{ name: 'AdminOrders' }" class="w-10 h-10 flex items-center justify-center rounded-xl bg-white border border-gray-200 hover:bg-gray-50 text-gray-600 transition-colors shadow-sm">
+          <i class="bx bx-arrow-back text-xl"></i>
+        </router-link>
+        <div>
+          <h1 class="text-xl sm:text-2xl font-bold text-gray-900 leading-tight">Point of Sale</h1>
+          <p class="text-xs sm:text-sm text-gray-500">Buat pesanan baru secara manual</p>
+        </div>
+      </div>
+      <div class="hidden sm:block text-right">
+        <p class="text-sm font-bold text-gray-800">{{ new Date().toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) }}</p>
       </div>
     </div>
 
-    <!-- Step Indicator -->
-    <div class="flex items-center gap-3 overflow-x-auto pb-2">
-      <button v-for="(s, i) in stepLabels" :key="i" @click="step > i + 1 && (step = i + 1)"
-        class="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all whitespace-nowrap"
-        :class="step === i+1 ? 'bg-brand-maroon text-white shadow-sm' : step > i+1 ? 'bg-brand-maroon/10 text-brand-maroon cursor-pointer' : 'bg-gray-100 text-gray-400'">
-        <span class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold" :class="step > i+1 ? 'bg-brand-maroon text-white' : step === i+1 ? 'bg-white/20' : 'bg-gray-200'">
-          <i v-if="step > i+1" class="bx bx-check"></i><span v-else>{{ i+1 }}</span>
-        </span>
-        {{ s }}
-      </button>
-    </div>
-
-    <!-- Step 1: Customer Info -->
-    <div v-if="step === 1" class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-5 animate-fade-up">
-      <h3 class="text-lg font-bold text-gray-800">Informasi Pelanggan</h3>
-      <div class="grid sm:grid-cols-2 gap-5">
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1.5">Nama Pelanggan *</label>
-          <input v-model="form.customer_name" type="text" required class="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm outline-none focus:border-brand-maroon/40 focus:ring-2 focus:ring-brand-maroon/10 transition-all" placeholder="Nama lengkap" />
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1.5">No. Telepon *</label>
-          <input v-model="form.customer_phone" type="tel" required class="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm outline-none focus:border-brand-maroon/40 focus:ring-2 focus:ring-brand-maroon/10 transition-all" placeholder="08xxxxxxxxxx" />
-        </div>
-      </div>
-      <div class="grid sm:grid-cols-2 gap-5">
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1.5">Alamat Pengiriman *</label>
-          <textarea v-model="form.delivery_address" rows="2" class="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm outline-none focus:border-brand-maroon/40 focus:ring-2 focus:ring-brand-maroon/10 transition-all resize-none" placeholder="Alamat lengkap"></textarea>
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1.5">Link Google Maps</label>
-          <textarea v-model="form.customer_maps" rows="2" class="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm outline-none focus:border-brand-maroon/40 focus:ring-2 focus:ring-brand-maroon/10 transition-all resize-none" placeholder="Masukkan link Gmaps"></textarea>
-        </div>
-      </div>
-      <div class="grid sm:grid-cols-3 gap-5">
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1.5">Tanggal & Waktu Kirim *</label>
-          <input v-model="form.delivery_date" type="datetime-local" required class="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm outline-none focus:border-brand-maroon/40 focus:ring-2 focus:ring-brand-maroon/10 transition-all" />
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1.5">Tipe Pengiriman</label>
-          <select v-model="form.delivery_type" class="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm outline-none focus:border-brand-maroon/40 focus:ring-2 focus:ring-brand-maroon/10 transition-all bg-white">
-            <option value="delivery">Delivery (Antar)</option>
-            <option value="pickup">Pickup (Ambil Sendiri)</option>
-          </select>
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1.5">Catatan Kirim</label>
-          <input v-model="form.delivery_notes" type="text" class="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm outline-none focus:border-brand-maroon/40 focus:ring-2 focus:ring-brand-maroon/10 transition-all" placeholder="Opsional" />
-        </div>
-      </div>
-      <div class="flex justify-end pt-2">
-        <button @click="goStep2" class="flex items-center gap-2 bg-brand-maroon hover:bg-brand-maroon/90 text-white text-sm font-semibold px-6 py-3 rounded-xl transition-colors shadow-sm disabled:opacity-60">Lanjut — Pilih Produk <i class="bx bx-right-arrow-alt"></i></button>
-      </div>
-    </div>
-
-    <!-- Step 2: Order Items -->
-    <div v-if="step === 2" class="space-y-5 animate-fade-up">
-      <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-5">
-        <div class="flex items-center justify-between">
-          <h3 class="text-lg font-bold text-gray-800">Item Pesanan</h3>
-          <button @click="addItem" class="flex items-center gap-1.5 text-sm font-semibold text-brand-maroon hover:text-brand-terracotta transition-colors">
-            <i class="bx bx-plus-circle text-lg"></i> Tambah Item
-          </button>
-        </div>
-
-        <div v-if="!form.items.length" class="py-10 text-center">
-          <div class="w-14 h-14 bg-gray-50 rounded-2xl flex items-center justify-center mx-auto mb-3"><i class="bx bx-cart text-2xl text-gray-300"></i></div>
-          <p class="text-gray-400 font-medium text-sm">Belum ada item. Klik tombol "Tambah Item" di atas.</p>
-        </div>
-
-        <!-- Each item card -->
-        <div v-for="(item, idx) in form.items" :key="idx" class="bg-gray-50 rounded-2xl border border-gray-100 p-5 space-y-4">
-          <div class="flex items-start justify-between">
-            <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Item #{{ idx + 1 }}</span>
-            <button @click="removeItem(idx)" class="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-red-50 text-gray-400 hover:text-red-500 transition-colors"><i class="bx bx-trash text-sm"></i></button>
+    <!-- Main Grid -->
+    <div class="flex flex-col lg:flex-row gap-5 flex-1 min-h-0 overflow-hidden">
+      
+      <!-- LEFT: Product Grid -->
+      <div class="flex-[3] flex flex-col bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm min-h-0">
+        <!-- Search Header -->
+        <div class="p-4 border-b border-gray-100 flex gap-4 bg-gray-50/50 shrink-0">
+          <div class="relative flex-1">
+            <i class="bx bx-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-lg"></i>
+            <input v-model="searchQuery" type="text" placeholder="Cari menu produk..." class="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm outline-none focus:border-brand-maroon/50 focus:ring-2 focus:ring-brand-maroon/10 transition-all shadow-sm" />
           </div>
+        </div>
 
-          <div class="grid sm:grid-cols-2 gap-4">
-            <div>
-              <label class="block text-xs font-medium text-gray-600 mb-1">Produk *</label>
-              <select v-model="item.product_id" @change="onProductChange(item)" class="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm outline-none focus:border-brand-maroon/40 transition-all bg-white">
-                <option :value="null" disabled>Pilih produk</option>
-                <option v-for="p in refProducts" :key="p.id" :value="p.id">{{ p.name_full }} — Rp {{ p.price.toLocaleString('id-ID') }}</option>
-              </select>
-              <p v-if="item.product_id" class="text-[10px] text-gray-500 mt-1.5 flex items-start gap-1">
-                <i class="bx bx-info-circle mt-0.5"></i>
-                <span>Min. Order: <strong class="text-gray-700">{{ getProductMinOrder(item.product_id) }} pcs</strong>. <br>Order di bawah batas dikenakan fee tambahan 10%.</span>
-              </p>
-            </div>
-            <div class="grid grid-cols-2 gap-4">
-              <div>
-                <label class="block text-xs font-medium text-gray-600 mb-1">Jumlah *</label>
-                <input v-model.number="item.quantity" type="number" min="1" class="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm outline-none focus:border-brand-maroon/40 transition-all" />
+        <!-- Grid -->
+        <div class="flex-1 overflow-y-auto p-4 bg-gray-50/50" @scroll="handleScroll">
+          <div v-if="filteredProducts.length === 0" class="flex flex-col items-center justify-center h-full text-center p-6 opacity-60">
+            <i class="bx bx-dish text-6xl text-gray-300 mb-4"></i>
+            <h3 class="text-lg font-bold text-gray-700">Tidak ada produk</h3>
+            <p class="text-sm text-gray-500">Coba kata kunci lain.</p>
+          </div>
+          
+          <div v-else class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-4 pb-20 lg:pb-4">
+            <div 
+              v-for="product in displayedProducts" 
+              :key="product.id" 
+              @click="addToCart(product)" 
+              class="bg-white border border-gray-100 rounded-xl overflow-hidden shadow-sm hover:shadow-md hover:border-brand-maroon/40 transition-all cursor-pointer group flex flex-col animate-fade-up"
+            >
+              <div class="aspect-[4/3] bg-gray-100 relative overflow-hidden">
+                <img loading="lazy" decoding="async" :src="product.thumbnail || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&q=80&w=400'" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                <div class="absolute inset-0 bg-linear-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div class="absolute bottom-2 right-2 translate-y-8 group-hover:translate-y-0 transition-transform duration-300">
+                  <div class="bg-brand-maroon text-white w-8 h-8 rounded-lg flex items-center justify-center shadow-lg"><i class="bx bx-plus font-bold"></i></div>
+                </div>
               </div>
-              <div>
-                <label class="block text-xs font-medium text-gray-600 mb-1">Subtotal</label>
-                <p class="text-sm font-bold text-brand-maroon mt-2">Rp {{ itemSubTotal(item).toLocaleString('id-ID') }}</p>
-                <p v-if="getUnderMinOrderFee(item) > 0" class="text-[10px] text-amber-500 mt-0.5 leading-tight">+ Rp {{ getUnderMinOrderFee(item).toLocaleString('id-ID') }} <br>(Fee di bawah min. order)</p>
+              <div class="p-3 flex-1 flex flex-col justify-between">
+                <div>
+                  <p class="font-bold text-gray-800 text-xs sm:text-sm line-clamp-2 leading-tight group-hover:text-brand-maroon transition-colors">{{ product.name_full }}</p>
+                  <p v-if="product.min_order > 1" class="text-[10px] text-amber-600 mt-1 font-semibold">Min: {{ product.min_order }} pcs</p>
+                </div>
+                <div class="mt-2">
+                  <p class="text-brand-maroon font-black text-sm sm:text-base">Rp {{ product.price.toLocaleString('id-ID') }}</p>
+                </div>
               </div>
             </div>
           </div>
+        </div>
+      </div>
 
-          <div>
-            <label class="block text-xs font-medium text-gray-600 mb-1">Catatan Item</label>
-            <input v-model="item.notes" type="text" class="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm outline-none focus:border-brand-maroon/40 transition-all" placeholder="Tidak pedas, dll" />
+      <!-- RIGHT: Cart & Checkout -->
+      <div class="w-full lg:w-[420px] xl:w-[460px] flex flex-col gap-4 shrink-0 h-full min-h-0">
+        
+        <!-- Cart List (Scrollable) -->
+        <div class="flex-[3] bg-white rounded-2xl border border-gray-200 shadow-sm flex flex-col overflow-hidden min-h-[300px]">
+          <div class="p-3.5 border-b border-gray-100 flex justify-between items-center bg-gray-50 shrink-0">
+            <h2 class="font-bold text-gray-800 flex items-center gap-2"><i class="bx bx-cart text-brand-maroon"></i> Keranjang</h2>
+            <span class="bg-brand-maroon/10 text-brand-maroon px-2 py-0.5 rounded-md text-xs font-bold">{{ totalItemsCount }} item</span>
           </div>
 
-          <!-- Add-ons section -->
-          <div>
-            <div class="flex items-center justify-between mb-2">
-              <span class="text-xs font-bold text-gray-500 uppercase tracking-wider">Add-ons</span>
-              <button @click="addAddon(item)" class="text-xs font-semibold text-brand-maroon hover:text-brand-terracotta transition-colors">+ Add-on</button>
+          <div class="flex-1 overflow-y-auto p-3 space-y-3 relative bg-gray-50/30">
+            <div v-if="!form.items.length" class="absolute inset-0 flex flex-col items-center justify-center text-center p-6 opacity-50">
+              <i class="bx bx-cart-add text-5xl text-gray-300 mb-2"></i>
+              <p class="text-sm font-semibold text-gray-500">Keranjang masih kosong</p>
             </div>
-            <div v-for="(addon, aIdx) in item.addons" :key="aIdx" class="flex items-center gap-2 sm:gap-3 mb-2">
-              <select v-model="addon.addon_id" @change="onAddonChange(addon)" class="flex-1 min-w-0 px-3 py-2 rounded-lg border border-gray-200 text-sm outline-none focus:border-brand-maroon/40 transition-all bg-white">
-                <option :value="null" disabled>Pilih add-on</option>
-                <option v-for="a in getAvailableAddons(item)" :key="a.id" :value="a.id">{{ a.name }} — Rp {{ a.price.toLocaleString('id-ID') }}</option>
-              </select>
-              <div class="w-20 shrink-0">
-                <input v-model.number="addon.quantity" type="number" min="1" class="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm outline-none focus:border-brand-maroon/40 transition-all text-center" placeholder="Qty" />
+
+            <!-- Cart Items -->
+            <div v-for="(item, idx) in form.items" :key="idx" class="bg-white border border-gray-200 rounded-xl p-3 shadow-sm relative group animate-fade-up">
+              
+              <!-- Top Row: Info & Controls -->
+              <div class="flex justify-between items-start gap-2">
+                <div class="flex-1 min-w-0">
+                  <p class="font-bold text-gray-800 text-sm leading-tight pr-2">{{ getProductName(item.product_id) }}</p>
+                  <p class="text-[11px] text-gray-500 mt-0.5 font-medium">Rp {{ getProductPrice(item.product_id).toLocaleString('id-ID') }} / pc</p>
+                  <p v-if="getUnderMinOrderFee(item) > 0" class="text-[10px] text-amber-600 font-bold mt-1">+Rp {{ getUnderMinOrderFee(item).toLocaleString('id-ID') }} (Fee Min. Order)</p>
+                </div>
+                
+                <div class="flex flex-col items-end gap-2 shrink-0">
+                  <!-- Stepper -->
+                  <div class="flex items-center gap-0.5 bg-gray-100 border border-gray-200 rounded-lg p-0.5 h-8">
+                    <button @click="item.quantity > 1 ? item.quantity-- : removeItem(idx)" class="w-7 h-full rounded-md bg-white shadow-sm flex items-center justify-center hover:text-brand-maroon text-gray-600 transition-colors"><i :class="item.quantity > 1 ? 'bx bx-minus' : 'bx bx-trash text-red-500'"></i></button>
+                    <input v-model.number="item.quantity" type="number" min="1" class="w-10 text-center bg-transparent border-none text-xs font-bold p-0 focus:ring-0 h-full" />
+                    <button @click="item.quantity++" class="w-7 h-full rounded-md bg-white shadow-sm flex items-center justify-center hover:text-brand-maroon text-gray-600 transition-colors"><i class="bx bx-plus"></i></button>
+                  </div>
+                  <p class="text-sm font-black text-brand-maroon">Rp {{ itemSubTotal(item).toLocaleString('id-ID') }}</p>
+                </div>
               </div>
-              <span class="text-xs font-semibold text-gray-500 w-24 shrink-0 text-right truncate">Rp {{ (addon.snapshot_price * addon.quantity).toLocaleString('id-ID') }}</span>
-              <button @click="item.addons.splice(aIdx, 1)" class="w-8 h-8 flex items-center justify-center shrink-0 rounded-lg hover:bg-red-50 text-gray-400 hover:text-red-500 transition-colors"><i class="bx bx-trash text-sm"></i></button>
-            </div>
-          </div>
-        </div>
-      </div>
 
-      <div class="flex justify-between">
-        <button @click="step = 1" class="flex items-center gap-2 text-sm font-semibold text-gray-500 hover:text-gray-700 px-5 py-3 rounded-xl hover:bg-white transition-colors"><i class="bx bx-left-arrow-alt"></i> Kembali</button>
-        <button @click="goStep3" class="flex items-center gap-2 bg-brand-maroon hover:bg-brand-maroon/90 text-white text-sm font-semibold px-6 py-3 rounded-xl transition-colors shadow-sm disabled:opacity-60">Lanjut — Ringkasan <i class="bx bx-right-arrow-alt"></i></button>
-      </div>
-    </div>
+              <!-- Action Bar (Toggle Notes/Addons) -->
+              <div class="mt-2.5 flex items-center gap-2 border-t border-gray-100 pt-2">
+                <button @click="item._showDetails = !item._showDetails" class="text-[10px] font-bold px-2 py-1 rounded-md transition-colors flex items-center gap-1" :class="item._showDetails ? 'bg-brand-maroon text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'">
+                  <i class="bx bx-edit-alt"></i> {{ item._showDetails ? 'Tutup Detail' : 'Catatan & Add-on' }}
+                  <span v-if="item.addons.length && !item._showDetails" class="ml-1 w-4 h-4 bg-brand-maroon text-white rounded-full flex items-center justify-center text-[9px]">{{ item.addons.length }}</span>
+                </button>
+              </div>
 
-    <!-- Step 3: Summary & Payment -->
-    <div v-if="step === 3" class="space-y-5 animate-fade-up">
-      <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-5">
-        <h3 class="text-lg font-bold text-gray-800">Ringkasan Order</h3>
+              <!-- Expandable Notes & Addons Area -->
+              <div v-show="item._showDetails" class="mt-2 pt-2 border-t border-dashed border-gray-200">
+                <div class="mb-3">
+                  <input v-model="item.notes" type="text" class="w-full px-2.5 py-1.5 rounded-lg border border-gray-200 bg-gray-50 text-[11px] outline-none focus:border-brand-maroon/40 focus:bg-white transition-all" placeholder="Catatan: Tidak pedas, extra kuah..." />
+                </div>
+                
+                <div>
+                  <div class="flex justify-between items-center mb-1.5">
+                    <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-wider">Add-Ons</label>
+                    <button @click="addAddon(item)" class="text-[10px] font-bold text-brand-maroon hover:text-brand-terracotta bg-brand-maroon/5 px-2 py-0.5 rounded-md transition-colors">+ Tambah</button>
+                  </div>
+                  <div v-if="!item.addons.length" class="text-[10px] text-gray-400 italic py-1">Tidak ada add-on</div>
+                  <div v-for="(addon, aIdx) in item.addons" :key="aIdx" class="flex items-center gap-1.5 mb-1.5 animate-fade-up">
+                    <select v-model="addon.addon_id" @change="onAddonChange(addon)" class="flex-1 min-w-0 px-2 py-1 rounded-lg border border-gray-200 bg-gray-50 text-[11px] outline-none focus:border-brand-maroon/40 transition-all">
+                      <option :value="null" disabled>Pilih add-on</option>
+                      <option v-for="a in getAvailableAddons(item)" :key="a.id" :value="a.id">{{ a.name }} — Rp {{ a.price.toLocaleString('id-ID') }}</option>
+                    </select>
+                    <input v-model.number="addon.quantity" type="number" min="1" class="w-12 px-1 py-1 rounded-lg border border-gray-200 bg-gray-50 text-[11px] text-center outline-none focus:border-brand-maroon/40" placeholder="Qty" />
+                    <button @click="item.addons.splice(aIdx, 1)" class="w-6 h-6 flex items-center justify-center shrink-0 rounded-md hover:bg-red-50 text-gray-400 hover:text-red-500 transition-colors"><i class="bx bx-x text-sm"></i></button>
+                  </div>
+                </div>
+              </div>
 
-        <!-- Customer summary -->
-        <div class="grid sm:grid-cols-2 gap-4">
-          <div class="bg-gray-50 rounded-xl p-4"><p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Pelanggan</p><p class="text-sm font-semibold">{{ form.customer_name }}</p></div>
-          <div class="bg-gray-50 rounded-xl p-4"><p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Telepon</p><p class="text-sm font-semibold">{{ form.customer_phone }}</p></div>
-          <div class="bg-gray-50 rounded-xl p-4"><p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Alamat</p><p class="text-sm font-semibold">{{ form.delivery_address }}</p></div>
-          <div class="bg-gray-50 rounded-xl p-4"><p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Tanggal</p><p class="text-sm font-semibold">{{ form.delivery_date }} · {{ form.delivery_type }}</p></div>
-        </div>
-
-        <!-- Items summary -->
-        <div class="space-y-3">
-          <p class="text-sm font-bold text-gray-700">Detail Item</p>
-          <div v-for="(item, idx) in form.items" :key="idx" class="bg-gray-50 rounded-xl p-4 space-y-2">
-            <div class="flex justify-between">
-              <p class="text-sm font-semibold text-gray-800">{{ getProductName(item.product_id) }}</p>
-              <p class="text-sm font-bold text-brand-maroon">Rp {{ itemSubTotal(item).toLocaleString('id-ID') }}</p>
-            </div>
-            <p class="text-xs text-gray-400">{{ item.quantity }} pcs × Rp {{ getProductPrice(item.product_id).toLocaleString('id-ID') }}</p>
-            <div v-if="item.addons.length" class="text-xs text-gray-500">
-              <span v-for="(a, i) in item.addons" :key="i">{{ getAddonName(a.addon_id) }} ({{ a.quantity }}x)<span v-if="i < item.addons.length-1">, </span></span>
             </div>
           </div>
         </div>
 
-        <!-- Totals & Payment -->
-        <div class="bg-gray-50 rounded-xl p-5 space-y-3">
-          <div class="flex justify-between text-sm"><span class="text-gray-500">Total Item</span><span class="font-bold text-lg">Rp {{ grandTotal.toLocaleString('id-ID') }}</span></div>
-          <div class="flex justify-between text-sm"><span class="text-gray-500">Total Add-on</span><span class="font-semibold">Rp {{ addonsTotal.toLocaleString('id-ID') }}</span></div>
-          <hr class="border-gray-200" />
-          <div class="flex justify-between text-base"><span class="font-bold text-gray-800">Grand Total</span><span class="font-bold text-brand-maroon text-lg">Rp {{ (grandTotal + addonsTotal).toLocaleString('id-ID') }}</span></div>
+        <!-- Customer & Checkout Accordion -->
+        <div class="flex-[2] bg-white rounded-2xl border border-gray-200 shadow-sm flex flex-col shrink-0">
+          
+          <!-- Collapsible Customer Info -->
+          <div class="border-b border-gray-100 p-3">
+            <button @click="showCustomerInfo = !showCustomerInfo" class="w-full flex justify-between items-center text-left">
+              <div class="flex items-center gap-2">
+                <i class="bx bx-user-circle text-brand-maroon text-lg"></i>
+                <span class="font-bold text-sm text-gray-800">Detail Pelanggan</span>
+                <span v-if="form.customer_name" class="bg-green-100 text-green-700 text-[10px] px-1.5 py-0.5 rounded font-bold">Terisi</span>
+              </div>
+              <i class="bx text-gray-400 transition-transform" :class="showCustomerInfo ? 'bx-chevron-up' : 'bx-chevron-down'"></i>
+            </button>
+            
+            <div v-show="showCustomerInfo" class="mt-3 space-y-2.5 animate-fade-up">
+              <div class="flex bg-gray-100 rounded-lg p-1">
+                <button @click="form.delivery_type = 'delivery'" :class="form.delivery_type === 'delivery' ? 'bg-white shadow-sm text-brand-maroon' : 'text-gray-500'" class="flex-1 py-1 text-[11px] font-bold rounded-md transition-all">Delivery</button>
+                <button @click="form.delivery_type = 'pickup'" :class="form.delivery_type === 'pickup' ? 'bg-white shadow-sm text-brand-maroon' : 'text-gray-500'" class="flex-1 py-1 text-[11px] font-bold rounded-md transition-all">Pickup</button>
+              </div>
+              <div class="grid grid-cols-2 gap-2">
+                <input v-model="form.delivery_date" type="datetime-local" required class="w-full px-2.5 py-1.5 rounded-lg border border-gray-200 bg-gray-50 text-[11px] outline-none focus:border-brand-maroon/40 transition-all" />
+                <input v-model="form.customer_phone" type="tel" required class="w-full px-2.5 py-1.5 rounded-lg border border-gray-200 bg-gray-50 text-[11px] outline-none focus:border-brand-maroon/40 transition-all" placeholder="Telepon *" />
+              </div>
+              <input v-model="form.customer_name" type="text" required class="w-full px-2.5 py-1.5 rounded-lg border border-gray-200 bg-gray-50 text-[11px] outline-none focus:border-brand-maroon/40 transition-all" placeholder="Nama Pelanggan *" />
+              <textarea v-if="form.delivery_type === 'delivery'" v-model="form.delivery_address" rows="2" class="w-full px-2.5 py-1.5 rounded-lg border border-gray-200 bg-gray-50 text-[11px] outline-none focus:border-brand-maroon/40 transition-all resize-none" placeholder="Alamat Pengiriman *"></textarea>
+              <input v-if="form.delivery_type === 'delivery'" v-model="form.customer_maps" type="text" class="w-full px-2.5 py-1.5 rounded-lg border border-gray-200 bg-gray-50 text-[11px] outline-none focus:border-brand-maroon/40 transition-all" placeholder="Link Maps (Opsional)" />
+              <input v-if="form.delivery_type === 'pickup'" v-model="form.delivery_notes" type="text" class="w-full px-2.5 py-1.5 rounded-lg border border-gray-200 bg-gray-50 text-[11px] outline-none focus:border-brand-maroon/40 transition-all" placeholder="Catatan (Jam ambil, dll)" />
+            </div>
+          </div>
+
+          <!-- Checkout Panel -->
+          <div class="p-3 bg-brand-maroon/5 flex-1 flex flex-col justify-between">
+            <div class="space-y-1.5 mb-3">
+              <div class="flex justify-between text-xs"><span class="text-gray-500 font-medium">Subtotal Item</span><span class="font-semibold text-gray-700">Rp {{ grandTotal.toLocaleString('id-ID') }}</span></div>
+              <div class="flex justify-between text-xs"><span class="text-gray-500 font-medium">Total Add-on</span><span class="font-semibold text-gray-700">Rp {{ addonsTotal.toLocaleString('id-ID') }}</span></div>
+              <div class="border-t border-brand-maroon/10 pt-1.5 mt-1 flex justify-between items-end">
+                <span class="text-xs font-bold text-gray-800">Grand Total</span>
+                <span class="text-xl font-black text-brand-maroon leading-none">Rp {{ (grandTotal + addonsTotal).toLocaleString('id-ID') }}</span>
+              </div>
+            </div>
+
+            <div class="space-y-2 mb-3">
+              <div class="flex gap-2">
+                <select v-model="form.payment_status" class="w-[45%] px-2 py-2 rounded-lg border border-brand-maroon/20 bg-white text-brand-maroon font-bold text-[11px] outline-none focus:ring-2 focus:ring-brand-maroon/20 transition-all">
+                  <option value="unpaid">Belum Bayar</option>
+                  <option value="dp_received">Bayar DP</option>
+                  <option value="paid">Lunas</option>
+                </select>
+                <input v-if="form.payment_status !== 'unpaid'" v-model="formattedPaidAmount" type="text" class="flex-1 px-2.5 py-2 rounded-lg border border-gray-200 bg-white text-gray-800 font-bold text-[11px] outline-none focus:border-brand-maroon/40 transition-all" placeholder="Nominal (Rp)" />
+              </div>
+            </div>
+
+            <button @click="submitOrder" :disabled="saving" class="w-full bg-brand-maroon hover:bg-brand-maroon/90 text-white font-extrabold text-sm py-3 rounded-xl transition-all shadow-md active:scale-[0.98] disabled:opacity-80 flex justify-center items-center gap-2">
+              <i v-if="saving" class="bx bx-loader-alt bx-spin text-lg"></i>
+              <i v-else class="bx bx-check-shield text-lg"></i>
+              {{ saving ? 'Menyimpan...' : 'Proses Order' }}
+            </button>
+          </div>
         </div>
 
-        <div class="grid sm:grid-cols-2 gap-5">
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1.5">Jumlah Dibayar</label>
-            <input v-model="formattedPaidAmount" type="text" class="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm outline-none focus:border-brand-maroon/40 focus:ring-2 focus:ring-brand-maroon/10 transition-all" placeholder="0" />
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1.5">Status Pembayaran</label>
-            <select v-model="form.payment_status" class="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm outline-none focus:border-brand-maroon/40 focus:ring-2 focus:ring-brand-maroon/10 transition-all bg-white">
-              <option value="unpaid">Belum Bayar</option>
-              <option value="dp_received">Bayar Sebagian (DP)</option>
-              <option value="paid">Lunas</option>
-            </select>
-          </div>
-        </div>
-      </div>
-
-      <div class="flex justify-between">
-        <button @click="step = 2" class="flex items-center gap-2 text-sm font-semibold text-gray-500 hover:text-gray-700 px-5 py-3 rounded-xl hover:bg-white transition-colors"><i class="bx bx-left-arrow-alt"></i> Kembali</button>
-        <button @click="submitOrder" :disabled="saving" class="flex items-center gap-2 bg-brand-maroon hover:bg-brand-maroon/90 text-white text-sm font-semibold px-6 py-3 rounded-xl transition-colors shadow-sm disabled:opacity-60">
-          <i v-if="saving" class="bx bx-loader-alt bx-spin"></i>
-          <i v-else class="bx bx-check-circle"></i>
-          {{ saving ? 'Menyimpan...' : 'Simpan Order' }}
-        </button>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { orderApi, referenceApi } from '../../api/apiService'
 import { useAdminStore } from '../../stores/admin'
 
 const router = useRouter()
 const store = useAdminStore()
-const step = ref(1)
 const saving = ref(false)
-const stepLabels = ['Pelanggan', 'Item Pesanan', 'Ringkasan']
 
 const refProducts = ref([])
 const refAddons = ref([])
+const searchQuery = ref('')
+const showCustomerInfo = ref(true)
+
+const filteredProducts = computed(() => {
+  if (!searchQuery.value) return refProducts.value
+  return refProducts.value.filter(p => p.name_full.toLowerCase().includes(searchQuery.value.toLowerCase()))
+})
+
+// Logic untuk Infinite Scroll Frontend
+const displayLimit = ref(16)
+
+const displayedProducts = computed(() => {
+  return filteredProducts.value.slice(0, displayLimit.value)
+})
+
+watch(searchQuery, () => {
+  displayLimit.value = 16 // Reset limit ketika user mencari
+})
+
+const handleScroll = (e) => {
+  const { scrollTop, scrollHeight, clientHeight } = e.target
+  if (scrollTop + clientHeight >= scrollHeight - 50) {
+    if (displayLimit.value < filteredProducts.value.length) {
+      displayLimit.value += 16
+    }
+  }
+}
 
 // Get today's date and time for datetime-local (format: YYYY-MM-DDTHH:mm)
 const now = new Date()
@@ -242,6 +259,8 @@ const form = ref({
   items: []
 })
 
+const totalItemsCount = computed(() => form.value.items.reduce((sum, item) => sum + (item.quantity || 0), 0))
+
 const formattedPaidAmount = computed({
   get() { return form.value.paid_amount ? form.value.paid_amount.toLocaleString('id-ID') : '' },
   set(val) {
@@ -255,7 +274,6 @@ const getProduct = (id) => refProducts.value.find(p => p.id === id)
 const getProductName = (id) => getProduct(id)?.name_full || '-'
 const getProductPrice = (id) => getProduct(id)?.price || 0
 const getProductMinOrder = (id) => getProduct(id)?.min_order || 0
-const getAddonName = (id) => refAddons.value.find(a => a.id === id)?.name || '-'
 
 const getAvailableAddons = (item) => {
   if (!item.product_id) return refAddons.value
@@ -287,14 +305,21 @@ const grandTotal = computed(() => form.value.items.reduce((sum, item) => sum + (
 const addonsTotal = computed(() => form.value.items.reduce((sum, item) => sum + item.addons.reduce((s, a) => s + a.snapshot_price * a.quantity, 0), 0))
 
 // --- Item management ---
-const addItem = () => {
-  form.value.items.push({ product_id: null, quantity: 1, notes: '', addons: [] })
+const addToCart = (product) => {
+  const existing = form.value.items.find(i => i.product_id === product.id)
+  if (existing) {
+    existing.quantity++
+  } else {
+    form.value.items.unshift({ 
+      product_id: product.id, 
+      quantity: 1, 
+      notes: '', 
+      addons: [],
+      _showDetails: false
+    })
+  }
 }
 const removeItem = (idx) => form.value.items.splice(idx, 1)
-
-const onProductChange = (item) => {
-  item.addons = []
-}
 
 // --- Add-on management ---
 const addAddon = (item) => {
@@ -305,29 +330,36 @@ const onAddonChange = (addon) => {
   if (ref) { addon.snapshot_price = ref.price; addon.name = ref.name }
 }
 
-// --- Validation & Navigation ---
-const goStep2 = () => {
-  if (!form.value.customer_name || !form.value.customer_phone || !form.value.delivery_address || !form.value.delivery_date) {
-    store.showToast('Lengkapi data pelanggan terlebih dahulu', 'error'); return
-  }
-  step.value = 2
-}
-const goStep3 = () => {
-  if (!form.value.items.length) { store.showToast('Tambahkan minimal 1 item pesanan', 'error'); return }
-  const invalid = form.value.items.some(i => !i.product_id || !i.quantity)
-  if (invalid) { store.showToast('Pastikan semua item memiliki produk dan jumlah', 'error'); return }
-  step.value = 3
-}
-
 // --- Submit ---
 const submitOrder = async () => {
+  // Validation
+  if (!form.value.customer_name || !form.value.customer_phone || !form.value.delivery_date) {
+    showCustomerInfo.value = true
+    store.showToast('Lengkapi data pelanggan terlebih dahulu', 'error'); return
+  }
+  if (form.value.delivery_type === 'delivery' && !form.value.delivery_address) {
+    showCustomerInfo.value = true
+    store.showToast('Alamat pengiriman wajib diisi untuk pesanan delivery', 'error'); return
+  }
+  if (!form.value.items.length) { 
+    store.showToast('Tambahkan minimal 1 item pesanan', 'error'); return 
+  }
+  const invalid = form.value.items.some(i => !i.product_id || !i.quantity)
+  if (invalid) { 
+    store.showToast('Pastikan semua item valid (produk dan jumlah harus diisi)', 'error'); return 
+  }
+
   saving.value = true
   try {
+    const finalAddress = form.value.delivery_type === 'pickup' && !form.value.delivery_address 
+      ? 'Diambil di Toko (Pickup)' 
+      : form.value.delivery_address
+
     const payload = {
       customer_name: form.value.customer_name,
       customer_phone: form.value.customer_phone,
       customer_maps: form.value.customer_maps,
-      delivery_address: form.value.delivery_address,
+      delivery_address: finalAddress,
       delivery_date: form.value.delivery_date,
       type_delivery: form.value.delivery_type,
       delivery_notes: form.value.delivery_notes,
@@ -348,9 +380,6 @@ const submitOrder = async () => {
     }
     const res = await orderApi.create(payload)
     
-    // Workaround: Jika REST API backend mengabaikan input status & paid_amount saat create order awal
-    // (seringkali otomatis di-set ke pending/unpaid/0), kita paksa update via endpoint status 
-    // jika user mengisinya dengan nilai yang berbeda.
     if (res.status === 'success' && res.data && res.data.id) {
       const createdOrder = res.data
       const currentOrderStat = createdOrder.status?.order || 'pending'
@@ -385,5 +414,5 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-/* Scoped styles removed to avoid Tailwind compile errors, using inline classes instead */
+/* Inline styling classes handled natively by Tailwind CSS */
 </style>

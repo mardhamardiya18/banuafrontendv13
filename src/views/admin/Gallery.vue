@@ -1,25 +1,25 @@
 <template>
   <div class="space-y-6">
-    <div class="flex items-center justify-between">
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
       <div>
         <h1 class="text-2xl font-bold text-gray-900">Gallery</h1>
         <p class="text-sm text-gray-500 mt-1">Galeri foto produk — Create, Read, Delete.</p>
       </div>
-      <div class="flex items-center gap-3">
-        <div class="relative group">
+      <div class="flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto">
+        <div class="relative group w-full sm:w-auto">
           <i class="bx bx-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-lg group-focus-within:text-brand-maroon transition-colors"></i>
           <input 
             v-model="searchQuery" 
             @keyup.enter="onSearch"
             type="text" 
             placeholder="Cari foto..." 
-            class="pl-11 pr-14 py-2.5 bg-white rounded-xl border border-gray-200 text-sm focus:border-brand-maroon focus:ring-4 focus:ring-brand-maroon/10 outline-none w-72 transition-all shadow-sm"
+            class="pl-11 pr-14 py-2.5 bg-white rounded-xl border border-gray-200 text-sm focus:border-brand-maroon focus:ring-4 focus:ring-brand-maroon/10 outline-none w-full sm:w-72 transition-all shadow-sm"
           />
           <div class="absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none">
             <kbd class="hidden sm:inline-block text-[10px] font-sans font-semibold text-gray-400 bg-gray-50 border border-gray-200 px-1.5 py-0.5 rounded shadow-sm">Enter ↵</kbd>
           </div>
         </div>
-        <button @click="showForm=true" class="flex items-center gap-2 bg-brand-maroon hover:bg-brand-maroon/90 text-white text-sm font-semibold px-5 py-2.5 rounded-xl shadow-sm">
+        <button @click="showForm=true" class="w-full sm:w-auto flex items-center justify-center gap-2 bg-brand-maroon hover:bg-brand-maroon/90 text-white text-sm font-semibold px-5 py-2.5 rounded-xl shadow-sm">
           <i class="bx bx-plus text-lg"></i> Tambah Foto
         </button>
       </div>

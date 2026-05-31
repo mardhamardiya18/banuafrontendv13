@@ -121,5 +121,5 @@
 </template>
 
 <script setup>
-import logo from '../../assets/images/logo.webp'
+import logo from '../../assets/images/logo-small.webp'
 </script>

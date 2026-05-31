@@ -84,7 +84,7 @@
 <script setup>
 import { ref, defineProps } from 'vue'
 import { useAuthStore } from '../../stores/auth'
-import logo from '../../assets/images/logo.webp'
+import logo from '../../assets/images/logo-small.webp'
 
 const props = defineProps({
   showMenu: {
