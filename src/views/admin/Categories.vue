@@ -2,8 +2,8 @@
   <div class="space-y-6">
     <div class="flex items-center justify-between">
       <div>
-        <h1 class="text-2xl font-bold text-gray-900">Kategori</h1>
-        <p class="text-sm text-gray-500 mt-1">Kelola kategori produk catering Anda.</p>
+        <h1 class="text-2xl font-bold" style="color: rgba(224,224,239,0.95);">Kategori</h1>
+        <p class="text-sm mt-1" style="color: rgba(160,160,192,0.6);">Kelola kategori produk catering Anda.</p>
       </div>
       <button @click="openForm()" class="flex items-center gap-2 bg-brand-maroon hover:bg-brand-maroon/90 text-white text-sm font-semibold px-5 py-2.5 rounded-xl transition-colors shadow-sm">
         <i class="bx bx-plus text-lg"></i>
@@ -16,19 +16,25 @@
       search-placeholder="Cari kategori..."
       @page-change="fetchData" @search="onSearch">
       <template #cell-thumbnail="{ value }">
-        <img :src="value" alt="" class="w-10 h-10 rounded-xl object-cover border border-gray-100" />
+        <img :src="value" alt="" class="w-10 h-10 rounded-xl object-cover" style="border: 1px solid rgba(255,255,255,0.08);" />
       </template>
       <template #cell-name="{ value }">
-        <span class="font-semibold text-gray-800">{{ value }}</span>
+        <span class="font-semibold" style="color: rgba(230,230,250,0.97);">{{ value }}</span>
       </template>
       <template #actions="{ row }">
         <div class="flex items-center justify-end gap-1">
-          <button @click="openForm(row)" class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-blue-50 text-gray-400 hover:text-blue-500 transition-colors">
-            <i class="bx bx-edit-alt"></i>
-          </button>
-          <button @click="confirmDelete(row)" class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-red-50 text-gray-400 hover:text-red-500 transition-colors">
-            <i class="bx bx-trash"></i>
-          </button>
+          <button @click="openForm(row)"
+                  class="w-8 h-8 flex items-center justify-center rounded-lg transition-all duration-200"
+                  style="color: rgba(160,160,192,0.6);"
+                  onmouseenter="this.style.background='rgba(96,165,250,0.12)'; this.style.color='#60a5fa';"
+                  onmouseleave="this.style.background=''; this.style.color='rgba(160,160,192,0.6)';"
+          ><i class="bx bx-edit-alt"></i></button>
+          <button @click="confirmDelete(row)"
+                  class="w-8 h-8 flex items-center justify-center rounded-lg transition-all duration-200"
+                  style="color: rgba(160,160,192,0.6);"
+                  onmouseenter="this.style.background='rgba(248,113,113,0.12)'; this.style.color='#f87171';"
+                  onmouseleave="this.style.background=''; this.style.color='rgba(160,160,192,0.6)';"
+          ><i class="bx bx-trash"></i></button>
         </div>
       </template>
     </DataTable>
@@ -37,51 +43,37 @@
     <BaseModal v-model="showForm" :title="editItem ? 'Edit Kategori' : 'Tambah Kategori'">
       <form @submit.prevent="save" class="space-y-5">
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1.5">Nama Kategori</label>
-          <input v-model="form.name" type="text" required
-                 class="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:border-brand-maroon focus:ring-2 focus:ring-brand-maroon/10 outline-none transition-all"
-                 placeholder="Masukkan nama kategori" />
+          <label class="dark-label">Nama Kategori</label>
+          <input v-model="form.name" type="text" required class="dark-input" placeholder="Masukkan nama kategori" />
         </div>
         <!-- Thumbnail Upload Area -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2.5">Gambar Kategori</label>
-          <div 
-            @click="$refs.fileInput.click()"
-            class="relative group cursor-pointer border-2 border-dashed border-gray-200 hover:border-brand-maroon/50 rounded-2xl p-4 transition-all bg-gray-50/50 hover:bg-brand-maroon/2"
-          >
-            <input 
-              type="file" 
-              ref="fileInput" 
-              class="hidden" 
-              accept="image/*"
-              @change="handleFileChange"
-            />
-            
-            <!-- Preview State -->
+          <label class="dark-label">Gambar Kategori</label>
+          <div @click="$refs.fileInput.click()" class="dark-upload-zone">
+            <input type="file" ref="fileInput" class="hidden" accept="image/*" @change="handleFileChange" />
             <div v-if="previewUrl" class="relative">
-              <img :src="previewUrl" alt="preview" class="w-full h-48 object-cover rounded-xl shadow-sm border border-gray-100" />
-              <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl flex items-center justify-center">
-                <span class="text-white text-xs font-bold flex items-center gap-2 bg-black/20 px-3 py-2 rounded-lg backdrop-blur-md">
+              <img :src="previewUrl" alt="preview" class="w-full h-48 object-cover rounded-xl" style="border: 1px solid rgba(255,255,255,0.08);" />
+              <div class="absolute inset-0 bg-black/50 opacity-0 hover:opacity-100 transition-opacity rounded-xl flex items-center justify-center">
+                <span class="text-white text-xs font-bold flex items-center gap-2 bg-black/30 px-3 py-2 rounded-lg backdrop-blur-md">
                   <i class="bx bx-camera text-base"></i> Ganti Gambar
                 </span>
               </div>
             </div>
-
-            <!-- Empty State -->
             <div v-else class="py-8 flex flex-col items-center justify-center text-center">
-              <div class="w-14 h-14 bg-white rounded-2xl shadow-sm border border-gray-100 flex items-center justify-center text-gray-400 group-hover:text-brand-maroon transition-colors mb-3">
-                <i class="bx bx-cloud-upload text-3xl"></i>
+              <div class="w-14 h-14 rounded-2xl flex items-center justify-center mb-3"
+                   style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.09);">
+                <i class="bx bx-cloud-upload text-3xl" style="color: rgba(160,160,192,0.5);"></i>
               </div>
-              <p class="text-sm font-bold text-gray-700">Klik untuk Unggah Gambar</p>
-              <p class="text-xs text-gray-400 mt-1">PNG, JPG atau WEBP (Maks. 2MB)</p>
+              <p class="text-sm font-bold" style="color: rgba(200,200,230,0.8);">Klik untuk Unggah Gambar</p>
+              <p class="text-xs mt-1" style="color: rgba(160,160,192,0.5);">PNG, JPG atau WEBP (Maks. 2MB)</p>
             </div>
           </div>
         </div>
       </form>
       <template #footer>
         <div class="flex justify-end gap-3">
-          <button @click="showForm = false" class="px-5 py-2.5 text-sm font-semibold text-gray-600 hover:bg-gray-100 rounded-xl transition-colors">Batal</button>
-          <button @click="save" :disabled="saving" class="px-5 py-2.5 text-sm font-semibold bg-brand-maroon text-white rounded-xl hover:bg-brand-maroon/90 transition-colors disabled:opacity-60 flex items-center gap-2">
+          <button @click="showForm = false" class="dark-btn-cancel">Batal</button>
+          <button @click="save" :disabled="saving" class="dark-btn-primary">
             <i v-if="saving" class="bx bx-loader-alt bx-spin"></i>
             {{ editItem ? 'Simpan Perubahan' : 'Tambah' }}
           </button>

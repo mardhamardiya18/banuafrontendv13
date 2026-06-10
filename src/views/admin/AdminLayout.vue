@@ -1,8 +1,8 @@
 <template>
-  <div class="min-h-screen bg-gray-50/50">
+  <div class="min-h-screen" style="background: #0a0a0f;">
     <Sidebar />
     <div
-      class="transition-all duration-300 ease-in-out"
+      class="transition-all duration-300 ease-in-out lg:block"
       :class="store.sidebarOpen ? 'lg:ml-[260px]' : 'lg:ml-[80px]'"
     >
       <Topbar />

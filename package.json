@@ -9,11 +9,13 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@lucide/vue": "^1.17.0",
     "@tailwindcss/vite": "^4.2.4",
     "@vueup/vue-quill": "^1.2.0",
     "axios": "^1.15.2",
     "chart.js": "^4.5.1",
     "js-cookie": "^3.0.5",
+    "lucide-vue-next": "^1.0.0",
     "pinia": "^3.0.4",
     "swiper": "^12.1.4",
     "vue": "^3.5.32",

@@ -2,8 +2,8 @@
   <div class="space-y-6">
     <div class="flex items-center justify-between">
       <div>
-        <h1 class="text-2xl font-bold text-gray-900">Add-Ons</h1>
-        <p class="text-sm text-gray-500 mt-1">Kelola menu tambahan berbayar.</p>
+        <h1 class="text-2xl font-bold" style="color: rgba(224,224,239,0.95);">Add-Ons</h1>
+        <p class="text-sm mt-1" style="color: rgba(160,160,192,0.6);">Kelola menu tambahan berbayar.</p>
       </div>
       <button @click="openForm()" class="flex items-center gap-2 bg-brand-maroon hover:bg-brand-maroon/90 text-white text-sm font-semibold px-5 py-2.5 rounded-xl transition-colors shadow-sm">
         <i class="bx bx-plus text-lg"></i> Tambah Add-On
@@ -14,18 +14,29 @@
       v-model:search-query="search" v-model:per-page="perPage"
       search-placeholder="Cari add-on..."
       @page-change="fetchData" @search="onSearch">
-      <template #cell-name="{ value }"><span class="font-semibold text-gray-800">{{ value }}</span></template>
+      <template #cell-name="{ value }"><span class="font-semibold" style="color: rgba(230,230,250,0.97);">{{ value }}</span></template>
       <template #cell-product_name="{ row }">
-        <span v-if="row.product?.name" class="px-2.5 py-1 rounded-lg bg-gray-100 text-xs font-medium text-gray-600">
+        <span v-if="row.product?.name" class="px-2.5 py-1 rounded-lg text-xs font-semibold"
+              style="background: rgba(139,92,246,0.12); color: rgba(167,139,250,0.9); border: 1px solid rgba(139,92,246,0.2);">
           {{ row.product.name }}
         </span>
-        <span v-else class="text-xs text-gray-400 italic">Umum</span>
+        <span v-else class="text-xs italic" style="color: rgba(160,160,192,0.5);">Umum</span>
       </template>
-      <template #cell-price="{ value }"><span class="font-semibold text-gray-800">Rp {{ value.toLocaleString('id-ID') }}</span></template>
+      <template #cell-price="{ value }"><span class="font-semibold" style="color: rgba(230,230,250,0.97);">Rp {{ value.toLocaleString('id-ID') }}</span></template>
       <template #actions="{ row }">
         <div class="flex items-center justify-end gap-1">
-          <button @click="openForm(row)" class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-blue-50 text-gray-400 hover:text-blue-500 transition-colors"><i class="bx bx-edit-alt"></i></button>
-          <button @click="confirmDel(row)" class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-red-50 text-gray-400 hover:text-red-500 transition-colors"><i class="bx bx-trash"></i></button>
+          <button @click="openForm(row)"
+                  class="w-8 h-8 flex items-center justify-center rounded-lg transition-all duration-200"
+                  style="color: rgba(160,160,192,0.6);"
+                  onmouseenter="this.style.background='rgba(96,165,250,0.12)'; this.style.color='#60a5fa';"
+                  onmouseleave="this.style.background=''; this.style.color='rgba(160,160,192,0.6)';"
+          ><i class="bx bx-edit-alt"></i></button>
+          <button @click="confirmDel(row)"
+                  class="w-8 h-8 flex items-center justify-center rounded-lg transition-all duration-200"
+                  style="color: rgba(160,160,192,0.6);"
+                  onmouseenter="this.style.background='rgba(248,113,113,0.12)'; this.style.color='#f87171';"
+                  onmouseleave="this.style.background=''; this.style.color='rgba(160,160,192,0.6)';"
+          ><i class="bx bx-trash"></i></button>
         </div>
       </template>
     </DataTable>
@@ -33,32 +44,32 @@
     <BaseModal v-model="showForm" :title="editItem ? 'Edit Add-On' : 'Tambah Add-On'" size="md">
       <form @submit.prevent="save" class="space-y-5">
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1.5">Nama Add-On</label>
-          <input v-model="form.name" type="text" required class="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:border-brand-maroon focus:ring-2 focus:ring-brand-maroon/10 outline-none transition-all" placeholder="Contoh: Ekstra Sambal" />
+          <label class="dark-label">Nama Add-On</label>
+          <input v-model="form.name" type="text" required class="dark-input" placeholder="Contoh: Ekstra Sambal" />
         </div>
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1.5">Produk Terkait (Opsional)</label>
-          <SearchableSelect 
-            v-model="form.product_id" 
+          <label class="dark-label">Produk Terkait (Opsional)</label>
+          <SearchableSelect
+            v-model="form.product_id"
             :options="selectOptions"
             placeholder="Pilih Produk..."
           />
         </div>
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1.5">Harga Jual (Rp)</label>
-          <input v-model="formattedPrice" type="text" required class="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:border-brand-maroon outline-none" />
+          <label class="dark-label">Harga Jual (Rp)</label>
+          <input v-model="formattedPrice" type="text" required class="dark-input" />
         </div>
         <div>
-          <label class="flex items-center gap-2 cursor-pointer group">
-            <input v-model="form.is_active" type="checkbox" class="w-4 h-4 text-brand-maroon border-gray-300 rounded focus:ring-brand-maroon" />
-            <span class="text-sm font-medium text-gray-700 group-hover:text-brand-maroon transition-colors">Aktif</span>
+          <label class="flex items-center gap-2 cursor-pointer" style="color: rgba(190,190,220,0.75);">
+            <input v-model="form.is_active" type="checkbox" class="w-4 h-4 accent-purple-500 rounded" />
+            <span class="text-sm font-medium">Aktif</span>
           </label>
         </div>
       </form>
       <template #footer>
         <div class="flex justify-end gap-3">
-          <button @click="showForm=false" class="px-5 py-2.5 text-sm font-semibold text-gray-600 hover:bg-gray-100 rounded-xl">Batal</button>
-          <button @click="save" :disabled="saving" class="px-5 py-2.5 text-sm font-semibold bg-brand-maroon text-white rounded-xl disabled:opacity-60 flex items-center gap-2">
+          <button @click="showForm=false" class="dark-btn-cancel">Batal</button>
+          <button @click="save" :disabled="saving" class="dark-btn-primary">
             <i v-if="saving" class="bx bx-loader-alt bx-spin"></i>{{ editItem ? 'Simpan' : 'Tambah' }}
           </button>
         </div>

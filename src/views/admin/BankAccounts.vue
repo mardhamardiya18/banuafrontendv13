@@ -2,8 +2,8 @@
   <div class="space-y-6">
     <div class="flex items-center justify-between">
       <div>
-        <h1 class="text-2xl font-bold text-gray-900">Bank Account</h1>
-        <p class="text-sm text-gray-500 mt-1">Kelola rekening bank untuk pembayaran.</p>
+        <h1 class="text-2xl font-bold" style="color: rgba(224,224,239,0.95);">Bank Account</h1>
+        <p class="text-sm mt-1" style="color: rgba(160,160,192,0.6);">Kelola rekening bank untuk pembayaran.</p>
       </div>
       <button @click="openForm()" class="flex items-center gap-2 bg-brand-maroon hover:bg-brand-maroon/90 text-white text-sm font-semibold px-5 py-2.5 rounded-xl shadow-sm">
         <i class="bx bx-plus text-lg"></i> Tambah Bank
@@ -15,17 +15,31 @@
       search-placeholder="Cari bank atau rekening..."
       @page-change="fetchData" @search="onSearch">
       <template #cell-logo_url="{ value }">
-        <img :src="value" alt="" class="h-8 rounded-lg border border-gray-100 object-contain" />
+        <img :src="value" alt="" class="h-8 rounded-lg object-contain" style="border: 1px solid rgba(255,255,255,0.08);" />
       </template>
-      <template #cell-bank_name="{ value }"><span class="font-semibold text-gray-800">{{ value }}</span></template>
-      <template #cell-account_number="{ value }"><span class="font-mono text-sm text-gray-600">{{ value }}</span></template>
+      <template #cell-bank_name="{ value }"><span class="font-semibold" style="color: rgba(230,230,250,0.97);">{{ value }}</span></template>
+      <template #cell-account_number="{ value }"><span class="font-mono text-sm" style="color: rgba(200,200,230,0.85);">{{ value }}</span></template>
       <template #cell-is_active="{ value }">
-        <span class="px-2 py-0.5 rounded-full text-[10px] font-bold" :class="value?'bg-emerald-50 text-emerald-600':'bg-gray-100 text-gray-400'">{{ value?'Aktif':'Nonaktif' }}</span>
+        <span class="px-2 py-0.5 rounded-full text-[10px] font-bold"
+              :style="value
+                ? 'background: rgba(52,211,153,0.12); color: #34d399; border: 1px solid rgba(52,211,153,0.2);'
+                : 'background: rgba(160,160,192,0.08); color: rgba(160,160,192,0.5); border: 1px solid rgba(160,160,192,0.15);'"
+        >{{ value ? 'Aktif' : 'Nonaktif' }}</span>
       </template>
       <template #actions="{ row }">
         <div class="flex items-center justify-end gap-1">
-          <button @click="openForm(row)" class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-blue-50 text-gray-400 hover:text-blue-500"><i class="bx bx-edit-alt"></i></button>
-          <button @click="delTarget=row;showDel=true" class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-red-50 text-gray-400 hover:text-red-500"><i class="bx bx-trash"></i></button>
+          <button @click="openForm(row)"
+                  class="w-8 h-8 flex items-center justify-center rounded-lg transition-all duration-200"
+                  style="color: rgba(160,160,192,0.6);"
+                  onmouseenter="this.style.background='rgba(96,165,250,0.12)'; this.style.color='#60a5fa';"
+                  onmouseleave="this.style.background=''; this.style.color='rgba(160,160,192,0.6)';"
+          ><i class="bx bx-edit-alt"></i></button>
+          <button @click="delTarget=row;showDel=true"
+                  class="w-8 h-8 flex items-center justify-center rounded-lg transition-all duration-200"
+                  style="color: rgba(160,160,192,0.6);"
+                  onmouseenter="this.style.background='rgba(248,113,113,0.12)'; this.style.color='#f87171';"
+                  onmouseleave="this.style.background=''; this.style.color='rgba(160,160,192,0.6)';"
+          ><i class="bx bx-trash"></i></button>
         </div>
       </template>
     </DataTable>
@@ -33,30 +47,30 @@
     <BaseModal v-model="showForm" :title="editItem ? 'Edit Bank' : 'Tambah Bank'" size="md">
       <form @submit.prevent="save" class="space-y-5">
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1.5">Nama Bank</label>
-          <input v-model="form.bank_name" type="text" required class="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm outline-none focus:border-brand-maroon" />
+          <label class="dark-label">Nama Bank</label>
+          <input v-model="form.bank_name" type="text" required class="dark-input" placeholder="Contoh: BCA, Mandiri" />
         </div>
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1.5">Nomor Rekening</label>
-          <input v-model="form.account_number" type="text" required class="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm outline-none focus:border-brand-maroon" />
+          <label class="dark-label">Nomor Rekening</label>
+          <input v-model="form.account_number" type="text" required class="dark-input" />
         </div>
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1.5">Nama Pemilik</label>
-          <input v-model="form.account_name" type="text" required class="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm outline-none focus:border-brand-maroon" />
+          <label class="dark-label">Nama Pemilik</label>
+          <input v-model="form.account_name" type="text" required class="dark-input" />
         </div>
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1.5">Logo URL</label>
-          <input v-model="form.logo_url" type="text" class="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm outline-none focus:border-brand-maroon" />
+          <label class="dark-label">Logo URL</label>
+          <input v-model="form.logo_url" type="text" class="dark-input" placeholder="https://..." />
         </div>
-        <label class="flex items-center gap-2 cursor-pointer">
-          <input type="checkbox" v-model="form.is_active" class="w-4 h-4 rounded accent-brand-maroon" />
-          <span class="text-sm text-gray-700">Aktif</span>
+        <label class="flex items-center gap-2 cursor-pointer" style="color: rgba(190,190,220,0.75);">
+          <input type="checkbox" v-model="form.is_active" class="w-4 h-4 accent-purple-500 rounded" />
+          <span class="text-sm font-medium">Aktif</span>
         </label>
       </form>
       <template #footer>
         <div class="flex justify-end gap-3">
-          <button @click="showForm=false" class="px-5 py-2.5 text-sm font-semibold text-gray-600 hover:bg-gray-100 rounded-xl">Batal</button>
-          <button @click="save" :disabled="saving" class="px-5 py-2.5 text-sm font-semibold bg-brand-maroon text-white rounded-xl disabled:opacity-60 flex items-center gap-2">
+          <button @click="showForm=false" class="dark-btn-cancel">Batal</button>
+          <button @click="save" :disabled="saving" class="dark-btn-primary">
             <i v-if="saving" class="bx bx-loader-alt bx-spin"></i>Simpan
           </button>
         </div>

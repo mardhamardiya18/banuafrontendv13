@@ -30,15 +30,7 @@ const routes = [
       requiredGuest: true
     }
   },
-  {
-    path: '/register',
-    name: 'Register',
-    component: () => import('../views/auth/Register.vue'),
-    meta: {
-      title: 'Register',
-      requiredGuest: true
-    }
-  },
+
   {
     path: '/v/:identifier',
     name: 'InvoiceVerify',
@@ -94,6 +86,12 @@ const routes = [
         name: 'AdminCreateOrder',
         component: () => import('../views/admin/CreateOrder.vue'),
         meta: { title: 'Buat Order' }
+      },
+      {
+        path: 'orders/:id',
+        name: 'AdminOrderDetail',
+        component: () => import('../views/admin/OrderDetail.vue'),
+        meta: { title: 'Detail Order' }
       },
       {
         path: 'bank-accounts',

@@ -2,8 +2,8 @@
   <div class="space-y-6">
     <div class="flex items-center justify-between">
       <div>
-        <h1 class="text-2xl font-bold text-gray-900">Produk</h1>
-        <p class="text-sm text-gray-500 mt-1">Kelola produk catering (API Contract v2 - Simple Mode).</p>
+        <h1 class="text-2xl font-bold" style="color: rgba(224,224,239,0.95);">Produk</h1>
+        <p class="text-sm mt-1" style="color: rgba(160,160,192,0.6);">Kelola produk catering (API Contract v2 - Simple Mode).</p>
       </div>
       <button @click="openForm()" class="flex items-center gap-2 bg-brand-maroon hover:bg-brand-maroon/90 text-white text-sm font-semibold px-5 py-2.5 rounded-xl transition-colors shadow-sm">
         <i class="bx bx-plus text-lg"></i> Tambah Produk
@@ -15,23 +15,35 @@
       search-placeholder="Cari produk atau kategori..."
       @page-change="fetchData" @search="onSearch">
       <template #cell-thumbnail="{ value }">
-        <img :src="value" alt="" class="w-12 h-10 rounded-xl object-cover border border-gray-100" />
+        <img :src="value" alt="" class="w-12 h-10 rounded-xl object-cover" style="border: 1px solid rgba(255,255,255,0.08);" />
       </template>
-      <template #cell-name_full="{ value }"><span class="font-semibold text-gray-800">{{ value }}</span></template>
+      <template #cell-name_full="{ value }"><span class="font-semibold" style="color: rgba(230,230,250,0.97);">{{ value }}</span></template>
       <template #cell-category_name="{ value, row }">
-        <span class="px-2.5 py-1 rounded-lg bg-gray-100 text-xs font-medium text-gray-600">
+        <span class="px-2.5 py-1 rounded-lg text-xs font-semibold"
+              style="background: rgba(139,92,246,0.12); color: rgba(167,139,250,0.9); border: 1px solid rgba(139,92,246,0.2);">
           {{ value || row.category?.name || '-' }}
         </span>
       </template>
-      <template #cell-price="{ value }"><span class="font-semibold text-gray-800">Rp {{ value.toLocaleString('id-ID') }}</span></template>
+      <template #cell-price="{ value }"><span class="font-semibold" style="color: rgba(230,230,250,0.97);">Rp {{ value.toLocaleString('id-ID') }}</span></template>
       <template #cell-is_recommended="{ value }">
-        <span v-if="value" class="px-2 py-0.5 rounded-md bg-amber-50 text-amber-600 text-[10px] font-bold uppercase">Star</span>
-        <span v-else class="text-gray-300">-</span>
+        <span v-if="value" class="px-2 py-0.5 rounded-md text-[10px] font-bold uppercase"
+              style="background: rgba(245,158,11,0.15); color: #fbbf24; border: 1px solid rgba(245,158,11,0.25);">Star</span>
+        <span v-else style="color: rgba(160,160,192,0.3);">-</span>
       </template>
       <template #actions="{ row }">
         <div class="flex items-center justify-end gap-1">
-          <button @click="openForm(row)" class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-blue-50 text-gray-400 hover:text-blue-500 transition-colors"><i class="bx bx-edit-alt"></i></button>
-          <button @click="confirmDel(row)" class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-red-50 text-gray-400 hover:text-red-500 transition-colors"><i class="bx bx-trash"></i></button>
+          <button @click="openForm(row)"
+                  class="w-8 h-8 flex items-center justify-center rounded-lg transition-all duration-200"
+                  style="color: rgba(160,160,192,0.6);"
+                  onmouseenter="this.style.background='rgba(96,165,250,0.12)'; this.style.color='#60a5fa';"
+                  onmouseleave="this.style.background=''; this.style.color='rgba(160,160,192,0.6)';"
+          ><i class="bx bx-edit-alt text-base"></i></button>
+          <button @click="confirmDel(row)"
+                  class="w-8 h-8 flex items-center justify-center rounded-lg transition-all duration-200"
+                  style="color: rgba(160,160,192,0.6);"
+                  onmouseenter="this.style.background='rgba(248,113,113,0.12)'; this.style.color='#f87171';"
+                  onmouseleave="this.style.background=''; this.style.color='rgba(160,160,192,0.6)';"
+          ><i class="bx bx-trash text-base"></i></button>
         </div>
       </template>
     </DataTable>
@@ -40,107 +52,97 @@
       <form @submit.prevent="save" class="space-y-5">
         <div class="grid sm:grid-cols-2 gap-5">
           <div class="col-span-full">
-            <label class="block text-sm font-medium text-gray-700 mb-1.5">Nama Produk</label>
-            <input v-model="form.name" type="text" required class="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:border-brand-maroon focus:ring-2 focus:ring-brand-maroon/10 outline-none transition-all" />
+            <label class="dark-label">Nama Produk</label>
+            <input v-model="form.name" type="text" required class="dark-input" placeholder="Masukkan nama produk" />
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1.5">Kategori</label>
-            <select v-model="form.category_id" required class="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:border-brand-maroon outline-none bg-white">
-              <option value="" disabled>Pilih</option>
-              <option v-for="c in cats" :key="c.id" :value="c.id">{{ c.name }}</option>
+            <label class="dark-label">Kategori</label>
+            <select v-model="form.category_id" required class="dark-select">
+              <option value="" disabled style="background:#1a1a2e; color:rgba(160,160,192,0.5);">Pilih</option>
+              <option v-for="c in cats" :key="c.id" :value="c.id" style="background:#1a1a2e;">{{ c.name }}</option>
             </select>
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1.5">Induk Produk (Opsional)</label>
-            <select v-model="form.parent_id" class="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:border-brand-maroon outline-none bg-white">
-              <option :value="null">-- Produk Utama --</option>
-              <option v-for="p in parentProducts" :key="p.id" :value="p.id">{{ p.name }}</option>
+            <label class="dark-label">Induk Produk (Opsional)</label>
+            <select v-model="form.parent_id" class="dark-select">
+              <option :value="null" style="background:#1a1a2e;">-- Produk Utama --</option>
+              <option v-for="p in parentProducts" :key="p.id" :value="p.id" style="background:#1a1a2e;">{{ p.name }}</option>
             </select>
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1.5">Min. Order (Porsi)</label>
-            <input v-model.number="form.min_order" type="number" required class="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:border-brand-maroon outline-none" />
+            <label class="dark-label">Min. Order (Porsi)</label>
+            <input v-model.number="form.min_order" type="number" required class="dark-input" />
           </div>
         </div>
 
         <div class="grid sm:grid-cols-3 gap-5">
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1.5">Harga Jual</label>
-            <input v-model="formattedPrice" type="text" required class="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:border-brand-maroon outline-none" />
+            <label class="dark-label">Harga Jual</label>
+            <input v-model="formattedPrice" type="text" required class="dark-input" />
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1.5">Harga Modal (Cost)</label>
-            <input v-model="formattedCost" type="text" required class="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:border-brand-maroon outline-none" />
+            <label class="dark-label">Harga Modal (Cost)</label>
+            <input v-model="formattedCost" type="text" required class="dark-input" />
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1.5">Diskon (%)</label>
-            <input v-model.number="form.discount" type="number" class="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:border-brand-maroon outline-none" />
+            <label class="dark-label">Diskon (%)</label>
+            <input v-model.number="form.discount" type="number" class="dark-input" />
           </div>
         </div>
 
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1.5">Deskripsi Produk</label>
+          <label class="dark-label">Deskripsi Produk</label>
           <div class="quill-container">
-            <QuillEditor 
-              v-model:content="form.description" 
-              contentType="html" 
+            <QuillEditor
+              v-model:content="form.description"
+              contentType="html"
               theme="snow"
               toolbar="essential"
               placeholder="Jelaskan isi menu di sini (Nasi, Lauk, Sayur, dll)..."
-              class="min-h-[200px] bg-white rounded-b-xl"
+              class="min-h-[200px]"
             />
           </div>
         </div>
 
         <div class="flex items-center gap-6">
-          <label class="flex items-center gap-2 cursor-pointer group">
-            <input v-model="form.is_recommended" type="checkbox" class="w-4 h-4 text-brand-maroon border-gray-300 rounded focus:ring-brand-maroon" />
-            <span class="text-sm font-medium text-gray-700 group-hover:text-brand-maroon transition-colors">Tampilkan sebagai Rekomendasi</span>
+          <label class="flex items-center gap-2 cursor-pointer" style="color: rgba(190,190,220,0.75);">
+            <input v-model="form.is_recommended" type="checkbox" class="w-4 h-4 accent-purple-500 border-0 rounded" />
+            <span class="text-sm font-medium">Tampilkan sebagai Rekomendasi</span>
           </label>
-          <label class="flex items-center gap-2 cursor-pointer group">
-            <input v-model="form.is_active" type="checkbox" class="w-4 h-4 text-brand-maroon border-gray-300 rounded focus:ring-brand-maroon" />
-            <span class="text-sm font-medium text-gray-700 group-hover:text-brand-maroon transition-colors">Aktif</span>
+          <label class="flex items-center gap-2 cursor-pointer" style="color: rgba(190,190,220,0.75);">
+            <input v-model="form.is_active" type="checkbox" class="w-4 h-4 accent-purple-500 border-0 rounded" />
+            <span class="text-sm font-medium">Aktif</span>
           </label>
         </div>
 
         <!-- Thumbnail Upload Area -->
         <div class="col-span-full">
-          <label class="block text-sm font-medium text-gray-700 mb-2.5">Gambar Produk (Thumbnail)</label>
-          <div 
-            @click="$refs.fileInput.click()"
-            class="relative group cursor-pointer border-2 border-dashed border-gray-200 hover:border-brand-maroon/50 rounded-2xl p-4 transition-all bg-gray-50/50 hover:bg-brand-maroon/2"
-          >
-            <input 
-              type="file" 
-              ref="fileInput" 
-              class="hidden" 
-              accept="image/*"
-              @change="handleFileChange"
-            />
-            
+          <label class="dark-label">Gambar Produk (Thumbnail)</label>
+          <div @click="$refs.fileInput.click()" class="dark-upload-zone">
+            <input type="file" ref="fileInput" class="hidden" accept="image/*" @change="handleFileChange" />
             <div v-if="previewUrl" class="relative">
-              <img :src="previewUrl" alt="preview" class="w-full h-48 object-cover rounded-xl shadow-sm border border-gray-100" />
-              <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl flex items-center justify-center">
-                <span class="text-white text-xs font-bold flex items-center gap-2 bg-black/20 px-3 py-2 rounded-lg backdrop-blur-md">
+              <img :src="previewUrl" alt="preview" class="w-full h-48 object-cover rounded-xl" style="border: 1px solid rgba(255,255,255,0.08);" />
+              <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl flex items-center justify-center">
+                <span class="text-white text-xs font-bold flex items-center gap-2 bg-black/30 px-3 py-2 rounded-lg backdrop-blur-md">
                   <i class="bx bx-camera text-base"></i> Ganti Gambar
                 </span>
               </div>
             </div>
-
             <div v-else class="py-8 flex flex-col items-center justify-center text-center">
-              <div class="w-14 h-14 bg-white rounded-2xl shadow-sm border border-gray-100 flex items-center justify-center text-gray-400 group-hover:text-brand-maroon transition-colors mb-3">
-                <i class="bx bx-cloud-upload text-3xl"></i>
+              <div class="w-14 h-14 rounded-2xl flex items-center justify-center mb-3 transition-colors"
+                   style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.09);">
+                <i class="bx bx-cloud-upload text-3xl" style="color: rgba(160,160,192,0.5);"></i>
               </div>
-              <p class="text-sm font-bold text-gray-700">Klik untuk Unggah Gambar Produk</p>
-              <p class="text-xs text-gray-400 mt-1">Saran ukuran: 800x600px (Maks. 2MB)</p>
+              <p class="text-sm font-bold" style="color: rgba(200,200,230,0.8);">Klik untuk Unggah Gambar Produk</p>
+              <p class="text-xs mt-1" style="color: rgba(160,160,192,0.5);">Saran ukuran: 800x600px (Maks. 2MB)</p>
             </div>
           </div>
         </div>
       </form>
       <template #footer>
         <div class="flex justify-end gap-3">
-          <button @click="showForm=false" class="px-5 py-2.5 text-sm font-semibold text-gray-600 hover:bg-gray-100 rounded-xl">Batal</button>
-          <button @click="save" :disabled="saving" class="px-5 py-2.5 text-sm font-semibold bg-brand-maroon text-white rounded-xl disabled:opacity-60 flex items-center gap-2">
+          <button @click="showForm=false" class="dark-btn-cancel">Batal</button>
+          <button @click="save" :disabled="saving" class="dark-btn-primary">
             <i v-if="saving" class="bx bx-loader-alt bx-spin"></i>{{ editItem ? 'Simpan' : 'Tambah' }}
           </button>
         </div>
@@ -275,21 +277,33 @@ onMounted(async () => {
 :deep(.ql-toolbar.ql-snow) {
   border-top-left-radius: 0.75rem;
   border-top-right-radius: 0.75rem;
-  border-color: #e5e7eb;
-  background-color: #f9fafb;
+  border-color: rgba(255,255,255,0.09);
+  background: rgba(255,255,255,0.04);
+}
+:deep(.ql-toolbar.ql-snow .ql-stroke) { stroke: rgba(180,180,220,0.7); }
+:deep(.ql-toolbar.ql-snow .ql-fill) { fill: rgba(180,180,220,0.7); }
+:deep(.ql-toolbar.ql-snow button:hover .ql-stroke) { stroke: #a78bfa; }
+:deep(.ql-toolbar.ql-snow button:hover .ql-fill) { fill: #a78bfa; }
+:deep(.ql-toolbar.ql-snow .ql-picker-label) { color: rgba(180,180,220,0.7); }
+:deep(.ql-toolbar.ql-snow .ql-picker-options) {
+  background: #1a1a2e;
+  border-color: rgba(255,255,255,0.09);
+  color: rgba(220,220,245,0.9);
 }
 :deep(.ql-container.ql-snow) {
   border-bottom-left-radius: 0.75rem;
   border-bottom-right-radius: 0.75rem;
-  border-color: #e5e7eb;
+  border-color: rgba(255,255,255,0.09);
+  background: rgba(255,255,255,0.03);
   font-family: inherit;
 }
 :deep(.ql-editor) {
   min-height: 200px;
   font-size: 0.875rem;
+  color: rgba(220,220,245,0.9);
 }
 :deep(.ql-editor.ql-blank::before) {
   font-style: normal;
-  color: #9ca3af;
+  color: rgba(160,160,192,0.4);
 }
 </style>

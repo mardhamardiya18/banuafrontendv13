@@ -40,10 +40,7 @@
         </div>
         <div class="relative animate-fade-up-delay">
           <div class="relative rounded-4xl overflow-hidden shadow-2xl shadow-brand-maroon/10 ">
-            <picture>
-              <source media="(max-width: 767px)" srcset="/hero-img-mobile.webp" type="image/webp" />
-              <img :src="heroImg" alt="Sajian tumpeng dan catering Dapur Mamah Iis" fetchpriority="high" width="600" height="499" class="w-full h-[500px] object-cover scale-105"/>
-            </picture>
+            <img :src="heroImg" alt="Sajian tumpeng dan catering Dapur Mamah Iis" fetchpriority="high" width="600" height="499" class="w-full h-[500px] object-cover scale-105"/>
           </div>
           <div class="absolute -bottom-8 -left-8 bg-white/90 backdrop-blur-md p-5 rounded-3xl shadow-[0_20px_50px_rgba(105,11,34,0.15)] border border-brand-maroon/5 flex items-center gap-4 animate-float group hover:scale-105 transition-transform duration-500">
             <div class="bg-linear-to-br from-brand-terracotta to-brand-maroon p-3 rounded-2xl shadow-lg shadow-brand-terracotta/20">

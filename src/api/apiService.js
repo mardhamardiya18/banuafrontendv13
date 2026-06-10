@@ -361,7 +361,7 @@ export const referenceApi = {
   },
   async getAddons() {
     try {
-      const response = await api.get('/admin/add-ons')
+      const response = await api.get('/admin/add-ons', { params: { per_page: 1000 } })
       const items = response.data.data || response.data
       return { status: 'success', data: Array.isArray(items) ? items : [] }
     } catch (error) {

@@ -3,149 +3,235 @@
   <transition name="sidebar-backdrop">
     <div
       v-if="store.sidebarMobileOpen"
-      class="fixed inset-0 bg-gray-900/50 backdrop-blur-sm z-40 lg:hidden"
+      class="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 lg:hidden"
       @click="store.toggleMobileSidebar()"
     ></div>
   </transition>
 
   <!-- Sidebar -->
   <aside
-    class="fixed top-0 left-0 z-50 h-screen bg-white border-r border-gray-100 flex flex-col transition-all duration-300 ease-in-out"
-    :class="[
-      store.sidebarOpen ? 'w-[260px]' : 'w-[80px]',
-      store.sidebarMobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
-    ]"
+    class="fixed top-0 left-0 z-50 h-screen flex flex-col transition-all duration-300 ease-in-out"
+    :style="{
+      width: store.sidebarOpen ? '260px' : '80px',
+      background: 'linear-gradient(180deg, #0f0f17 0%, #141420 50%, #0f0f17 100%)',
+      borderRight: '1px solid rgba(255,255,255,0.05)'
+    }"
+    :class="store.sidebarMobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'"
   >
+    <!-- Decorative top glow -->
+    <div class="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-purple-500/40 to-transparent"></div>
+    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-32 bg-purple-600/5 rounded-full blur-3xl pointer-events-none"></div>
+
     <!-- Brand -->
-    <div class="h-[72px] flex items-center gap-3 px-5 border-b border-gray-100 shrink-0">
-      <div class="w-10 h-10 bg-brand-maroon rounded-xl flex items-center justify-center shrink-0 shadow-lg shadow-brand-maroon/20">
-        <i class="bx bxs-bowl-hot text-xl text-white"></i>
+    <div class="h-[72px] flex items-center gap-3 px-4 shrink-0 relative"
+         :style="{ borderBottom: '1px solid rgba(255,255,255,0.05)' }">
+      <!-- Logo image -->
+      <div class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 relative overflow-hidden p-0.5"
+           style="background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12);">
+        <img :src="logoImg" alt="DMI Catering" class="w-full h-full object-contain" />
       </div>
       <transition name="text-fade">
         <div v-if="store.sidebarOpen" class="overflow-hidden whitespace-nowrap">
-          <h1 class="text-lg font-bold text-gray-900 leading-tight">DMI Catering</h1>
-          <p class="text-[10px] text-gray-400 font-medium tracking-wide uppercase">Admin Panel</p>
+          <h1 class="text-sm font-bold leading-tight" style="color: #e0e0ef;">DMI Catering</h1>
+          <p class="text-[10px] font-semibold tracking-wider"
+             style="color: rgba(224,122,95,0.75);">By Dapur Mamah Iis</p>
         </div>
       </transition>
     </div>
 
     <!-- Navigation -->
-    <nav class="flex-1 px-3 py-5 space-y-1 overflow-y-auto custom-scrollbar">
-      <p v-if="store.sidebarOpen" class="px-3 mb-3 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Menu Utama</p>
-      
+    <nav class="flex-1 px-3 py-5 overflow-y-auto admin-scrollbar" style="display: flex; flex-direction: column; gap: 2px;">
+
+      <!-- Section: Main -->
+      <p v-if="store.sidebarOpen"
+         class="px-3 mb-2 text-[9px] font-bold uppercase"
+         style="letter-spacing: 0.15em; color: rgba(160,160,192,0.4);">Menu Utama</p>
+
       <router-link
         v-for="item in mainMenu"
         :key="item.route"
         :to="item.route"
-        class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 group"
-        :class="isActive(item.route)
-          ? 'bg-brand-maroon/5 text-brand-maroon'
-          : 'text-gray-500 hover:bg-gray-50 hover:text-gray-700'"
-        @click="store.sidebarMobileOpen && store.toggleMobileSidebar()"
+        custom
+        v-slot="{ navigate, isActive: linkActive }"
       >
-        <div class="w-9 h-9 rounded-lg flex items-center justify-center shrink-0 transition-colors"
-             :class="isActive(item.route) ? 'bg-brand-maroon text-white shadow-sm' : 'bg-gray-100 text-gray-400 group-hover:bg-gray-200 group-hover:text-gray-500'">
-          <i :class="item.icon" class="text-lg"></i>
-        </div>
-        <span v-if="store.sidebarOpen" class="truncate">{{ item.label }}</span>
-        <span v-if="store.sidebarOpen && item.badge" class="ml-auto text-[10px] font-bold bg-brand-terracotta text-white px-2 py-0.5 rounded-full">{{ item.badge }}</span>
+        <button
+          @click="() => { navigate(); store.sidebarMobileOpen && store.toggleMobileSidebar(); }"
+          class="nav-link-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 relative overflow-hidden"
+          :class="[!store.sidebarOpen ? 'justify-center' : '', linkActive ? 'nav-active' : 'nav-default']"
+        >
+          <div class="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-6 rounded-r-full transition-opacity duration-200"
+               :style="{ background: 'linear-gradient(180deg, #a78bfa, #8b5cf6)', opacity: linkActive ? 1 : 0 }"></div>
+          <div class="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 transition-all duration-200"
+               :style="linkActive
+                 ? 'background: rgba(139,92,246,0.2); border: 1px solid rgba(139,92,246,0.3);'
+                 : 'background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06);'">
+            <component :is="item.icon" :size="17"
+                       :style="{ color: linkActive ? '#a78bfa' : 'rgba(160,160,192,0.6)' }" />
+          </div>
+          <span v-if="store.sidebarOpen" class="truncate flex-1 text-left"
+                :style="{ color: linkActive ? '#e0e0ef' : 'rgba(160,160,192,0.65)' }">
+            {{ item.label }}
+          </span>
+        </button>
       </router-link>
 
-      <div v-if="store.sidebarOpen" class="pt-4 pb-2">
-        <p class="px-3 mb-3 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Katalog</p>
+      <!-- Section: Katalog -->
+      <div :class="store.sidebarOpen ? 'pt-5 pb-1' : 'pt-4'">
+        <p v-if="store.sidebarOpen"
+           class="px-3 mb-2 text-[9px] font-bold uppercase"
+           style="letter-spacing: 0.15em; color: rgba(160,160,192,0.4);">Katalog</p>
+        <div v-else class="mx-3 h-px" style="background: rgba(255,255,255,0.05);"></div>
       </div>
-      <div v-else class="pt-3"></div>
 
       <router-link
         v-for="item in catalogMenu"
         :key="item.route"
         :to="item.route"
-        class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 group"
-        :class="isActive(item.route)
-          ? 'bg-brand-maroon/5 text-brand-maroon'
-          : 'text-gray-500 hover:bg-gray-50 hover:text-gray-700'"
-        @click="store.sidebarMobileOpen && store.toggleMobileSidebar()"
+        custom
+        v-slot="{ navigate, isActive: linkActive }"
       >
-        <div class="w-9 h-9 rounded-lg flex items-center justify-center shrink-0 transition-colors"
-             :class="isActive(item.route) ? 'bg-brand-maroon text-white shadow-sm' : 'bg-gray-100 text-gray-400 group-hover:bg-gray-200 group-hover:text-gray-500'">
-          <i :class="item.icon" class="text-lg"></i>
-        </div>
-        <span v-if="store.sidebarOpen" class="truncate">{{ item.label }}</span>
+        <button
+          @click="() => { navigate(); store.sidebarMobileOpen && store.toggleMobileSidebar(); }"
+          class="nav-link-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 relative overflow-hidden"
+          :class="[!store.sidebarOpen ? 'justify-center' : '', linkActive ? 'nav-active' : 'nav-default']"
+        >
+          <div class="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-6 rounded-r-full transition-opacity duration-200"
+               :style="{ background: 'linear-gradient(180deg, #a78bfa, #8b5cf6)', opacity: linkActive ? 1 : 0 }"></div>
+          <div class="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 transition-all duration-200"
+               :style="linkActive
+                 ? 'background: rgba(139,92,246,0.2); border: 1px solid rgba(139,92,246,0.3);'
+                 : 'background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06);'">
+            <component :is="item.icon" :size="17"
+                       :style="{ color: linkActive ? '#a78bfa' : 'rgba(160,160,192,0.6)' }" />
+          </div>
+          <span v-if="store.sidebarOpen" class="truncate flex-1 text-left"
+                :style="{ color: linkActive ? '#e0e0ef' : 'rgba(160,160,192,0.65)' }">
+            {{ item.label }}
+          </span>
+        </button>
       </router-link>
 
-      <div v-if="store.sidebarOpen" class="pt-4 pb-2">
-        <p class="px-3 mb-3 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Transaksi</p>
+      <!-- Section: Transaksi -->
+      <div :class="store.sidebarOpen ? 'pt-5 pb-1' : 'pt-4'">
+        <p v-if="store.sidebarOpen"
+           class="px-3 mb-2 text-[9px] font-bold uppercase"
+           style="letter-spacing: 0.15em; color: rgba(160,160,192,0.4);">Transaksi</p>
+        <div v-else class="mx-3 h-px" style="background: rgba(255,255,255,0.05);"></div>
       </div>
-      <div v-else class="pt-3"></div>
 
       <router-link
         v-for="item in transactionMenu"
         :key="item.route"
         :to="item.route"
-        class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 group"
-        :class="isActive(item.route)
-          ? 'bg-brand-maroon/5 text-brand-maroon'
-          : 'text-gray-500 hover:bg-gray-50 hover:text-gray-700'"
-        @click="store.sidebarMobileOpen && store.toggleMobileSidebar()"
+        custom
+        v-slot="{ navigate, isActive: linkActive }"
       >
-        <div class="w-9 h-9 rounded-lg flex items-center justify-center shrink-0 transition-colors"
-             :class="isActive(item.route) ? 'bg-brand-maroon text-white shadow-sm' : 'bg-gray-100 text-gray-400 group-hover:bg-gray-200 group-hover:text-gray-500'">
-          <i :class="item.icon" class="text-lg"></i>
-        </div>
-        <span v-if="store.sidebarOpen" class="truncate">{{ item.label }}</span>
+        <button
+          @click="() => { navigate(); store.sidebarMobileOpen && store.toggleMobileSidebar(); }"
+          class="nav-link-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 relative overflow-hidden"
+          :class="[!store.sidebarOpen ? 'justify-center' : '', linkActive ? 'nav-active' : 'nav-default']"
+        >
+          <div class="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-6 rounded-r-full transition-opacity duration-200"
+               :style="{ background: 'linear-gradient(180deg, #a78bfa, #8b5cf6)', opacity: linkActive ? 1 : 0 }"></div>
+          <div class="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 transition-all duration-200"
+               :style="linkActive
+                 ? 'background: rgba(139,92,246,0.2); border: 1px solid rgba(139,92,246,0.3);'
+                 : 'background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06);'">
+            <component :is="item.icon" :size="17"
+                       :style="{ color: linkActive ? '#a78bfa' : 'rgba(160,160,192,0.6)' }" />
+          </div>
+          <span v-if="store.sidebarOpen" class="truncate flex-1 text-left"
+                :style="{ color: linkActive ? '#e0e0ef' : 'rgba(160,160,192,0.65)' }">
+            {{ item.label }}
+          </span>
+          <span v-if="store.sidebarOpen && item.badge"
+                class="text-[9px] font-bold px-1.5 py-0.5 rounded-full ml-auto"
+                style="background: rgba(224,122,95,0.2); color: #E07A5F; border: 1px solid rgba(224,122,95,0.3);">
+            {{ item.badge }}
+          </span>
+        </button>
       </router-link>
     </nav>
 
     <!-- Website Link (Back to Home) -->
     <div class="px-3 pb-2">
-      <router-link
-        to="/"
-        class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-emerald-600 hover:bg-emerald-50 transition-all duration-200 group"
-      >
-        <div class="w-9 h-9 rounded-lg flex items-center justify-center bg-emerald-100 text-emerald-600 shrink-0 group-hover:bg-emerald-200">
-          <i class="bx bx-world text-lg"></i>
-        </div>
-        <span v-if="store.sidebarOpen" class="truncate">Lihat Website</span>
+      <router-link to="/" custom v-slot="{ navigate }">
+        <button
+          @click="navigate"
+          class="nav-link-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200"
+          :class="!store.sidebarOpen ? 'justify-center' : ''"
+          style="color: rgba(52, 211, 153, 0.8);"
+        >
+          <div class="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 transition-all duration-200 group-hover:scale-105"
+               style="background: rgba(52, 211, 153, 0.1); border: 1px solid rgba(52, 211, 153, 0.2);">
+            <Globe :size="17" style="color: rgba(52, 211, 153, 0.9);" />
+          </div>
+          <span v-if="store.sidebarOpen" class="truncate text-left text-sm font-medium">Lihat Website</span>
+        </button>
       </router-link>
     </div>
 
     <!-- Collapse Toggle (Desktop) -->
-    <div class="hidden lg:flex p-3 border-t border-gray-100">
+    <div class="hidden lg:flex p-3" :style="{ borderTop: '1px solid rgba(255,255,255,0.05)' }">
       <button
         @click="store.toggleSidebar()"
-        class="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-gray-400 hover:bg-gray-50 hover:text-gray-600 transition-all text-sm"
+        class="w-full flex items-center gap-2.5 py-2.5 px-3 rounded-xl transition-all duration-200 text-sm"
+        :class="!store.sidebarOpen ? 'justify-center' : ''"
+        style="color: rgba(160,160,192,0.5);"
+        onmouseenter="this.style.background='rgba(255,255,255,0.04)'; this.style.color='rgba(160,160,192,0.9)';"
+        onmouseleave="this.style.background=''; this.style.color='rgba(160,160,192,0.5)';"
       >
-        <i :class="store.sidebarOpen ? 'bx bx-chevrons-left' : 'bx bx-chevrons-right'" class="text-xl"></i>
-        <span v-if="store.sidebarOpen" class="font-medium">Tutup Sidebar</span>
+        <component :is="store.sidebarOpen ? ChevronsLeft : ChevronsRight"
+                   :size="18" class="shrink-0 transition-transform duration-200" />
+        <span v-if="store.sidebarOpen" class="font-medium text-xs">Tutup Sidebar</span>
       </button>
     </div>
   </aside>
 </template>
 
 <script setup>
+import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { useAdminStore } from '../../stores/admin'
+import { orderApi } from '../../api/apiService'
+import {
+  LayoutDashboard, Tag, Package, PlusCircle, Image, ShoppingCart, Landmark,
+  Globe, ChevronsLeft, ChevronsRight
+} from '@lucide/vue'
+import logoImg from '../../assets/images/logo-small.webp'
 
 const route = useRoute()
 const store = useAdminStore()
 
-const isActive = (path) => route.path === path || route.path.startsWith(path + '/')
-
 const mainMenu = [
-  { label: 'Dashboard', icon: 'bx bxs-dashboard', route: '/admin/dashboard' }
+  { label: 'Dashboard', icon: LayoutDashboard, route: '/admin/dashboard' }
 ]
 
 const catalogMenu = [
-  { label: 'Kategori', icon: 'bx bxs-category', route: '/admin/categories' },
-  { label: 'Produk', icon: 'bx bxs-box', route: '/admin/products' },
-  { label: 'Add-Ons', icon: 'bx bxs-plus-circle', route: '/admin/add-ons' },
-  { label: 'Gallery', icon: 'bx bxs-image', route: '/admin/gallery' }
+  { label: 'Kategori', icon: Tag, route: '/admin/categories' },
+  { label: 'Produk', icon: Package, route: '/admin/products' },
+  { label: 'Add-Ons', icon: PlusCircle, route: '/admin/add-ons' },
+  { label: 'Gallery', icon: Image, route: '/admin/gallery' }
 ]
 
-const transactionMenu = [
-  { label: 'Order', icon: 'bx bxs-cart', route: '/admin/orders', badge: '3' },
-  { label: 'Bank Account', icon: 'bx bxs-bank', route: '/admin/bank-accounts' }
-]
+const transactionMenu = ref([
+  { label: 'Order', icon: ShoppingCart, route: '/admin/orders', badge: '' },
+  { label: 'Bank Account', icon: Landmark, route: '/admin/bank-accounts' }
+])
+
+onMounted(async () => {
+  try {
+    const res = await orderApi.getAll(1, 1000, '', 'pending')
+    if (res.status === 'success') {
+      const validOrders = res.data.filter(o => 
+        o.status?.payment === 'dp_received' || o.status?.payment === 'paid'
+      )
+      transactionMenu.value[0].badge = validOrders.length > 0 ? validOrders.length.toString() : ''
+    }
+  } catch (error) {
+    console.error('Error fetching pending orders count:', error)
+  }
+})
 </script>
 
 <style scoped>
@@ -159,7 +245,19 @@ const transactionMenu = [
 .sidebar-backdrop-enter-from,
 .sidebar-backdrop-leave-to { opacity: 0; }
 
-.custom-scrollbar::-webkit-scrollbar { width: 4px; }
-.custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-.custom-scrollbar::-webkit-scrollbar-thumb { background: #e5e7eb; border-radius: 2px; }
+.nav-active {
+  background: rgba(139, 92, 246, 0.08);
+}
+
+.nav-default:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.nav-link-btn {
+  appearance: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  outline: none;
+}
 </style>

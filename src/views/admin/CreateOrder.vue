@@ -3,16 +3,19 @@
     <!-- Header -->
     <div class="flex items-center justify-between shrink-0">
       <div class="flex items-center gap-4">
-        <router-link :to="{ name: 'AdminOrders' }" class="w-10 h-10 flex items-center justify-center rounded-xl bg-white border border-gray-200 hover:bg-gray-50 text-gray-600 transition-colors shadow-sm">
+        <router-link :to="{ name: 'AdminOrders' }" class="w-10 h-10 flex items-center justify-center rounded-xl transition-colors shadow-sm"
+                     style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); color: rgba(160,160,192,0.8);"
+                     onmouseenter="this.style.background='rgba(255,255,255,0.1)';"
+                     onmouseleave="this.style.background='rgba(255,255,255,0.05)';">
           <i class="bx bx-arrow-back text-xl"></i>
         </router-link>
         <div>
-          <h1 class="text-xl sm:text-2xl font-bold text-gray-900 leading-tight">Point of Sale</h1>
-          <p class="text-xs sm:text-sm text-gray-500">Buat pesanan baru secara manual</p>
+          <h1 class="text-xl sm:text-2xl font-bold leading-tight" style="color: rgba(224,224,239,0.95);">Point of Sale</h1>
+          <p class="text-xs sm:text-sm" style="color: rgba(160,160,192,0.6);">Buat pesanan baru secara manual</p>
         </div>
       </div>
       <div class="hidden sm:block text-right">
-        <p class="text-sm font-bold text-gray-800">{{ new Date().toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) }}</p>
+        <p class="text-sm font-bold" style="color: rgba(200,200,230,0.8);">{{ new Date().toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) }}</p>
       </div>
     </div>
 
@@ -20,21 +23,22 @@
     <div class="flex flex-col lg:flex-row gap-5 flex-1 min-h-0 overflow-hidden">
       
       <!-- LEFT: Product Grid -->
-      <div class="flex-[3] flex flex-col bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm min-h-0">
+      <div class="flex-[3] flex flex-col rounded-2xl overflow-hidden shadow-sm min-h-0"
+           style="background: #0a0a0f; border: 1px solid rgba(255,255,255,0.05);">
         <!-- Search Header -->
-        <div class="p-4 border-b border-gray-100 flex gap-4 bg-gray-50/50 shrink-0">
+        <div class="p-4 flex gap-4 shrink-0" style="background: rgba(255,255,255,0.02); border-bottom: 1px solid rgba(255,255,255,0.05);">
           <div class="relative flex-1">
-            <i class="bx bx-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-lg"></i>
-            <input v-model="searchQuery" type="text" placeholder="Cari menu produk..." class="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm outline-none focus:border-brand-maroon/50 focus:ring-2 focus:ring-brand-maroon/10 transition-all shadow-sm" />
+            <i class="bx bx-search absolute left-3 top-1/2 -translate-y-1/2 text-lg" style="color: rgba(160,160,192,0.5);"></i>
+            <input v-model="searchQuery" type="text" placeholder="Cari menu produk..." class="dark-input pl-10" />
           </div>
         </div>
 
         <!-- Grid -->
-        <div class="flex-1 overflow-y-auto p-4 bg-gray-50/50" @scroll="handleScroll">
+        <div class="flex-1 overflow-y-auto p-4 custom-scrollbar" @scroll="handleScroll" style="background: rgba(10,10,15,0.5);">
           <div v-if="filteredProducts.length === 0" class="flex flex-col items-center justify-center h-full text-center p-6 opacity-60">
-            <i class="bx bx-dish text-6xl text-gray-300 mb-4"></i>
-            <h3 class="text-lg font-bold text-gray-700">Tidak ada produk</h3>
-            <p class="text-sm text-gray-500">Coba kata kunci lain.</p>
+            <i class="bx bx-dish text-6xl mb-4" style="color: rgba(160,160,192,0.3);"></i>
+            <h3 class="text-lg font-bold" style="color: rgba(220,220,240,0.8);">Tidak ada produk</h3>
+            <p class="text-sm" style="color: rgba(160,160,192,0.6);">Coba kata kunci lain.</p>
           </div>
           
           <div v-else class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-4 pb-20 lg:pb-4">
@@ -42,22 +46,26 @@
               v-for="product in displayedProducts" 
               :key="product.id" 
               @click="addToCart(product)" 
-              class="bg-white border border-gray-100 rounded-xl overflow-hidden shadow-sm hover:shadow-md hover:border-brand-maroon/40 transition-all cursor-pointer group flex flex-col animate-fade-up"
+              class="rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all cursor-pointer group flex flex-col animate-fade-up"
+              style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);"
+              onmouseenter="this.style.borderColor='rgba(139,92,246,0.4)';"
+              onmouseleave="this.style.borderColor='rgba(255,255,255,0.06)';"
             >
-              <div class="aspect-[4/3] bg-gray-100 relative overflow-hidden">
+              <div class="aspect-[4/3] relative overflow-hidden" style="background: rgba(255,255,255,0.02);">
                 <img loading="lazy" decoding="async" :src="product.thumbnail || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&q=80&w=400'" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                 <div class="absolute inset-0 bg-linear-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 <div class="absolute bottom-2 right-2 translate-y-8 group-hover:translate-y-0 transition-transform duration-300">
-                  <div class="bg-brand-maroon text-white w-8 h-8 rounded-lg flex items-center justify-center shadow-lg"><i class="bx bx-plus font-bold"></i></div>
+                  <div class="w-8 h-8 rounded-lg flex items-center justify-center shadow-lg" style="background: rgba(139,92,246,0.9); color: white;"><i class="bx bx-plus font-bold"></i></div>
                 </div>
               </div>
               <div class="p-3 flex-1 flex flex-col justify-between">
                 <div>
-                  <p class="font-bold text-gray-800 text-xs sm:text-sm line-clamp-2 leading-tight group-hover:text-brand-maroon transition-colors">{{ product.name_full }}</p>
-                  <p v-if="product.min_order > 1" class="text-[10px] text-amber-600 mt-1 font-semibold">Min: {{ product.min_order }} pcs</p>
+                  <p class="font-bold text-xs sm:text-sm line-clamp-2 leading-tight transition-colors"
+                     style="color: rgba(230,230,250,0.95);">{{ product.name_full }}</p>
+                  <p v-if="product.min_order > 1" class="text-[10px] mt-1 font-semibold" style="color: #fbbf24;">Min: {{ product.min_order }} pcs</p>
                 </div>
                 <div class="mt-2">
-                  <p class="text-brand-maroon font-black text-sm sm:text-base">Rp {{ product.price.toLocaleString('id-ID') }}</p>
+                  <p class="font-black text-sm sm:text-base" style="color: #a78bfa;">Rp {{ formatRp(product.price) }}</p>
                 </div>
               </div>
             </div>
@@ -69,67 +77,83 @@
       <div class="w-full lg:w-[420px] xl:w-[460px] flex flex-col gap-4 shrink-0 h-full min-h-0">
         
         <!-- Cart List (Scrollable) -->
-        <div class="flex-[3] bg-white rounded-2xl border border-gray-200 shadow-sm flex flex-col overflow-hidden min-h-[300px]">
-          <div class="p-3.5 border-b border-gray-100 flex justify-between items-center bg-gray-50 shrink-0">
-            <h2 class="font-bold text-gray-800 flex items-center gap-2"><i class="bx bx-cart text-brand-maroon"></i> Keranjang</h2>
-            <span class="bg-brand-maroon/10 text-brand-maroon px-2 py-0.5 rounded-md text-xs font-bold">{{ totalItemsCount }} item</span>
+        <div class="flex-[3] rounded-2xl shadow-sm flex flex-col overflow-hidden min-h-[300px]"
+             style="background: #0a0a0f; border: 1px solid rgba(255,255,255,0.05);">
+          <div class="p-3.5 flex justify-between items-center shrink-0"
+               style="background: rgba(255,255,255,0.03); border-bottom: 1px solid rgba(255,255,255,0.05);">
+            <h2 class="font-bold flex items-center gap-2" style="color: rgba(220,220,240,0.9);"><i class="bx bx-cart" style="color: #a78bfa;"></i> Keranjang</h2>
+            <span class="px-2 py-0.5 rounded-md text-xs font-bold"
+                  style="background: rgba(139,92,246,0.15); color: #a78bfa;">{{ totalItemsCount }} item</span>
           </div>
 
-          <div class="flex-1 overflow-y-auto p-3 space-y-3 relative bg-gray-50/30">
+          <div class="flex-1 overflow-y-auto p-3 space-y-3 relative custom-scrollbar">
             <div v-if="!form.items.length" class="absolute inset-0 flex flex-col items-center justify-center text-center p-6 opacity-50">
-              <i class="bx bx-cart-add text-5xl text-gray-300 mb-2"></i>
-              <p class="text-sm font-semibold text-gray-500">Keranjang masih kosong</p>
+              <i class="bx bx-cart-add text-5xl mb-2" style="color: rgba(160,160,192,0.4);"></i>
+              <p class="text-sm font-semibold" style="color: rgba(160,160,192,0.6);">Keranjang masih kosong</p>
             </div>
 
             <!-- Cart Items -->
-            <div v-for="(item, idx) in form.items" :key="idx" class="bg-white border border-gray-200 rounded-xl p-3 shadow-sm relative group animate-fade-up">
+            <div v-for="(item, idx) in form.items" :key="idx" class="rounded-xl p-3 shadow-sm relative group animate-fade-up"
+                 style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);">
               
               <!-- Top Row: Info & Controls -->
               <div class="flex justify-between items-start gap-2">
                 <div class="flex-1 min-w-0">
-                  <p class="font-bold text-gray-800 text-sm leading-tight pr-2">{{ getProductName(item.product_id) }}</p>
-                  <p class="text-[11px] text-gray-500 mt-0.5 font-medium">Rp {{ getProductPrice(item.product_id).toLocaleString('id-ID') }} / pc</p>
-                  <p v-if="getUnderMinOrderFee(item) > 0" class="text-[10px] text-amber-600 font-bold mt-1">+Rp {{ getUnderMinOrderFee(item).toLocaleString('id-ID') }} (Fee Min. Order)</p>
+                  <p class="font-bold text-sm leading-tight pr-2" style="color: rgba(230,230,250,0.95);">{{ getProductName(item.product_id) }}</p>
+                  <p class="text-[11px] mt-0.5 font-medium" style="color: rgba(160,160,192,0.6);">Rp {{ formatRp(getProductPrice(item.product_id)) }} / pc</p>
+                  <p v-if="getUnderMinOrderFee(item) > 0" class="text-[10px] font-bold mt-1" style="color: #fbbf24;">+Rp {{ formatRp(getUnderMinOrderFee(item)) }} (Fee Min. Order)</p>
                 </div>
                 
                 <div class="flex flex-col items-end gap-2 shrink-0">
                   <!-- Stepper -->
-                  <div class="flex items-center gap-0.5 bg-gray-100 border border-gray-200 rounded-lg p-0.5 h-8">
-                    <button @click="item.quantity > 1 ? item.quantity-- : removeItem(idx)" class="w-7 h-full rounded-md bg-white shadow-sm flex items-center justify-center hover:text-brand-maroon text-gray-600 transition-colors"><i :class="item.quantity > 1 ? 'bx bx-minus' : 'bx bx-trash text-red-500'"></i></button>
-                    <input v-model.number="item.quantity" type="number" min="1" class="w-10 text-center bg-transparent border-none text-xs font-bold p-0 focus:ring-0 h-full" />
-                    <button @click="item.quantity++" class="w-7 h-full rounded-md bg-white shadow-sm flex items-center justify-center hover:text-brand-maroon text-gray-600 transition-colors"><i class="bx bx-plus"></i></button>
+                  <div class="flex items-center gap-0.5 rounded-lg p-0.5 h-8" style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08);">
+                    <button @click="item.quantity > 1 ? item.quantity-- : removeItem(idx)" class="w-7 h-full rounded-md flex items-center justify-center transition-colors"
+                            style="background: rgba(255,255,255,0.05); color: rgba(200,200,220,0.8);"
+                            onmouseenter="this.style.background='rgba(255,255,255,0.1)';"
+                            onmouseleave="this.style.background='rgba(255,255,255,0.05)';"><i :class="item.quantity > 1 ? 'bx bx-minus' : 'bx bx-trash text-red-400'"></i></button>
+                    <input v-model.number="item.quantity" type="number" min="1" class="w-10 text-center bg-transparent border-none text-xs font-bold p-0 focus:ring-0 h-full" style="color: rgba(230,230,250,0.95);" />
+                    <button @click="item.quantity++" class="w-7 h-full rounded-md flex items-center justify-center transition-colors"
+                            style="background: rgba(255,255,255,0.05); color: rgba(200,200,220,0.8);"
+                            onmouseenter="this.style.background='rgba(255,255,255,0.1)';"
+                            onmouseleave="this.style.background='rgba(255,255,255,0.05)';"><i class="bx bx-plus"></i></button>
                   </div>
-                  <p class="text-sm font-black text-brand-maroon">Rp {{ itemSubTotal(item).toLocaleString('id-ID') }}</p>
+                  <p class="text-sm font-black" style="color: #a78bfa;">Rp {{ formatRp(itemSubTotal(item)) }}</p>
                 </div>
               </div>
 
               <!-- Action Bar (Toggle Notes/Addons) -->
-              <div class="mt-2.5 flex items-center gap-2 border-t border-gray-100 pt-2">
-                <button @click="item._showDetails = !item._showDetails" class="text-[10px] font-bold px-2 py-1 rounded-md transition-colors flex items-center gap-1" :class="item._showDetails ? 'bg-brand-maroon text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'">
+              <div class="mt-2.5 flex items-center gap-2 pt-2" style="border-top: 1px solid rgba(255,255,255,0.06);">
+                <button @click="item._showDetails = !item._showDetails" class="text-[10px] font-bold px-2 py-1 rounded-md transition-colors flex items-center gap-1"
+                        :style="item._showDetails ? 'background: rgba(139,92,246,0.2); color: #a78bfa;' : 'background: rgba(255,255,255,0.05); color: rgba(160,160,192,0.8);'">
                   <i class="bx bx-edit-alt"></i> {{ item._showDetails ? 'Tutup Detail' : 'Catatan & Add-on' }}
-                  <span v-if="item.addons.length && !item._showDetails" class="ml-1 w-4 h-4 bg-brand-maroon text-white rounded-full flex items-center justify-center text-[9px]">{{ item.addons.length }}</span>
+                  <span v-if="item.addons.length && !item._showDetails" class="ml-1 w-4 h-4 rounded-full flex items-center justify-center text-[9px]"
+                        style="background: #a78bfa; color: #1a1a2e;">{{ item.addons.length }}</span>
                 </button>
               </div>
 
               <!-- Expandable Notes & Addons Area -->
-              <div v-show="item._showDetails" class="mt-2 pt-2 border-t border-dashed border-gray-200">
+              <div v-show="item._showDetails" class="mt-2 pt-2 border-t border-dashed" style="border-color: rgba(255,255,255,0.1);">
                 <div class="mb-3">
-                  <input v-model="item.notes" type="text" class="w-full px-2.5 py-1.5 rounded-lg border border-gray-200 bg-gray-50 text-[11px] outline-none focus:border-brand-maroon/40 focus:bg-white transition-all" placeholder="Catatan: Tidak pedas, extra kuah..." />
+                  <input v-model="item.notes" type="text" class="dark-input w-full px-2.5 py-1.5 rounded-lg text-[11px]" placeholder="Catatan: Tidak pedas, extra kuah..." />
                 </div>
                 
                 <div>
                   <div class="flex justify-between items-center mb-1.5">
-                    <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-wider">Add-Ons</label>
-                    <button @click="addAddon(item)" class="text-[10px] font-bold text-brand-maroon hover:text-brand-terracotta bg-brand-maroon/5 px-2 py-0.5 rounded-md transition-colors">+ Tambah</button>
+                    <label class="block text-[10px] font-bold uppercase tracking-wider" style="color: rgba(160,160,192,0.6);">Add-Ons</label>
+                    <button @click="addAddon(item)" class="text-[10px] font-bold px-2 py-0.5 rounded-md transition-colors"
+                            style="background: rgba(139,92,246,0.15); color: #a78bfa;">+ Tambah</button>
                   </div>
-                  <div v-if="!item.addons.length" class="text-[10px] text-gray-400 italic py-1">Tidak ada add-on</div>
+                  <div v-if="!item.addons.length" class="text-[10px] italic py-1" style="color: rgba(160,160,192,0.4);">Tidak ada add-on</div>
                   <div v-for="(addon, aIdx) in item.addons" :key="aIdx" class="flex items-center gap-1.5 mb-1.5 animate-fade-up">
-                    <select v-model="addon.addon_id" @change="onAddonChange(addon)" class="flex-1 min-w-0 px-2 py-1 rounded-lg border border-gray-200 bg-gray-50 text-[11px] outline-none focus:border-brand-maroon/40 transition-all">
-                      <option :value="null" disabled>Pilih add-on</option>
-                      <option v-for="a in getAvailableAddons(item)" :key="a.id" :value="a.id">{{ a.name }} — Rp {{ a.price.toLocaleString('id-ID') }}</option>
+                    <select v-model="addon.addon_id" @change="onAddonChange(addon)" class="dark-select flex-1 min-w-0 px-2 py-1.5 rounded-lg text-[11px]" style="background-position: right 0.5rem center; padding-right: 1.5rem; color: rgba(224,224,239,0.95);">
+                      <option :value="null" disabled style="color: rgba(160,160,192,0.6);">Pilih add-on</option>
+                      <option v-for="a in getAvailableAddons(item)" :key="a.id" :value="a.id" style="color: rgba(224,224,239,0.95);">{{ a.name }} (+Rp {{ formatRp(a.price) }})</option>
                     </select>
-                    <input v-model.number="addon.quantity" type="number" min="1" class="w-12 px-1 py-1 rounded-lg border border-gray-200 bg-gray-50 text-[11px] text-center outline-none focus:border-brand-maroon/40" placeholder="Qty" />
-                    <button @click="item.addons.splice(aIdx, 1)" class="w-6 h-6 flex items-center justify-center shrink-0 rounded-md hover:bg-red-50 text-gray-400 hover:text-red-500 transition-colors"><i class="bx bx-x text-sm"></i></button>
+                    <input v-model.number="addon.quantity" type="number" min="1" class="dark-input !w-[55px] flex-none px-1 py-1.5 rounded-lg text-[11px] text-center" placeholder="Qty" />
+                    <button @click="item.addons.splice(aIdx, 1)" class="w-6 h-6 flex items-center justify-center flex-none rounded-md transition-colors"
+                            style="background: rgba(248,113,113,0.1); color: #f87171;"
+                            onmouseenter="this.style.background='rgba(248,113,113,0.2)';"
+                            onmouseleave="this.style.background='rgba(248,113,113,0.1)';"><i class="bx bx-x text-sm"></i></button>
                   </div>
                 </div>
               </div>
@@ -139,58 +163,68 @@
         </div>
 
         <!-- Customer & Checkout Accordion -->
-        <div class="flex-[2] bg-white rounded-2xl border border-gray-200 shadow-sm flex flex-col shrink-0">
+        <div class="flex-[2] rounded-2xl shadow-sm flex flex-col shrink-0"
+             style="background: #0a0a0f; border: 1px solid rgba(255,255,255,0.05);">
           
           <!-- Collapsible Customer Info -->
-          <div class="border-b border-gray-100 p-3">
+          <div class="p-3" style="border-bottom: 1px solid rgba(255,255,255,0.05);">
             <button @click="showCustomerInfo = !showCustomerInfo" class="w-full flex justify-between items-center text-left">
               <div class="flex items-center gap-2">
-                <i class="bx bx-user-circle text-brand-maroon text-lg"></i>
-                <span class="font-bold text-sm text-gray-800">Detail Pelanggan</span>
-                <span v-if="form.customer_name" class="bg-green-100 text-green-700 text-[10px] px-1.5 py-0.5 rounded font-bold">Terisi</span>
+                <i class="bx bx-user-circle text-lg" style="color: #a78bfa;"></i>
+                <span class="font-bold text-sm" style="color: rgba(220,220,240,0.9);">Detail Pelanggan</span>
+                <span v-if="form.customer_name" class="text-[10px] px-1.5 py-0.5 rounded font-bold"
+                      style="background: rgba(52,211,153,0.15); color: #34d399;">Terisi</span>
               </div>
-              <i class="bx text-gray-400 transition-transform" :class="showCustomerInfo ? 'bx-chevron-up' : 'bx-chevron-down'"></i>
+              <i class="bx transition-transform" :class="showCustomerInfo ? 'bx-chevron-up' : 'bx-chevron-down'" style="color: rgba(160,160,192,0.5);"></i>
             </button>
             
             <div v-show="showCustomerInfo" class="mt-3 space-y-2.5 animate-fade-up">
-              <div class="flex bg-gray-100 rounded-lg p-1">
-                <button @click="form.delivery_type = 'delivery'" :class="form.delivery_type === 'delivery' ? 'bg-white shadow-sm text-brand-maroon' : 'text-gray-500'" class="flex-1 py-1 text-[11px] font-bold rounded-md transition-all">Delivery</button>
-                <button @click="form.delivery_type = 'pickup'" :class="form.delivery_type === 'pickup' ? 'bg-white shadow-sm text-brand-maroon' : 'text-gray-500'" class="flex-1 py-1 text-[11px] font-bold rounded-md transition-all">Pickup</button>
+              <div class="flex rounded-lg p-1" style="background: rgba(255,255,255,0.05);">
+                <button @click="form.delivery_type = 'delivery'" :class="form.delivery_type === 'delivery' ? 'shadow-sm' : ''" class="flex-1 py-1 text-[11px] font-bold rounded-md transition-all"
+                        :style="form.delivery_type === 'delivery' ? 'background: rgba(139,92,246,0.2); color: #a78bfa;' : 'color: rgba(160,160,192,0.6);'">Delivery</button>
+                <button @click="form.delivery_type = 'pickup'" :class="form.delivery_type === 'pickup' ? 'shadow-sm' : ''" class="flex-1 py-1 text-[11px] font-bold rounded-md transition-all"
+                        :style="form.delivery_type === 'pickup' ? 'background: rgba(139,92,246,0.2); color: #a78bfa;' : 'color: rgba(160,160,192,0.6);'">Pickup</button>
               </div>
               <div class="grid grid-cols-2 gap-2">
-                <input v-model="form.delivery_date" type="datetime-local" required class="w-full px-2.5 py-1.5 rounded-lg border border-gray-200 bg-gray-50 text-[11px] outline-none focus:border-brand-maroon/40 transition-all" />
-                <input v-model="form.customer_phone" type="tel" required class="w-full px-2.5 py-1.5 rounded-lg border border-gray-200 bg-gray-50 text-[11px] outline-none focus:border-brand-maroon/40 transition-all" placeholder="Telepon *" />
+                <input v-model="form.delivery_date" type="datetime-local" required class="dark-input w-full px-2.5 py-1.5 rounded-lg text-[11px]" />
+                <input v-model="form.customer_phone" type="tel" required class="dark-input w-full px-2.5 py-1.5 rounded-lg text-[11px]" placeholder="Telepon *" />
               </div>
-              <input v-model="form.customer_name" type="text" required class="w-full px-2.5 py-1.5 rounded-lg border border-gray-200 bg-gray-50 text-[11px] outline-none focus:border-brand-maroon/40 transition-all" placeholder="Nama Pelanggan *" />
-              <textarea v-if="form.delivery_type === 'delivery'" v-model="form.delivery_address" rows="2" class="w-full px-2.5 py-1.5 rounded-lg border border-gray-200 bg-gray-50 text-[11px] outline-none focus:border-brand-maroon/40 transition-all resize-none" placeholder="Alamat Pengiriman *"></textarea>
-              <input v-if="form.delivery_type === 'delivery'" v-model="form.customer_maps" type="text" class="w-full px-2.5 py-1.5 rounded-lg border border-gray-200 bg-gray-50 text-[11px] outline-none focus:border-brand-maroon/40 transition-all" placeholder="Link Maps (Opsional)" />
-              <input v-if="form.delivery_type === 'pickup'" v-model="form.delivery_notes" type="text" class="w-full px-2.5 py-1.5 rounded-lg border border-gray-200 bg-gray-50 text-[11px] outline-none focus:border-brand-maroon/40 transition-all" placeholder="Catatan (Jam ambil, dll)" />
+              <input v-model="form.customer_name" type="text" required class="dark-input w-full px-2.5 py-1.5 rounded-lg text-[11px]" placeholder="Nama Pelanggan *" />
+              <textarea v-if="form.delivery_type === 'delivery'" v-model="form.delivery_address" rows="2" class="dark-input w-full px-2.5 py-1.5 rounded-lg text-[11px] resize-none" placeholder="Alamat Pengiriman *"></textarea>
+              <input v-if="form.delivery_type === 'delivery'" v-model="form.customer_maps" type="text" class="dark-input w-full px-2.5 py-1.5 rounded-lg text-[11px]" placeholder="Link Maps (Opsional)" />
+              <input v-if="form.delivery_type === 'pickup'" v-model="form.delivery_notes" type="text" class="dark-input w-full px-2.5 py-1.5 rounded-lg text-[11px]" placeholder="Catatan (Jam ambil, dll)" />
             </div>
           </div>
 
           <!-- Checkout Panel -->
-          <div class="p-3 bg-brand-maroon/5 flex-1 flex flex-col justify-between">
+          <div class="p-3 flex-1 flex flex-col justify-between" style="background: rgba(139,92,246,0.03);">
             <div class="space-y-1.5 mb-3">
-              <div class="flex justify-between text-xs"><span class="text-gray-500 font-medium">Subtotal Item</span><span class="font-semibold text-gray-700">Rp {{ grandTotal.toLocaleString('id-ID') }}</span></div>
-              <div class="flex justify-between text-xs"><span class="text-gray-500 font-medium">Total Add-on</span><span class="font-semibold text-gray-700">Rp {{ addonsTotal.toLocaleString('id-ID') }}</span></div>
-              <div class="border-t border-brand-maroon/10 pt-1.5 mt-1 flex justify-between items-end">
-                <span class="text-xs font-bold text-gray-800">Grand Total</span>
-                <span class="text-xl font-black text-brand-maroon leading-none">Rp {{ (grandTotal + addonsTotal).toLocaleString('id-ID') }}</span>
+              <div class="flex justify-between text-xs"><span style="color: rgba(160,160,192,0.7);">Subtotal Item</span><span class="font-semibold" style="color: rgba(220,220,240,0.9);">Rp {{ formatRp(grandTotal) }}</span></div>
+              <div class="flex justify-between text-xs"><span style="color: rgba(160,160,192,0.7);">Total Add-on</span><span class="font-semibold" style="color: rgba(220,220,240,0.9);">Rp {{ formatRp(addonsTotal) }}</span></div>
+              <div class="pt-1.5 mt-1 flex justify-between items-end" style="border-top: 1px solid rgba(255,255,255,0.08);">
+                <span class="text-xs font-bold" style="color: rgba(220,220,240,0.9);">Grand Total</span>
+                <span class="text-xl font-black leading-none" style="color: #a78bfa;">Rp {{ formatRp(grandTotal + addonsTotal) }}</span>
               </div>
             </div>
 
             <div class="space-y-2 mb-3">
               <div class="flex gap-2">
-                <select v-model="form.payment_status" class="w-[45%] px-2 py-2 rounded-lg border border-brand-maroon/20 bg-white text-brand-maroon font-bold text-[11px] outline-none focus:ring-2 focus:ring-brand-maroon/20 transition-all">
+                <select v-model="form.payment_status" class="dark-select flex-1 min-w-0 px-2 py-2 rounded-lg font-bold text-[11px]" style="color: #a78bfa; background-color: rgba(139,92,246,0.1); border-color: rgba(139,92,246,0.2);">
                   <option value="unpaid">Belum Bayar</option>
                   <option value="dp_received">Bayar DP</option>
                   <option value="paid">Lunas</option>
                 </select>
-                <input v-if="form.payment_status !== 'unpaid'" v-model="formattedPaidAmount" type="text" class="flex-1 px-2.5 py-2 rounded-lg border border-gray-200 bg-white text-gray-800 font-bold text-[11px] outline-none focus:border-brand-maroon/40 transition-all" placeholder="Nominal (Rp)" />
+                <div v-if="form.payment_status !== 'unpaid'" class="flex-1 flex items-center min-w-0 bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.09)] rounded-lg px-2.5 transition-colors focus-within:border-[#8b5cf6] focus-within:bg-[rgba(139,92,246,0.05)] focus-within:ring-[3px] focus-within:ring-[rgba(139,92,246,0.08)]">
+                  <span class="text-[11px] font-bold mr-1" style="color: rgba(160,160,192,0.6);">Rp</span>
+                  <input v-model="formattedPaidAmount" type="text" class="w-full min-w-0 py-2 bg-transparent border-none outline-none font-bold text-[11px] placeholder-gray-500" style="color: rgba(224,224,239,0.95);" placeholder="0" />
+                </div>
               </div>
             </div>
 
-            <button @click="submitOrder" :disabled="saving" class="w-full bg-brand-maroon hover:bg-brand-maroon/90 text-white font-extrabold text-sm py-3 rounded-xl transition-all shadow-md active:scale-[0.98] disabled:opacity-80 flex justify-center items-center gap-2">
+            <button @click="submitOrder" :disabled="saving" class="w-full font-extrabold text-sm py-3 rounded-xl transition-all shadow-md active:scale-[0.98] disabled:opacity-80 flex justify-center items-center gap-2"
+                    style="background: #a78bfa; color: #1a1a2e;"
+                    onmouseenter="this.style.background='#c4b5fd';"
+                    onmouseleave="this.style.background='#a78bfa';">
               <i v-if="saving" class="bx bx-loader-alt bx-spin text-lg"></i>
               <i v-else class="bx bx-check-shield text-lg"></i>
               {{ saving ? 'Menyimpan...' : 'Proses Order' }}
@@ -217,6 +251,12 @@ const refProducts = ref([])
 const refAddons = ref([])
 const searchQuery = ref('')
 const showCustomerInfo = ref(true)
+
+const formatRp = (val) => {
+  if (val === null || val === undefined || val === '') return '0'
+  const num = Number(val)
+  return isNaN(num) ? '0' : num.toLocaleString('id-ID')
+}
 
 const filteredProducts = computed(() => {
   if (!searchQuery.value) return refProducts.value
