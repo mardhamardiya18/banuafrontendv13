@@ -151,6 +151,40 @@
           </span>
         </button>
       </router-link>
+
+      <!-- Section: Pengaturan (Store Closed Toggle) -->
+      <div :class="store.sidebarOpen ? 'pt-5 pb-1' : 'pt-4'">
+        <p v-if="store.sidebarOpen"
+           class="px-3 mb-2 text-[9px] font-bold uppercase"
+           style="letter-spacing: 0.15em; color: rgba(160,160,192,0.4);">Pengaturan</p>
+        <div v-else class="mx-3 h-px" style="background: rgba(255,255,255,0.05);"></div>
+      </div>
+      
+      <div class="px-3 py-2">
+        <div class="flex items-center justify-between gap-3 px-3 py-2.5 rounded-xl transition-all duration-200"
+             :style="'background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06);'">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
+                 :style="'background: rgba(224,122,95,0.1); border: 1px solid rgba(224,122,95,0.2);'">
+              <StoreIcon :size="17" style="color: #E07A5F;" />
+            </div>
+            <span v-if="store.sidebarOpen" class="text-sm font-medium" style="color: rgba(160,160,192,0.9);">
+              Toko Tutup
+            </span>
+          </div>
+          <!-- Toggle Button -->
+          <button v-if="store.sidebarOpen"
+                  @click="settingsStore.toggleStoreStatus()"
+                  class="relative inline-flex h-5 w-9 shrink-0 cursor-pointer items-center justify-center rounded-full focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-[#141420] transition-colors duration-200"
+                  :class="settingsStore.isStoreClosed ? 'bg-red-500' : 'bg-gray-600'"
+                  role="switch"
+                  :aria-checked="settingsStore.isStoreClosed">
+            <span class="sr-only">Toko Tutup Toggle</span>
+            <span class="pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"
+                  :class="settingsStore.isStoreClosed ? 'translate-x-2' : '-translate-x-2'"></span>
+          </button>
+        </div>
+      </div>
     </nav>
 
     <!-- Website Link (Back to Home) -->
@@ -196,12 +230,15 @@ import { useAdminStore } from '../../stores/admin'
 import { orderApi } from '../../api/apiService'
 import {
   LayoutDashboard, Tag, Package, PlusCircle, Image, ShoppingCart, Landmark,
-  Globe, ChevronsLeft, ChevronsRight
+  Globe, ChevronsLeft, ChevronsRight, Store as StoreIcon
 } from '@lucide/vue'
 import logoImg from '../../assets/images/logo-small.webp'
 
 const route = useRoute()
 const store = useAdminStore()
+
+import { useSettingsStore } from '../../stores/settings'
+const settingsStore = useSettingsStore()
 
 const mainMenu = [
   { label: 'Dashboard', icon: LayoutDashboard, route: '/admin/dashboard' }

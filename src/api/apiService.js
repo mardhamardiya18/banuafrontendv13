@@ -89,6 +89,30 @@ export const dashboardApi = {
 }
 
 // ═══════════════════════════════════════════════════════
+// Store Status API — /api/admin/store-status
+// ═══════════════════════════════════════════════════════
+export const storeStatusApi = {
+  async getStatus() {
+    try {
+      const response = await api.get('/admin/store-status')
+      return normalizeItem(response)
+    } catch (error) {
+      console.error('Store status get error:', error)
+      return { status: 'error', data: { is_store_closed: false } }
+    }
+  },
+  async updateStatus(isClosed) {
+    try {
+      const response = await api.post('/admin/store-status', { is_store_closed: isClosed })
+      return normalizeItem(response)
+    } catch (error) {
+      console.error('Store status update error:', error)
+      return { status: 'error', message: error.response?.data?.message || 'Gagal mengubah status toko' }
+    }
+  }
+}
+
+// ═══════════════════════════════════════════════════════
 // Category API — /api/admin/categories
 // ═══════════════════════════════════════════════════════
 export const categoryApi = {

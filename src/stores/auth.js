@@ -22,6 +22,12 @@ export const useAuthStore = defineStore('auth', {
         const response = await api.get('/user')
         // Mendukung response.data atau response.data.data
         this.user = response.data.data || response.data
+        if (this.user && typeof this.user.is_store_closed !== 'undefined') {
+          import('./settings').then(({ useSettingsStore }) => {
+            const settingsStore = useSettingsStore()
+            settingsStore.setStoreClosed(Boolean(this.user.is_store_closed))
+          })
+        }
       } catch (error) {
         console.error('Fetch User Error:', error)
         this.logout()
@@ -52,6 +58,12 @@ export const useAuthStore = defineStore('auth', {
 
         this.token = token
         this.user = user
+        if (this.user && typeof this.user.is_store_closed !== 'undefined') {
+          import('./settings').then(({ useSettingsStore }) => {
+            const settingsStore = useSettingsStore()
+            settingsStore.setStoreClosed(Boolean(this.user.is_store_closed))
+          })
+        }
         
         Cookies.set('token', token, { expires: 7, sameSite: 'lax' })
         return response

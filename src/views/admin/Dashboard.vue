@@ -50,6 +50,7 @@
                style="background: rgba(255,255,255,0.07);"></div>
           <p v-else class="text-2xl font-bold" style="color: rgba(224,224,239,0.95);">{{ card.value }}</p>
           <p class="text-sm font-medium mt-0.5" style="color: rgba(160,160,192,0.55);">{{ card.title }}</p>
+          <p v-if="card.subtitle && !loading" class="text-[11px] font-semibold mt-1.5" style="color: rgba(245,158,11,0.85);">{{ card.subtitle }}</p>
         </div>
 
         <!-- Bottom line accent -->
@@ -63,11 +64,11 @@
       <div class="flex items-center justify-between mb-5">
         <div>
           <h3 class="text-base font-bold" style="color: rgba(224,224,239,0.95);">Jadwal Pengiriman Minggu Ini</h3>
-          <p class="text-sm mt-0.5" style="color: rgba(160,160,192,0.55);">Data order yang dijadwalkan (Senin - Minggu)</p>
+          <p class="text-sm mt-0.5" style="color: rgba(160,160,192,0.55);">Data order yang dijadwalkan (Senin - Minggu &amp; Senin berikutnya)</p>
         </div>
       </div>
       <div v-if="loading" class="flex gap-4 overflow-x-auto custom-scrollbar pb-2">
-        <div v-for="n in 7" :key="n" class="min-w-[120px] flex-1 h-24 rounded-xl animate-pulse" style="background: rgba(255,255,255,0.04);"></div>
+        <div v-for="n in 8" :key="n" class="min-w-[120px] flex-1 h-24 rounded-xl animate-pulse" style="background: rgba(255,255,255,0.04);"></div>
       </div>
       <div v-else class="flex gap-3 overflow-x-auto custom-scrollbar pb-2">
         <div v-for="day in weekDays" :key="day.dateStr" 
@@ -258,7 +259,7 @@ const getWeekDays = () => {
   
   curr.setDate(curr.getDate() + distanceToMonday)
   
-  for (let i = 0; i < 7; i++) {
+  for (let i = 0; i < 8; i++) {
     const day = new Date(curr)
     const dateStr = day.toLocaleDateString('en-CA') // YYYY-MM-DD
     days.push({
@@ -324,9 +325,10 @@ const statCards = ref([
     glowColor: 'rgba(52,211,153,0.06)'
   },
   {
-    title: 'Views Produk',
+    title: 'Views Produk (Bulan Ini)',
     value: '-',
     change: 0,
+    subtitle: '',
     icon: Eye,
     iconColor: '#f59e0b',
     iconBg: 'rgba(245,158,11,0.12)',
@@ -464,6 +466,9 @@ onMounted(async () => {
       statCards.value[2].change = stats.total_customers.trend
 
       statCards.value[3].value = Number(stats.total_views.value || 0).toLocaleString('id-ID')
+      if (stats.total_views.total_all_time !== undefined) {
+        statCards.value[3].subtitle = `Total Keseluruhan: ${Number(stats.total_views.total_all_time).toLocaleString('id-ID')} views`
+      }
       
       // Kalkulasi presentase (trend) Views secara manual berdasarkan bulan ini & bulan sebelumnya jika datanya ada
       const views = stats.total_views

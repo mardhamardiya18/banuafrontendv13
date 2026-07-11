@@ -33,7 +33,18 @@
       <div class="flex-[2] flex flex-col gap-5 overflow-y-auto custom-scrollbar pr-1">
         <!-- Customer Details -->
         <div class="rounded-2xl shadow-sm p-5" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05);">
-          <h3 class="text-sm font-bold mb-4 flex items-center gap-2" style="color: rgba(220,220,240,0.9);"><i class="bx bx-user-circle text-lg" style="color: #a78bfa;"></i> Info Pelanggan & Pengiriman</h3>
+          <div class="flex justify-between items-center mb-4">
+            <h3 class="text-sm font-bold flex items-center gap-2" style="color: rgba(220,220,240,0.9);">
+              <i class="bx bx-user-circle text-lg" style="color: #a78bfa;"></i> Info Pelanggan & Pengiriman
+            </h3>
+            <button @click="openEditModal" class="text-[11px] font-bold px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition-all"
+                    style="background: rgba(167,139,250,0.12); color: #a78bfa; border: 1px solid rgba(167,139,250,0.2);"
+                    onmouseenter="this.style.background='rgba(167,139,250,0.2)';"
+                    onmouseleave="this.style.background='rgba(167,139,250,0.12)';"
+                    title="Edit Detail Pesanan">
+              <i class="bx bx-edit"></i> Edit Detail
+            </button>
+          </div>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div v-for="info in orderInfo" :key="info.label" class="rounded-xl p-3.5"
                  style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05);">
@@ -171,6 +182,132 @@
         </div>
       </template>
     </BaseModal>
+
+    <!-- Edit Detail Modal -->
+    <BaseModal v-model="showEditModal" title="Edit Detail Pesanan">
+      <div class="space-y-4 max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar">
+        <!-- Section: Data Pelanggan -->
+        <div>
+          <h4 class="text-xs font-bold uppercase tracking-wider text-purple-400 mb-2">Data Pelanggan</h4>
+          <div class="space-y-3">
+            <div>
+              <label class="dark-label">Nama Pelanggan</label>
+              <input type="text" v-model="editForm.customer_name" class="dark-input" placeholder="Masukkan nama pelanggan" />
+            </div>
+            <div>
+              <label class="dark-label">Telepon</label>
+              <input type="text" v-model="editForm.customer_phone" class="dark-input" placeholder="Masukkan nomor telepon" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Section: Informasi Pengiriman -->
+        <div class="border-t border-white/5 pt-3">
+          <h4 class="text-xs font-bold uppercase tracking-wider text-purple-400 mb-2">Informasi Pengiriman</h4>
+          <div class="space-y-3">
+            <div>
+              <label class="dark-label">Tipe Pengiriman</label>
+              <select v-model="editForm.type_delivery" class="dark-select">
+                <option value="delivery">Delivery</option>
+                <option value="pickup">Pickup</option>
+              </select>
+            </div>
+            <div v-if="editForm.type_delivery === 'delivery'">
+              <label class="dark-label">Alamat Pengiriman</label>
+              <textarea v-model="editForm.delivery_address" class="dark-input h-20" placeholder="Masukkan alamat lengkap"></textarea>
+            </div>
+            <div>
+              <label class="dark-label">Tanggal & Waktu Kirim</label>
+              <input type="datetime-local" v-model="editForm.delivery_date" class="dark-input" />
+            </div>
+            <div>
+              <label class="dark-label">Maps Link / Lokasi</label>
+              <input type="text" v-model="editForm.customer_maps" class="dark-input" placeholder="Masukkan link Google Maps" />
+            </div>
+            <div>
+              <label class="dark-label">Catatan Pengiriman</label>
+              <textarea v-model="editForm.delivery_notes" class="dark-input h-20" placeholder="Catatan tambahan..."></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section: Daftar Produk Pesanan -->
+        <div class="border-t border-white/5 pt-3">
+          <div class="flex justify-between items-center mb-3">
+            <h4 class="text-xs font-bold uppercase tracking-wider text-purple-400">Daftar Produk Pesanan</h4>
+            <button type="button" @click="addItemToForm" class="text-[10px] font-bold px-2 py-1 rounded bg-purple-500/20 text-purple-300 hover:bg-purple-500/30 border border-purple-500/30 transition-colors flex items-center gap-1">
+              <i class="bx bx-plus"></i> Tambah Menu
+            </button>
+          </div>
+
+          <div class="space-y-3">
+            <div v-for="(item, idx) in editForm.items" :key="idx" class="p-3 rounded-xl bg-white/[0.02] border border-white/5 space-y-2 relative">
+              <button type="button" @click="removeItemFromForm(idx)" class="absolute top-2.5 right-2.5 text-red-400 hover:text-red-300 transition-colors text-lg" title="Hapus Menu">
+                <i class="bx bx-trash"></i>
+              </button>
+
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                <div class="sm:col-span-2">
+                  <label class="text-[10px] font-bold text-gray-400 uppercase">Produk</label>
+                  <select v-model="item.product_id" class="dark-select mt-0.5">
+                    <option v-for="p in productsList" :key="p.id" :value="p.id">
+                      {{ p.name }} (Rp {{ p.price.toLocaleString('id-ID') }})
+                    </option>
+                  </select>
+                </div>
+                <div>
+                  <label class="text-[10px] font-bold text-gray-400 uppercase">Jumlah (Qty)</label>
+                  <input type="number" v-model.number="item.quantity" min="1" class="dark-input mt-0.5" />
+                </div>
+              </div>
+
+              <div>
+                <label class="text-[10px] font-bold text-gray-400 uppercase">Catatan Item</label>
+                <input type="text" v-model="item.notes" class="dark-input mt-0.5 text-xs py-1.5" placeholder="Catatan khusus menu ini..." />
+              </div>
+
+              <!-- Add-ons Sub-section -->
+              <div class="pt-2 border-t border-white/5">
+                <div class="flex justify-between items-center mb-1.5">
+                  <span class="text-[9px] font-bold text-gray-400 uppercase">Add-ons (Tambahan)</span>
+                  <button type="button" @click="addAddonToItem(item)" class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-purple-500/10 text-purple-300 hover:bg-purple-500/20 border border-purple-500/20 transition-colors">
+                    + Tambah Add-on
+                  </button>
+                </div>
+                
+                <div v-if="item.add_ons && item.add_ons.length > 0" class="space-y-1.5">
+                  <div v-for="(a, aIdx) in item.add_ons" :key="aIdx" class="grid grid-cols-1 sm:grid-cols-3 gap-1.5 items-center bg-white/[0.01] p-1.5 rounded-lg border border-white/5">
+                    <div class="sm:col-span-2">
+                      <select v-model="a.add_on_id" class="dark-select text-xs py-1 mt-0">
+                        <option v-for="add in addonsList" :key="add.id" :value="add.id">
+                          {{ add.name }} (Rp {{ add.price.toLocaleString('id-ID') }})
+                        </option>
+                      </select>
+                    </div>
+                    <div class="flex items-center gap-1.5">
+                      <input type="number" v-model.number="a.quantity" min="1" class="dark-input text-xs py-1 text-center" style="margin-top: 0;" />
+                      <button type="button" @click="removeAddonFromItem(item, aIdx)" class="text-red-400 hover:text-red-300 transition-colors shrink-0" title="Hapus Add-on">
+                        <i class="bx bx-trash text-sm"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <p v-else class="text-[9px] text-gray-500 italic">Tidak ada add-on.</p>
+              </div>
+            </div>
+            <p v-if="!editForm.items?.length" class="text-xs text-gray-500 italic text-center py-2">Belum ada menu dalam pesanan ini.</p>
+          </div>
+        </div>
+      </div>
+      <template #footer>
+        <div class="flex justify-end gap-3">
+          <button @click="showEditModal=false" class="dark-btn-cancel">Batal</button>
+          <button @click="saveEdit" :disabled="savingDetail" class="dark-btn-primary">
+            <i v-if="savingDetail" class="bx bx-loader-alt animate-spin"></i> Simpan Detail
+          </button>
+        </div>
+      </template>
+    </BaseModal>
   </div>
 </template>
 
@@ -178,7 +315,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import BaseModal from '../../components/admin/BaseModal.vue'
-import { orderApi } from '../../api/apiService'
+import { orderApi, referenceApi } from '../../api/apiService'
 
 const route = useRoute()
 const loading = ref(true)
@@ -244,6 +381,21 @@ const statusForm = ref({ payment_status: '', order_status: '', paid_amount: 0 })
 const updatingStatus = ref(false)
 const downloading = ref(false)
 
+const showEditModal = ref(false)
+const savingDetail = ref(false)
+const productsList = ref([])
+const addonsList = ref([])
+const editForm = ref({
+  customer_name: '',
+  customer_phone: '',
+  type_delivery: 'delivery',
+  delivery_address: '',
+  delivery_date: '',
+  customer_maps: '',
+  delivery_notes: '',
+  items: []
+})
+
 const openStatusModal = () => {
   statusForm.value = {
     payment_status: detail.value.status?.payment || 'unpaid',
@@ -267,6 +419,116 @@ const saveStatus = async () => {
     alert('Terjadi kesalahan saat mengupdate status: ' + (error.response?.data?.message || error.message))
   } finally {
     updatingStatus.value = false
+  }
+}
+
+const fetchProductsAndAddons = async () => {
+  try {
+    const [pRes, aRes] = await Promise.all([
+      referenceApi.getProducts(),
+      referenceApi.getAddons()
+    ])
+    if (pRes.status === 'success') productsList.value = pRes.data
+    if (aRes.status === 'success') addonsList.value = aRes.data
+  } catch (error) {
+    console.error('Gagal mengambil data produk/add-on:', error)
+  }
+}
+
+const openEditModal = async () => {
+  await fetchProductsAndAddons()
+
+  let formattedDate = ''
+  if (detail.value?.delivery?.date) {
+    const [datePart, timePart] = detail.value.delivery.date.split(' ')
+    if (datePart && timePart) {
+      formattedDate = `${datePart}T${timePart.substring(0, 5)}`
+    }
+  }
+
+  editForm.value = {
+    customer_name: detail.value?.customer_snapshot?.name || '',
+    customer_phone: detail.value?.customer_snapshot?.phone || '',
+    type_delivery: detail.value?.delivery?.type || 'delivery',
+    delivery_address: detail.value?.delivery?.address || '',
+    delivery_date: formattedDate,
+    customer_maps: detail.value?.delivery?.maps || '',
+    delivery_notes: detail.value?.delivery?.notes || '',
+    items: detail.value?.items ? detail.value.items.map(item => ({
+      product_id: item.product_id || item.package?.id,
+      quantity: item.quantity,
+      notes: item.notes || '',
+      add_ons: item.add_ons ? item.add_ons.map(a => ({
+        add_on_id: a.add_on_id,
+        quantity: a.quantity
+      })) : []
+    })) : []
+  }
+  showEditModal.value = true
+}
+
+const addItemToForm = () => {
+  const defaultProductId = productsList.value.length > 0 ? productsList.value[0].id : ''
+  editForm.value.items.push({
+    product_id: defaultProductId,
+    quantity: 1,
+    notes: '',
+    add_ons: []
+  })
+}
+
+const removeItemFromForm = (idx) => {
+  editForm.value.items.splice(idx, 1)
+}
+
+const addAddonToItem = (item) => {
+  if (!item.add_ons) item.add_ons = []
+  const defaultAddonId = addonsList.value.length > 0 ? addonsList.value[0].id : ''
+  item.add_ons.push({
+    add_on_id: defaultAddonId,
+    quantity: 1
+  })
+}
+
+const removeAddonFromItem = (item, aIdx) => {
+  item.add_ons.splice(aIdx, 1)
+}
+
+const saveEdit = async () => {
+  if (!editForm.value.items || editForm.value.items.length === 0) {
+    alert('Minimal harus ada 1 menu dalam pesanan.')
+    return
+  }
+
+  savingDetail.value = true
+  try {
+    const payload = {
+      customer_name: editForm.value.customer_name,
+      customer_phone: editForm.value.customer_phone,
+      type_delivery: editForm.value.type_delivery,
+      delivery_address: editForm.value.type_delivery === 'pickup' ? 'Pickup' : editForm.value.delivery_address,
+      delivery_date: editForm.value.delivery_date ? editForm.value.delivery_date.replace('T', ' ') : '',
+      customer_maps: editForm.value.customer_maps,
+      delivery_notes: editForm.value.delivery_notes,
+      items: editForm.value.items.map(item => ({
+        product_id: item.product_id,
+        quantity: item.quantity,
+        notes: item.notes,
+        add_ons: item.add_ons || []
+      }))
+    }
+
+    const r = await orderApi.update(detail.value.id, payload)
+    if (r.status === 'success') {
+      detail.value = r.data
+      showEditModal.value = false
+    } else {
+      alert('Gagal mengupdate detail pesanan.')
+    }
+  } catch (error) {
+    alert('Terjadi kesalahan saat mengupdate detail: ' + (error.response?.data?.message || error.message))
+  } finally {
+    savingDetail.value = false
   }
 }
 

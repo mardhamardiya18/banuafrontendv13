@@ -25,6 +25,12 @@
         </span>
       </template>
       <template #cell-price="{ value }"><span class="font-semibold" style="color: rgba(230,230,250,0.97);">Rp {{ value.toLocaleString('id-ID') }}</span></template>
+      <template #cell-views="{ value }">
+        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold"
+              style="background: rgba(245,158,11,0.12); color: #fbbf24; border: 1px solid rgba(245,158,11,0.2);">
+          <i class="bx bx-show text-sm"></i> {{ (value || 0).toLocaleString('id-ID') }}
+        </span>
+      </template>
       <template #cell-is_recommended="{ value }">
         <span v-if="value" class="px-2 py-0.5 rounded-md text-[10px] font-bold uppercase"
               style="background: rgba(245,158,11,0.15); color: #fbbf24; border: 1px solid rgba(245,158,11,0.25);">Star</span>
@@ -195,6 +201,7 @@ const columns = [
   { key: 'name_full', label: 'Nama Produk' },
   { key: 'category_name', label: 'Kategori' },
   { key: 'price', label: 'Harga Jual' },
+  { key: 'views', label: 'Views' },
   { key: 'is_recommended', label: 'Reco' }
 ]
 

@@ -63,6 +63,20 @@ export const catalogApi = {
       console.error('catalogApi.getProductDetail error:', error)
       return { success: false, data: null, message: error.message }
     }
+  },
+
+  /**
+   * Mendapatkan status toko (buka / tutup).
+   * GET /api/catalog/store-status
+   */
+  async getStoreStatus() {
+    try {
+      const response = await api.get('/catalog/store-status')
+      return normalizeResponse(response)
+    } catch (error) {
+      console.error('catalogApi.getStoreStatus error:', error)
+      return { success: false, data: { is_store_closed: false }, message: error.message }
+    }
   }
 }
 
