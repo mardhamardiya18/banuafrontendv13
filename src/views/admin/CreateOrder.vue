@@ -10,7 +10,7 @@
           <i class="bx bx-arrow-back text-xl"></i>
         </router-link>
         <div>
-          <h1 class="text-xl sm:text-2xl font-bold leading-tight" style="color: rgba(224,224,239,0.95);">Point of Sale</h1>
+          <h1 class="text-xl sm:text-2xl font-bold leading-tight" style="color: rgba(224,224,239,0.955);">Point of Sale</h1>
           <p class="text-xs sm:text-sm" style="color: rgba(160,160,192,0.6);">Buat pesanan baru secara manual</p>
         </div>
       </div>
@@ -214,7 +214,7 @@
                   <option value="dp_received">Bayar DP</option>
                   <option value="paid">Lunas</option>
                 </select>
-                <div v-if="form.payment_status !== 'unpaid'" class="flex-1 flex items-center min-w-0 bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.09)] rounded-lg px-2.5 transition-colors focus-within:border-[#8b5cf6] focus-within:bg-[rgba(139,92,246,0.05)] focus-within:ring-[3px] focus-within:ring-[rgba(139,92,246,0.08)]">
+                <div v-if="form.payment_status !== 'unpaid'" class="flex-1 flex items-center min-w-0 bg-white/5 border border-white/10 rounded-lg px-2.5 transition-colors focus-within:border-purple-500 focus-within:bg-purple-500/5 focus-within:ring-3 focus-within:ring-purple-500/10">
                   <span class="text-[11px] font-bold mr-1" style="color: rgba(160,160,192,0.6);">Rp</span>
                   <input v-model="formattedPaidAmount" type="text" class="w-full min-w-0 py-2 bg-transparent border-none outline-none font-bold text-[11px] placeholder-gray-500" style="color: rgba(224,224,239,0.95);" placeholder="0" />
                 </div>
@@ -454,5 +454,5 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-/* Inline styling classes handled natively by Tailwind CSS */
+/* Scoped styles clean */
 </style>

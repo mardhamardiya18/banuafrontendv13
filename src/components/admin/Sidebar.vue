@@ -152,6 +152,68 @@
         </button>
       </router-link>
 
+      <!-- Section: Keuangan -->
+      <div :class="store.sidebarOpen ? 'pt-5 pb-1' : 'pt-4'">
+        <p v-if="store.sidebarOpen"
+           class="px-3 mb-2 text-[9px] font-bold uppercase"
+           style="letter-spacing: 0.15em; color: rgba(160,160,192,0.4);">Keuangan</p>
+        <div v-else class="mx-3 h-px" style="background: rgba(255,255,255,0.05);"></div>
+      </div>
+
+      <!-- Finance Toggle Button -->
+      <div>
+        <button
+          @click="toggleFinanceDropdown"
+          class="nav-link-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 relative overflow-hidden"
+          :class="[!store.sidebarOpen ? 'justify-center' : '', isFinanceRouteActive ? 'nav-active' : 'nav-default']"
+        >
+          <div class="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-6 rounded-r-full transition-opacity duration-200"
+               :style="{ background: 'linear-gradient(180deg, #a78bfa, #8b5cf6)', opacity: isFinanceRouteActive ? 1 : 0 }"></div>
+          <div class="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 transition-all duration-200"
+               :style="isFinanceRouteActive
+                 ? 'background: rgba(139,92,246,0.2); border: 1px solid rgba(139,92,246,0.3);'
+                 : 'background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06);'">
+            <Coins :size="17" :style="{ color: isFinanceRouteActive ? '#a78bfa' : 'rgba(160,160,192,0.6)' }" />
+          </div>
+          <span v-if="store.sidebarOpen" class="truncate flex-1 text-left"
+                :style="{ color: isFinanceRouteActive ? '#e0e0ef' : 'rgba(160,160,192,0.65)' }">
+            Finance
+          </span>
+          <component
+            v-if="store.sidebarOpen"
+            :is="financeOpen ? ChevronUp : ChevronDown"
+            :size="15"
+            style="color: rgba(160,160,192,0.55);"
+          />
+        </button>
+
+        <!-- Dropdown Sub-menu -->
+        <transition name="dropdown-slide">
+          <div v-if="financeOpen && store.sidebarOpen" class="mt-1 pl-12 pr-1 flex flex-col gap-1 overflow-hidden">
+            <router-link
+              v-for="sub in financeSubMenu"
+              :key="sub.route"
+              :to="sub.route"
+              custom
+              v-slot="{ navigate, isActive: subActive }"
+            >
+              <button
+                @click="() => { navigate(); store.sidebarMobileOpen && store.toggleMobileSidebar(); }"
+                class="w-full text-left px-3 py-2 rounded-lg text-xs font-medium transition-all duration-200 flex items-center gap-2"
+                :style="subActive
+                  ? 'background: rgba(139,92,246,0.1); color: #a78bfa; border: 1px solid rgba(139,92,246,0.15);'
+                  : 'color: rgba(160,160,192,0.65); border: 1px solid transparent;'"
+                onmouseenter="this.style.background='rgba(255,255,255,0.02)';"
+                onmouseleave="if(!this.classList.contains('sub-active-border')) this.style.background='';"
+              >
+                <component :is="sub.icon" :size="13" :style="{ color: subActive ? '#a78bfa' : 'rgba(160,160,192,0.5)' }" />
+                {{ sub.label }}
+              </button>
+            </router-link>
+          </div>
+        </transition>
+      </div>
+
       <!-- Section: Pengaturan (Store Closed Toggle) -->
       <div :class="store.sidebarOpen ? 'pt-5 pb-1' : 'pt-4'">
         <p v-if="store.sidebarOpen"
@@ -230,7 +292,8 @@ import { useAdminStore } from '../../stores/admin'
 import { orderApi } from '../../api/apiService'
 import {
   LayoutDashboard, Tag, Package, PlusCircle, Image, ShoppingCart, Landmark,
-  Globe, ChevronsLeft, ChevronsRight, Store as StoreIcon
+  Globe, ChevronsLeft, ChevronsRight, Store as StoreIcon,
+  Coins, ChevronDown, ChevronUp, TrendingUp, BookOpen, PieChart
 } from '@lucide/vue'
 import logoImg from '../../assets/images/logo-small.webp'
 
@@ -239,6 +302,29 @@ const store = useAdminStore()
 
 import { useSettingsStore } from '../../stores/settings'
 const settingsStore = useSettingsStore()
+
+import { computed } from 'vue'
+
+const financeOpen = ref(false)
+
+const isFinanceRouteActive = computed(() => {
+  return route.path.startsWith('/admin/finance')
+})
+
+const toggleFinanceDropdown = () => {
+  if (!store.sidebarOpen) {
+    store.toggleSidebar()
+    financeOpen.value = true
+  } else {
+    financeOpen.value = !financeOpen.value
+  }
+}
+
+const financeSubMenu = [
+  { label: 'Overview', icon: PieChart, route: '/admin/finance/overview' },
+  { label: 'Buku Kas', icon: BookOpen, route: '/admin/finance/cashflow' },
+  { label: 'Laba Rugi (P&L)', icon: TrendingUp, route: '/admin/finance/pnl' }
+]
 
 const mainMenu = [
   { label: 'Dashboard', icon: LayoutDashboard, route: '/admin/dashboard' }
@@ -257,6 +343,9 @@ const transactionMenu = ref([
 ])
 
 onMounted(async () => {
+  if (isFinanceRouteActive.value) {
+    financeOpen.value = true
+  }
   try {
     const res = await orderApi.getAll(1, 1000, '', 'pending')
     if (res.status === 'success') {
@@ -276,6 +365,18 @@ onMounted(async () => {
 .text-fade-leave-active { transition: opacity 0.1s ease; }
 .text-fade-enter-from,
 .text-fade-leave-to { opacity: 0; }
+
+.dropdown-slide-enter-active,
+.dropdown-slide-leave-active {
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  max-height: 150px;
+}
+.dropdown-slide-enter-from,
+.dropdown-slide-leave-to {
+  opacity: 0;
+  max-height: 0;
+  transform: translateY(-8px);
+}
 
 .sidebar-backdrop-enter-active,
 .sidebar-backdrop-leave-active { transition: opacity 0.3s ease; }

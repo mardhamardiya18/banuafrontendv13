@@ -1,7 +1,7 @@
 <template>
   <teleport to="body">
     <transition name="confirm-backdrop">
-      <div v-if="modelValue" class="fixed inset-0 z-[90] flex items-center justify-center p-4" @click.self="cancel">
+      <div v-if="modelValue" class="fixed inset-0 z-90 flex items-center justify-center p-4" @click.self="cancel">
         <div class="absolute inset-0 backdrop-blur-sm" style="background: rgba(0,0,0,0.65);"></div>
         <transition name="confirm-content">
           <div v-if="modelValue"

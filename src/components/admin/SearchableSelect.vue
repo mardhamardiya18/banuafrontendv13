@@ -19,7 +19,7 @@
     <!-- Dropdown -->
     <div
       v-if="isOpen"
-      class="absolute z-[200] mt-1.5 w-full rounded-xl overflow-hidden dropdown-animation"
+      class="absolute z-200 mt-1.5 w-full rounded-xl overflow-hidden dropdown-animation"
       style="
         background: #1a1a2e;
         border: 1px solid rgba(255,255,255,0.09);

@@ -98,6 +98,24 @@ const routes = [
         name: 'AdminBankAccounts',
         component: () => import('../views/admin/BankAccounts.vue'),
         meta: { title: 'Bank Account' }
+      },
+      {
+        path: 'finance/overview',
+        name: 'AdminFinanceOverview',
+        component: () => import('../views/admin/finance/Overview.vue'),
+        meta: { title: 'Overview Finance' }
+      },
+      {
+        path: 'finance/cashflow',
+        name: 'AdminFinanceCashflow',
+        component: () => import('../views/admin/finance/Cashflow.vue'),
+        meta: { title: 'Buku Kas' }
+      },
+      {
+        path: 'finance/pnl',
+        name: 'AdminFinancePnL',
+        component: () => import('../views/admin/finance/PnL.vue'),
+        meta: { title: 'Laporan Laba Rugi' }
       }
     ]
   }
