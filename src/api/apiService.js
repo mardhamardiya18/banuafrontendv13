@@ -393,3 +393,104 @@ export const referenceApi = {
     }
   }
 }
+
+// ═══════════════════════════════════════════════════════
+// Finance & Cashflow API — /api/admin/finance
+// ═══════════════════════════════════════════════════════
+export const financeApi = {
+  async getOverview(filter = 'this_month', startDate = '', endDate = '') {
+    try {
+      const params = { filter }
+      if (startDate) params.start_date = startDate
+      if (endDate) params.end_date = endDate
+      const response = await api.get('/admin/finance/overview', { params })
+      return normalizeItem(response)
+    } catch (error) {
+      console.error('Finance getOverview error:', error)
+      return { status: 'error', data: null }
+    }
+  },
+
+  async getPnl(filter = 'this_month', startDate = '', endDate = '') {
+    try {
+      const params = { filter }
+      if (startDate) params.start_date = startDate
+      if (endDate) params.end_date = endDate
+      const response = await api.get('/admin/finance/pnl', { params })
+      return normalizeItem(response)
+    } catch (error) {
+      console.error('Finance getPnl error:', error)
+      return { status: 'error', data: null }
+    }
+  },
+
+  async exportPdf(filter = 'this_month', startDate = '', endDate = '') {
+    try {
+      const params = { filter }
+      if (startDate) params.start_date = startDate
+      if (endDate) params.end_date = endDate
+      const response = await api.get('/admin/finance/export-pdf', { params, responseType: 'blob' })
+      const url = window.URL.createObjectURL(new Blob([response.data], { type: 'application/pdf' }))
+      const link = document.createElement('a')
+      link.href = url
+      const filterName = filter === 'custom' && startDate ? `${startDate}_${endDate}` : filter
+      link.setAttribute('download', `Rekap_Keuangan_${filterName}.pdf`)
+      document.body.appendChild(link)
+      link.click()
+      link.remove()
+      window.URL.revokeObjectURL(url)
+      return { status: 'success' }
+    } catch (error) {
+      console.error('Finance exportPdf error:', error)
+      return { status: 'error', message: 'Gagal mengunduh PDF' }
+    }
+  },
+
+  async getCategories() {
+    try {
+      const response = await api.get('/admin/finance/categories')
+      return normalizeList(response)
+    } catch (error) {
+      console.error('Finance getCategories error:', error)
+      return { status: 'error', data: [] }
+    }
+  },
+
+  async getCashflows(page = 1, perPage = 15, filters = {}) {
+    try {
+      const params = { page, per_page: perPage, ...filters }
+      const response = await api.get('/admin/finance/cashflows', { params })
+      const res = response.data
+      return {
+        status: 'success',
+        data: res.data || [],
+        summary: res.summary || { total_in: 0, total_out: 0, net_saldo: 0 },
+        meta: {
+          current_page: res.meta?.current_page || page,
+          per_page: res.meta?.per_page || perPage,
+          total: res.meta?.total || 0,
+          last_page: res.meta?.last_page || 1
+        }
+      }
+    } catch (error) {
+      console.error('Finance getCashflows error:', error)
+      return { status: 'error', data: [], summary: { total_in: 0, total_out: 0, net_saldo: 0 }, meta: null }
+    }
+  },
+
+  async createCashflow(payload) {
+    const response = await api.post('/admin/finance/cashflows', payload)
+    return normalizeItem(response)
+  },
+
+  async updateCashflow(id, payload) {
+    const response = await api.put(`/admin/finance/cashflows/${id}`, payload)
+    return normalizeItem(response)
+  },
+
+  async deleteCashflow(id) {
+    await api.delete(`/admin/finance/cashflows/${id}`)
+    return { status: 'success', message: 'Deleted' }
+  }
+}
+
