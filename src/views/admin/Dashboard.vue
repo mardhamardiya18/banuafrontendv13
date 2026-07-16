@@ -20,7 +20,7 @@
       <div
         v-for="card in statCards"
         :key="card.title"
-        class="relative rounded-2xl p-6 overflow-hidden group cursor-default transition-all duration-300 hover:-translate-y-0.5"
+        class="relative rounded-2xl p-6 overflow-hidden group cursor-default transition-all duration-300 hover:-translate-y-0.5 flex flex-col justify-between"
         style="background: rgba(20,20,32,0.8); border: 1px solid rgba(255,255,255,0.06);"
         @mouseenter="e => e.currentTarget.style.borderColor='rgba(139,92,246,0.2)'"
         @mouseleave="e => e.currentTarget.style.borderColor='rgba(255,255,255,0.06)'"
@@ -31,12 +31,12 @@
 
         <div class="flex items-start justify-between mb-5 relative z-10">
           <!-- Icon -->
-          <div class="w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-200 group-hover:scale-105"
+          <div class="w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-200 group-hover:scale-105 shrink-0"
                :style="{ background: card.iconBg, border: `1px solid ${card.iconBorder}` }">
             <component :is="card.icon" :size="22" :style="{ color: card.iconColor }" />
           </div>
           <!-- Trend badge -->
-          <span class="inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full"
+          <span class="inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full shrink-0"
                 :style="card.change >= 0
                   ? 'background: rgba(52,211,153,0.1); color: #34d399; border: 1px solid rgba(52,211,153,0.2);'
                   : 'background: rgba(248,113,113,0.1); color: #f87171; border: 1px solid rgba(248,113,113,0.2);'">
@@ -45,12 +45,31 @@
           </span>
         </div>
 
-        <div class="relative z-10">
-          <div v-if="loading" class="h-7 rounded-lg animate-pulse w-2/3 mb-1.5"
-               style="background: rgba(255,255,255,0.07);"></div>
-          <p v-else class="text-2xl font-bold" style="color: rgba(224,224,239,0.95);">{{ card.value }}</p>
-          <p class="text-sm font-medium mt-0.5" style="color: rgba(160,160,192,0.55);">{{ card.title }}</p>
-          <p v-if="card.subtitle && !loading" class="text-[11px] font-semibold mt-1.5" style="color: rgba(245,158,11,0.85);">{{ card.subtitle }}</p>
+        <div class="relative z-10 flex-1 flex flex-col justify-end">
+          <div v-if="loading">
+            <div class="h-7 rounded-lg animate-pulse w-2/3 mb-1.5"
+                 style="background: rgba(255,255,255,0.07);"></div>
+            <div class="h-4 rounded animate-pulse w-1/2 mt-0.5"
+                 style="background: rgba(255,255,255,0.04);"></div>
+            <div class="mt-3.5 pt-2.5 border-t border-white/[0.06] flex items-center justify-between">
+              <div class="h-3 rounded animate-pulse w-24" style="background: rgba(255,255,255,0.04);"></div>
+              <div class="h-3 rounded animate-pulse w-16" style="background: rgba(255,255,255,0.04);"></div>
+            </div>
+          </div>
+          <div v-else>
+            <p class="text-2xl font-bold tracking-tight" style="color: rgba(224,224,239,0.95);">{{ card.value }}</p>
+            <p class="text-sm font-medium mt-0.5 leading-snug" style="color: rgba(160,160,192,0.65);">{{ card.title }}</p>
+            <div v-if="card.subtitleValue || card.subtitle" class="mt-3.5 pt-2.5 border-t flex items-center justify-between text-xs transition-colors duration-200"
+                 style="border-color: rgba(255,255,255,0.07);">
+              <span class="font-medium flex items-center gap-1.5 truncate" style="color: rgba(160,160,192,0.65);">
+                <span class="w-1.5 h-1.5 rounded-full shrink-0" :style="{ background: card.iconColor }"></span>
+                {{ card.subtitleLabel || 'Total Keseluruhan per Tahun' }}
+              </span>
+              <span class="font-bold text-right ml-2 shrink-0 tracking-wide" :style="{ color: card.iconColor }">
+                {{ card.subtitleValue || card.subtitle }}
+              </span>
+            </div>
+          </div>
         </div>
 
         <!-- Bottom line accent -->
@@ -295,9 +314,11 @@ const currentDate = new Date().toLocaleDateString('id-ID', {
 
 const statCards = ref([
   {
-    title: 'Total Order',
+    title: 'Total Order (Bulan Ini)',
     value: '-',
     change: 0,
+    subtitleLabel: 'Total Keseluruhan per Tahun',
+    subtitleValue: '',
     icon: ShoppingCart,
     iconColor: '#8b5cf6',
     iconBg: 'rgba(139,92,246,0.12)',
@@ -305,9 +326,11 @@ const statCards = ref([
     glowColor: 'rgba(139,92,246,0.08)'
   },
   {
-    title: 'Pendapatan Bersih',
+    title: 'Pendapatan Bersih (Bulan Ini)',
     value: '-',
     change: 0,
+    subtitleLabel: 'Total Keseluruhan per Tahun',
+    subtitleValue: '',
     icon: Wallet,
     iconColor: '#E07A5F',
     iconBg: 'rgba(224,122,95,0.12)',
@@ -315,9 +338,11 @@ const statCards = ref([
     glowColor: 'rgba(224,122,95,0.08)'
   },
   {
-    title: 'Total Pelanggan',
+    title: 'Total Pelanggan (Bulan Ini)',
     value: '-',
     change: 0,
+    subtitleLabel: 'Total Keseluruhan per Tahun',
+    subtitleValue: '',
     icon: Users,
     iconColor: '#34d399',
     iconBg: 'rgba(52,211,153,0.12)',
@@ -328,7 +353,8 @@ const statCards = ref([
     title: 'Views Produk (Bulan Ini)',
     value: '-',
     change: 0,
-    subtitle: '',
+    subtitleLabel: 'Total Keseluruhan per Tahun',
+    subtitleValue: '',
     icon: Eye,
     iconColor: '#f59e0b',
     iconBg: 'rgba(245,158,11,0.12)',
@@ -458,17 +484,22 @@ onMounted(async () => {
 
       statCards.value[0].value = Number(stats.total_orders.value || 0).toLocaleString('id-ID')
       statCards.value[0].change = stats.total_orders.trend
+      const totalOrdersYear = stats.total_orders.total_year ?? stats.total_orders.total_all_time ?? 0
+      statCards.value[0].subtitleValue = `${Number(totalOrdersYear).toLocaleString('id-ID')} order`
 
       statCards.value[1].value = formatCurrency(stats.net_revenue.value)
       statCards.value[1].change = stats.net_revenue.trend
+      const totalRevenueYear = stats.net_revenue.total_year ?? stats.net_revenue.total_all_time ?? 0
+      statCards.value[1].subtitleValue = formatCurrency(totalRevenueYear)
 
       statCards.value[2].value = Number(stats.total_customers.value || 0).toLocaleString('id-ID')
       statCards.value[2].change = stats.total_customers.trend
+      const totalCustomersYear = stats.total_customers.total_year ?? stats.total_customers.total_all_time ?? 0
+      statCards.value[2].subtitleValue = `${Number(totalCustomersYear).toLocaleString('id-ID')} pelanggan`
 
       statCards.value[3].value = Number(stats.total_views.value || 0).toLocaleString('id-ID')
-      if (stats.total_views.total_all_time !== undefined) {
-        statCards.value[3].subtitle = `Total Keseluruhan: ${Number(stats.total_views.total_all_time).toLocaleString('id-ID')} views`
-      }
+      const totalViewsYear = stats.total_views.total_year ?? stats.total_views.total_all_time ?? 0
+      statCards.value[3].subtitleValue = `${Number(totalViewsYear).toLocaleString('id-ID')} views`
       
       // Kalkulasi presentase (trend) Views secara manual berdasarkan bulan ini & bulan sebelumnya jika datanya ada
       const views = stats.total_views

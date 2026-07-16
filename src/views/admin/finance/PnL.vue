@@ -54,12 +54,21 @@
         </button>
 
         <button
+          @click="downloadExcel"
+          :disabled="isDownloadingExcel"
+          class="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 disabled:opacity-50 text-white text-sm font-semibold px-4 py-2 rounded-xl transition-all duration-200 flex items-center gap-2 shadow-lg shadow-emerald-500/20"
+        >
+          <FileSpreadsheet :size="15" />
+          {{ isDownloadingExcel ? 'Mengunduh Excel...' : 'Download Excel (.xlsx)' }}
+        </button>
+
+        <button
           @click="downloadPdf"
           :disabled="isDownloadingPdf"
           class="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 disabled:opacity-50 text-white text-sm font-semibold px-4 py-2 rounded-xl transition-all duration-200 flex items-center gap-2 shadow-lg shadow-purple-500/20"
         >
           <FileText :size="15" />
-          {{ isDownloadingPdf ? 'Mengunduh PDF...' : 'Download PDF Rekap' }}
+          {{ isDownloadingPdf ? 'Mengunduh PDF...' : 'Download PDF (.pdf)' }}
         </button>
       </div>
     </div>
@@ -204,7 +213,7 @@
 
 <script setup>
 import { ref, onMounted, computed } from 'vue'
-import { Printer, ChevronDown, ChevronRight, FileText } from '@lucide/vue'
+import { Printer, ChevronDown, ChevronRight, FileText, FileSpreadsheet } from '@lucide/vue'
 import { financeApi } from '../../../api/apiService'
 
 const loading = ref(true)
@@ -216,6 +225,7 @@ const showRevenueDetails = ref(false)
 const showHppDetails = ref(false)
 const isPrinting = ref(false)
 const isDownloadingPdf = ref(false)
+const isDownloadingExcel = ref(false)
 
 const pnlData = ref({
   filter: 'this_month',
@@ -257,6 +267,15 @@ const fetchData = async () => {
     console.error('Error fetching P&L data:', error)
   } finally {
     loading.value = false
+  }
+}
+
+const downloadExcel = async () => {
+  isDownloadingExcel.value = true
+  try {
+    await financeApi.exportExcel(filter.value, startDate.value, endDate.value)
+  } finally {
+    isDownloadingExcel.value = false
   }
 }
 

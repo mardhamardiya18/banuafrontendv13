@@ -446,6 +446,28 @@ export const financeApi = {
     }
   },
 
+  async exportExcel(filter = 'this_month', startDate = '', endDate = '') {
+    try {
+      const params = { filter }
+      if (startDate) params.start_date = startDate
+      if (endDate) params.end_date = endDate
+      const response = await api.get('/admin/finance/export-excel', { params, responseType: 'blob' })
+      const url = window.URL.createObjectURL(new Blob([response.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }))
+      const link = document.createElement('a')
+      link.href = url
+      const filterName = filter === 'custom' && startDate ? `${startDate}_${endDate}` : filter
+      link.setAttribute('download', `Rekap_Keuangan_${filterName}.xlsx`)
+      document.body.appendChild(link)
+      link.click()
+      link.remove()
+      window.URL.revokeObjectURL(url)
+      return { status: 'success' }
+    } catch (error) {
+      console.error('Finance exportExcel error:', error)
+      return { status: 'error', message: 'Gagal mengunduh Excel (.xlsx)' }
+    }
+  },
+
   async getCategories() {
     try {
       const response = await api.get('/admin/finance/categories')

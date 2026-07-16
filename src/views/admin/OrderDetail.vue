@@ -170,7 +170,7 @@
         </div>
         <div>
           <label class="dark-label">Nominal Dibayar (Rp)</label>
-          <input type="number" v-model="statusForm.paid_amount" class="dark-input" />
+          <input type="text" v-model="formattedPaidAmount" class="dark-input" placeholder="Masukkan nominal dibayar" />
         </div>
       </div>
       <template #footer>
@@ -405,10 +405,28 @@ const openStatusModal = () => {
   showStatusModal.value = true
 }
 
+const formattedPaidAmount = computed({
+  get() {
+    if (statusForm.value.paid_amount === null || statusForm.value.paid_amount === undefined || statusForm.value.paid_amount === '') {
+      return ''
+    }
+    if (statusForm.value.paid_amount === 0) return '0'
+    return Number(statusForm.value.paid_amount).toLocaleString('id-ID')
+  },
+  set(val) {
+    const cleanValue = val.replace(/\D/g, '')
+    statusForm.value.paid_amount = cleanValue ? parseInt(cleanValue, 10) : ''
+  }
+})
+
 const saveStatus = async () => {
   updatingStatus.value = true
   try {
-    const r = await orderApi.updateStatus(detail.value.id, statusForm.value)
+    const payload = {
+      ...statusForm.value,
+      paid_amount: Number(statusForm.value.paid_amount) || 0
+    }
+    const r = await orderApi.updateStatus(detail.value.id, payload)
     if (r.status === 'success') {
       detail.value = r.data
       showStatusModal.value = false
