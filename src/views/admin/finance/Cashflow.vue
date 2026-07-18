@@ -22,19 +22,109 @@
 
     <!-- Summary Widgets -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
-      <div class="rounded-2xl p-5" style="background: rgba(20,20,32,0.8); border: 1px solid rgba(255,255,255,0.06);">
-        <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Total Kas Masuk (IN)</p>
-        <p class="text-xl font-bold text-emerald-400 mt-1.5">{{ formatCurrency(summary.total_in) }}</p>
+      <!-- Card: Kas Masuk -->
+      <div class="relative rounded-2xl p-6 overflow-hidden group cursor-default transition-all duration-300 hover:-translate-y-0.5 flex flex-col justify-between"
+           style="background: rgba(20,20,32,0.8); border: 1px solid rgba(255,255,255,0.06);"
+           @mouseenter="e => e.currentTarget.style.borderColor='rgba(52,211,153,0.2)'"
+           @mouseleave="e => e.currentTarget.style.borderColor='rgba(255,255,255,0.06)'">
+        <div class="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+             style="background: rgba(52,211,153,0.06)"></div>
+        <div class="flex items-start justify-between mb-4 relative z-10">
+          <div class="w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-200 group-hover:scale-105 shrink-0"
+               style="background: rgba(52,211,153,0.12); border: 1px solid rgba(52,211,153,0.2)">
+            <ArrowDownToLine :size="22" style="color: #34d399;" />
+          </div>
+        </div>
+        <div class="relative z-10 flex-1 flex flex-col justify-end">
+          <p class="text-2xl font-bold tracking-tight text-emerald-400">{{ formatCurrency(summary.total_in) }}</p>
+          <p class="text-sm font-medium mt-0.5 leading-snug" style="color: rgba(160,160,192,0.65);">Total Kas Masuk (Keseluruhan)</p>
+          <div class="mt-4 pt-3 border-t space-y-2 text-xs" style="border-color: rgba(255,255,255,0.07);">
+            <div class="flex justify-between items-center">
+              <span class="font-medium flex items-center gap-1.5" style="color: rgba(160,160,192,0.65);">
+                <span class="w-1.5 h-1.5 rounded-full shrink-0 bg-emerald-400"></span> Akumulasi Bulan Ini
+              </span>
+              <span class="font-bold text-emerald-400 tracking-wide">{{ formatCurrency(summary.total_in_month || 0) }}</span>
+            </div>
+            <div class="flex justify-between items-center">
+              <span class="font-medium flex items-center gap-1.5" style="color: rgba(160,160,192,0.65);">
+                <span class="w-1.5 h-1.5 rounded-full shrink-0 bg-emerald-400"></span> Akumulasi Tahun Ini
+              </span>
+              <span class="font-bold text-emerald-400 tracking-wide">{{ formatCurrency(summary.total_in_year || 0) }}</span>
+            </div>
+          </div>
+        </div>
+        <div class="absolute bottom-0 left-0 right-0 h-px opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+             style="background: linear-gradient(90deg, transparent, #34d399, transparent)"></div>
       </div>
-      <div class="rounded-2xl p-5" style="background: rgba(20,20,32,0.8); border: 1px solid rgba(255,255,255,0.06);">
-        <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Total Kas Keluar (OUT)</p>
-        <p class="text-xl font-bold text-rose-400 mt-1.5">{{ formatCurrency(summary.total_out) }}</p>
+
+      <!-- Card: Kas Keluar -->
+      <div class="relative rounded-2xl p-6 overflow-hidden group cursor-default transition-all duration-300 hover:-translate-y-0.5 flex flex-col justify-between"
+           style="background: rgba(20,20,32,0.8); border: 1px solid rgba(255,255,255,0.06);"
+           @mouseenter="e => e.currentTarget.style.borderColor='rgba(244,63,94,0.2)'"
+           @mouseleave="e => e.currentTarget.style.borderColor='rgba(255,255,255,0.06)'">
+        <div class="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+             style="background: rgba(244,63,94,0.06)"></div>
+        <div class="flex items-start justify-between mb-4 relative z-10">
+          <div class="w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-200 group-hover:scale-105 shrink-0"
+               style="background: rgba(244,63,94,0.12); border: 1px solid rgba(244,63,94,0.2)">
+            <ArrowUpFromLine :size="22" style="color: #f43f5e;" />
+          </div>
+        </div>
+        <div class="relative z-10 flex-1 flex flex-col justify-end">
+          <p class="text-2xl font-bold tracking-tight text-rose-400">{{ formatCurrency(summary.total_out) }}</p>
+          <p class="text-sm font-medium mt-0.5 leading-snug" style="color: rgba(160,160,192,0.65);">Total Kas Keluar (Keseluruhan)</p>
+          <div class="mt-4 pt-3 border-t space-y-2 text-xs" style="border-color: rgba(255,255,255,0.07);">
+            <div class="flex justify-between items-center">
+              <span class="font-medium flex items-center gap-1.5" style="color: rgba(160,160,192,0.65);">
+                <span class="w-1.5 h-1.5 rounded-full shrink-0 bg-rose-400"></span> Akumulasi Bulan Ini
+              </span>
+              <span class="font-bold text-rose-400 tracking-wide">{{ formatCurrency(summary.total_out_month || 0) }}</span>
+            </div>
+            <div class="flex justify-between items-center">
+              <span class="font-medium flex items-center gap-1.5" style="color: rgba(160,160,192,0.65);">
+                <span class="w-1.5 h-1.5 rounded-full shrink-0 bg-rose-400"></span> Akumulasi Tahun Ini
+              </span>
+              <span class="font-bold text-rose-400 tracking-wide">{{ formatCurrency(summary.total_out_year || 0) }}</span>
+            </div>
+          </div>
+        </div>
+        <div class="absolute bottom-0 left-0 right-0 h-px opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+             style="background: linear-gradient(90deg, transparent, #f43f5e, transparent)"></div>
       </div>
-      <div class="rounded-2xl p-5" style="background: rgba(20,20,32,0.8); border: 1px solid rgba(255,255,255,0.06);">
-        <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Saldo Bersih Saat Ini</p>
-        <p class="text-xl font-bold text-white mt-1.5" :class="summary.net_saldo >= 0 ? 'text-emerald-400' : 'text-rose-400'">
-          {{ formatCurrency(summary.net_saldo) }}
-        </p>
+
+      <!-- Card: Saldo Bersih -->
+      <div class="relative rounded-2xl p-6 overflow-hidden group cursor-default transition-all duration-300 hover:-translate-y-0.5 flex flex-col justify-between"
+           style="background: rgba(20,20,32,0.8); border: 1px solid rgba(255,255,255,0.06);"
+           @mouseenter="e => e.currentTarget.style.borderColor='rgba(139,92,246,0.2)'"
+           @mouseleave="e => e.currentTarget.style.borderColor='rgba(255,255,255,0.06)'">
+        <div class="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+             style="background: rgba(139,92,246,0.06)"></div>
+        <div class="flex items-start justify-between mb-4 relative z-10">
+          <div class="w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-200 group-hover:scale-105 shrink-0"
+               style="background: rgba(139,92,246,0.12); border: 1px solid rgba(139,92,246,0.2)">
+            <Wallet :size="22" style="color: #a78bfa;" />
+          </div>
+        </div>
+        <div class="relative z-10 flex-1 flex flex-col justify-end">
+          <p class="text-2xl font-bold tracking-tight text-white" :class="summary.net_saldo >= 0 ? 'text-emerald-400' : 'text-rose-400'">{{ formatCurrency(summary.net_saldo) }}</p>
+          <p class="text-sm font-medium mt-0.5 leading-snug" style="color: rgba(160,160,192,0.65);">Saldo Bersih (Keseluruhan)</p>
+          <div class="mt-4 pt-3 border-t space-y-2 text-xs" style="border-color: rgba(255,255,255,0.07);">
+            <div class="flex justify-between items-center">
+              <span class="font-medium flex items-center gap-1.5" style="color: rgba(160,160,192,0.65);">
+                <span class="w-1.5 h-1.5 rounded-full shrink-0 bg-purple-400"></span> Saldo Bulan Ini
+              </span>
+              <span class="font-bold tracking-wide" :class="(summary.net_saldo_month || 0) >= 0 ? 'text-emerald-400' : 'text-rose-400'">{{ formatCurrency(summary.net_saldo_month || 0) }}</span>
+            </div>
+            <div class="flex justify-between items-center">
+              <span class="font-medium flex items-center gap-1.5" style="color: rgba(160,160,192,0.65);">
+                <span class="w-1.5 h-1.5 rounded-full shrink-0 bg-purple-400"></span> Saldo Tahun Ini
+              </span>
+              <span class="font-bold tracking-wide" :class="(summary.net_saldo_year || 0) >= 0 ? 'text-emerald-400' : 'text-rose-400'">{{ formatCurrency(summary.net_saldo_year || 0) }}</span>
+            </div>
+          </div>
+        </div>
+        <div class="absolute bottom-0 left-0 right-0 h-px opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+             style="background: linear-gradient(90deg, transparent, #a78bfa, transparent)"></div>
       </div>
     </div>
 
@@ -365,7 +455,7 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue'
 import {
-  Plus, Search, Edit2, Trash2, Lock, ArrowLeftRight, ChevronLeft, ChevronRight, X, RefreshCw
+  Plus, Search, Edit2, Trash2, Lock, ArrowLeftRight, ChevronLeft, ChevronRight, X, RefreshCw, ArrowDownToLine, ArrowUpFromLine, Wallet
 } from '@lucide/vue'
 import { financeApi } from '../../../api/apiService'
 import { useAdminStore } from '../../../stores/admin'

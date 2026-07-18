@@ -233,7 +233,7 @@
           </div>
           <div class="flex-1 min-w-0">
             <p class="text-sm font-semibold truncate" style="color: rgba(224,224,239,0.9);">{{ order.customer_snapshot?.name }}</p>
-            <p class="text-xs mt-0.5" style="color: rgba(160,160,192,0.5);">{{ order.invoice_number }} • {{ order.delivery?.type || 'Delivery' }}</p>
+            <p class="text-xs mt-0.5" style="color: rgba(160,160,192,0.5);">{{ getOrderProductText(order) }} • {{ getDeliveryTimeAndType(order) }}</p>
           </div>
           <div class="text-right shrink-0">
             <p class="text-sm font-bold" style="color: rgba(224,224,239,0.9);">{{ formatCurrency(order.finance?.total_amount || 0) }}</p>
@@ -474,6 +474,30 @@ const paymentBadgeStyle = (s) => {
   }
   return map[s] || 'background: rgba(160,160,192,0.1); color: rgba(160,160,192,0.6);'
 }
+
+const getOrderProductText = (order) => {
+  if (!order.items || order.items.length === 0) return order.invoice_number;
+  const item = order.items[0];
+  let name = item.package?.name || item.product?.name || 'Produk';
+  let parentName = item.package?.parent?.name || item.product?.parent?.name;
+  let text = parentName ? `${parentName} - ${name}` : name;
+  if (order.items.length > 1) {
+    text += ` (+${order.items.length - 1} lainnya)`;
+  }
+  return text;
+};
+
+const getDeliveryTimeAndType = (order) => {
+  let timeStr = '';
+  if (order.delivery && order.delivery.date) {
+    const parts = order.delivery.date.split(' ');
+    if (parts.length > 1) {
+      timeStr = parts[1].substring(0, 5) + ' • ';
+    }
+  }
+  const typeStr = order.delivery?.type || 'Delivery';
+  return timeStr + typeStr;
+};
 
 onMounted(async () => {
   try {
