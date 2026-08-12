@@ -532,11 +532,31 @@ const fetchData = async () => {
       if (v) activeFilters[k] = v
     })
 
-    const res = await financeApi.getCashflows(currentPage.value, 15, activeFilters)
+    const [res, monthRes, yearRes] = await Promise.all([
+      financeApi.getCashflows(currentPage.value, 15, activeFilters),
+      financeApi.getOverview('this_month'),
+      financeApi.getOverview('this_year')
+    ])
+
     if (res.status === 'success') {
       cashflows.value = res.data
-      summary.value = res.summary
       meta.value = res.meta
+      
+      const summaryData = res.summary || { total_in: 0, total_out: 0, net_saldo: 0 }
+      
+      if (monthRes.status === 'success') {
+        summaryData.total_in_month = monthRes.data.cards.total_pendapatan.value
+        summaryData.total_out_month = monthRes.data.cards.total_pengeluaran.value
+        summaryData.net_saldo_month = monthRes.data.cards.laba_bersih.value
+      }
+      
+      if (yearRes.status === 'success') {
+        summaryData.total_in_year = yearRes.data.cards.total_pendapatan.value
+        summaryData.total_out_year = yearRes.data.cards.total_pengeluaran.value
+        summaryData.net_saldo_year = yearRes.data.cards.laba_bersih.value
+      }
+
+      summary.value = summaryData
     }
   } catch (error) {
     console.error('Error fetching cashflow records:', error)

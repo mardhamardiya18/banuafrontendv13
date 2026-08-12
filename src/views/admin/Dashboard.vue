@@ -196,22 +196,77 @@
       </div>
     </div>
 
-    <!-- Product Trend Chart -->
-    <div class="rounded-2xl p-6 transition-all duration-300"
-         style="background: rgba(20,20,32,0.8); border: 1px solid rgba(255,255,255,0.06);">
-      <div class="flex items-center justify-between mb-6">
-        <div>
-          <h3 class="text-base font-bold" style="color: rgba(224,224,239,0.95);">Tren Penjualan Produk</h3>
-          <p class="text-sm mt-0.5" style="color: rgba(160,160,192,0.55);">Distribusi produk terlaris setiap bulan</p>
+    <!-- Product Trend Chart & Top Viewed Products -->
+    <div class="grid lg:grid-cols-3 gap-6">
+      <!-- Product Trend Chart -->
+      <div class="lg:col-span-2 rounded-2xl p-6 transition-all duration-300"
+           style="background: rgba(20,20,32,0.8); border: 1px solid rgba(255,255,255,0.06);">
+        <div class="flex items-center justify-between mb-6">
+          <div>
+            <h3 class="text-base font-bold" style="color: rgba(224,224,239,0.95);">Tren Penjualan Produk</h3>
+            <p class="text-sm mt-0.5" style="color: rgba(160,160,192,0.55);">Distribusi produk terlaris setiap bulan</p>
+          </div>
+          <div class="p-2 rounded-xl" style="background: rgba(139,92,246,0.1); border: 1px solid rgba(139,92,246,0.2);">
+            <BarChart3 :size="18" style="color: rgba(139,92,246,0.8);" />
+          </div>
         </div>
-        <div class="p-2 rounded-xl" style="background: rgba(139,92,246,0.1); border: 1px solid rgba(139,92,246,0.2);">
-          <BarChart3 :size="18" style="color: rgba(139,92,246,0.8);" />
+        <div v-if="loading" class="h-[320px] rounded-xl animate-pulse"
+             style="background: rgba(255,255,255,0.04);"></div>
+        <div v-else class="h-[320px]">
+          <Bar :data="productChartData" :options="productChartOptions" />
         </div>
       </div>
-      <div v-if="loading" class="h-[320px] rounded-xl animate-pulse"
-           style="background: rgba(255,255,255,0.04);"></div>
-      <div v-else class="h-[320px]">
-        <Bar :data="productChartData" :options="productChartOptions" />
+
+      <!-- Top Viewed Products -->
+      <div class="rounded-2xl p-6 transition-all duration-300"
+           style="background: rgba(20,20,32,0.8); border: 1px solid rgba(255,255,255,0.06);">
+        <div class="flex items-center justify-between mb-5">
+          <h3 class="text-base font-bold" style="color: rgba(224,224,239,0.95);">Top 5 Produk (Views)</h3>
+          <router-link to="/admin/products"
+                       class="text-xs font-semibold transition-colors flex items-center gap-1"
+                       style="color: rgba(245,158,11,0.8);"
+                       onmouseenter="this.style.color='rgba(251,191,36,1)'"
+                       onmouseleave="this.style.color='rgba(245,158,11,0.8)'">
+            Lihat Produk
+            <ArrowRight :size="13" />
+          </router-link>
+        </div>
+
+        <!-- Skeleton -->
+        <div v-if="loading" class="space-y-3">
+          <div v-for="n in 5" :key="n" class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl animate-pulse" style="background: rgba(255,255,255,0.06);"></div>
+            <div class="flex-1 space-y-2">
+              <div class="h-3 rounded animate-pulse" style="background: rgba(255,255,255,0.06); width: 70%;"></div>
+              <div class="h-2.5 rounded animate-pulse" style="background: rgba(255,255,255,0.04); width: 50%;"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Top Products list -->
+        <div v-else class="space-y-1">
+          <div
+            v-for="(product, index) in topViewedProducts"
+            :key="product.id"
+            class="flex items-center gap-3 p-3 rounded-xl transition-all duration-200 cursor-pointer group"
+            style="border: 1px solid transparent;"
+            @click="$router.push('/admin/products')"
+            onmouseenter="this.style.background='rgba(255,255,255,0.03)'; this.style.borderColor='rgba(255,255,255,0.06)';"
+            onmouseleave="this.style.background=''; this.style.borderColor='transparent';"
+          >
+            <div class="w-10 h-10 rounded-xl flex items-center justify-center text-sm font-bold shrink-0"
+                 style="background: rgba(245,158,11,0.12); color: #f59e0b; border: 1px solid rgba(245,158,11,0.2);">
+              #{{ index + 1 }}
+            </div>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-semibold truncate" style="color: rgba(224,224,239,0.9);">{{ product.name }}</p>
+            </div>
+            <div class="text-right shrink-0 flex items-center gap-1.5">
+              <Eye :size="14" style="color: rgba(160,160,192,0.6);" />
+              <p class="text-sm font-bold" style="color: rgba(224,224,239,0.9);">{{ Number(product.views).toLocaleString('id-ID') }}</p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -269,6 +324,7 @@ ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarEleme
 const router = useRouter()
 const loading = ref(true)
 const recentOrders = ref([])
+const topViewedProducts = ref([])
 
 const getWeekDays = () => {
   const days = []
@@ -618,6 +674,7 @@ onMounted(async () => {
       }
 
       recentOrders.value = d.recent_orders || []
+      topViewedProducts.value = d.top_viewed_products || []
 
       // Fetch upcoming orders for the calendar
       const orderRes = await orderApi.getAll(1, 100)

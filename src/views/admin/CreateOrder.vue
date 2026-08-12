@@ -145,10 +145,42 @@
                   </div>
                   <div v-if="!item.addons.length" class="text-[10px] italic py-1" style="color: rgba(160,160,192,0.4);">Tidak ada add-on</div>
                   <div v-for="(addon, aIdx) in item.addons" :key="aIdx" class="flex items-center gap-1.5 mb-1.5 animate-fade-up">
-                    <select v-model="addon.addon_id" @change="onAddonChange(addon)" class="dark-select flex-1 min-w-0 px-2 py-1.5 rounded-lg text-[11px]" style="background-position: right 0.5rem center; padding-right: 1.5rem; color: rgba(224,224,239,0.95);">
-                      <option :value="null" disabled style="color: rgba(160,160,192,0.6);">Pilih add-on</option>
-                      <option v-for="a in getAvailableAddons(item)" :key="a.id" :value="a.id" style="color: rgba(224,224,239,0.95);">{{ a.name }} (+Rp {{ formatRp(a.price) }})</option>
-                    </select>
+                    <div class="relative flex-1 min-w-0">
+                      <!-- Dropdown Toggle -->
+                      <div @click="addon._showDropdown = !addon._showDropdown" class="dark-input w-full px-2 py-1.5 rounded-lg text-[11px] cursor-pointer flex justify-between items-center" style="background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.06);">
+                        <span class="truncate" :style="!addon.addon_id ? 'color: rgba(160,160,192,0.6);' : 'color: rgba(224,224,239,0.95);'">
+                          {{ addon.name ? addon.name + ' (+Rp ' + formatRp(addon.snapshot_price) + ')' : 'Pilih add-on' }}
+                        </span>
+                        <i class="bx bx-chevron-down" style="color: rgba(160,160,192,0.6);"></i>
+                      </div>
+                      
+                      <!-- Overlay for closing -->
+                      <div v-if="addon._showDropdown" @click="addon._showDropdown = false" class="fixed inset-0 z-40"></div>
+                      
+                      <!-- Dropdown Menu -->
+                      <div v-if="addon._showDropdown" class="absolute z-50 min-w-full w-[260px] right-0 sm:right-auto mt-1 rounded-lg shadow-xl overflow-hidden flex flex-col" style="background: #151521; border: 1px solid rgba(139,92,246,0.3); max-height: 220px;">
+                        <div class="p-2 border-b" style="border-color: rgba(255,255,255,0.05); background: rgba(0,0,0,0.2);">
+                          <div class="relative">
+                            <i class="bx bx-search absolute left-2 top-1/2 -translate-y-1/2" style="color: rgba(160,160,192,0.5);"></i>
+                            <input v-model="addon._search" @click.stop type="text" class="w-full px-2 py-1.5 pl-7 text-[11px] outline-none transition-colors" style="background: rgba(255,255,255,0.03); color: rgba(224,224,239,0.95); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px;" placeholder="Cari add-on..." onfocus="this.style.borderColor='rgba(139,92,246,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'" />
+                          </div>
+                        </div>
+                        <div class="overflow-y-auto custom-scrollbar flex-1 py-1">
+                          <div v-if="getAvailableAddons(item).filter(x => !addon._search || x.name.toLowerCase().includes(addon._search.toLowerCase())).length === 0" class="px-3 py-3 text-[10px] text-center italic" style="color: rgba(160,160,192,0.5);">
+                            Add-on tidak ditemukan
+                          </div>
+                          <div v-for="a in getAvailableAddons(item).filter(x => !addon._search || x.name.toLowerCase().includes(addon._search.toLowerCase()))" :key="a.id"
+                               @click="addon.addon_id = a.id; onAddonChange(addon); addon._showDropdown = false; addon._search = ''"
+                               class="px-3 py-2 text-[11px] cursor-pointer transition-colors flex items-center justify-between"
+                               :style="addon.addon_id === a.id ? 'background: rgba(139,92,246,0.15);' : ''"
+                               onmouseenter="this.style.background='rgba(255,255,255,0.05)';"
+                               :onmouseleave="addon.addon_id === a.id ? 'this.style.background=\'rgba(139,92,246,0.15)\';' : 'this.style.background=\'\';'">
+                               <span style="color: rgba(224,224,239,0.95);">{{ a.name }}</span>
+                               <span class="text-[10px] whitespace-nowrap ml-2" style="color: #a78bfa;">+Rp {{ formatRp(a.price) }}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                     <input v-model.number="addon.quantity" type="number" min="1" class="dark-input !w-[55px] flex-none px-1 py-1.5 rounded-lg text-[11px] text-center" placeholder="Qty" />
                     <button @click="item.addons.splice(aIdx, 1)" class="w-6 h-6 flex items-center justify-center flex-none rounded-md transition-colors"
                             style="background: rgba(248,113,113,0.1); color: #f87171;"
@@ -363,7 +395,7 @@ const removeItem = (idx) => form.value.items.splice(idx, 1)
 
 // --- Add-on management ---
 const addAddon = (item) => {
-  item.addons.push({ addon_id: null, quantity: 1, snapshot_price: 0, name: '' })
+  item.addons.push({ addon_id: null, quantity: 1, snapshot_price: 0, name: '', _showDropdown: false, _search: '' })
 }
 const onAddonChange = (addon) => {
   const ref = refAddons.value.find(a => a.id === addon.addon_id)
