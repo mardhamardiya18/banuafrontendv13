@@ -86,24 +86,16 @@ export const useAuthStore = defineStore('auth', {
     },
 
     async logout() {
-  try {
-    // 1. Tembak endpoint logout (Pastikan pakai /api/logout jika route ada di api.php)
-    // Server akan otomatis menghancurkan session dan menghapus HTTP-Only cookie dari browser
-    await api.post('/api/logout');
-  } catch (error) {
-    console.error("Gagal logout dari server:", error);
-  } finally {
-    // 2. Bersihkan state Pinia/Vue
-    this.user = null;
-    
-    // (Opsional) Jika Anda masih punya state 'this.token', bisa dikosongkan juga
-    // this.token = null; 
-
-    // Tidak perlu lagi: Cookies.remove('token')
-
-    // 3. Tendang kembali ke halaman login
-    window.location.href = '/login';
-  }
+      try {
+        await api.post('/logout');
+      } catch (error) {
+        console.error("Gagal logout dari server:", error);
+      } finally {
+        this.user = null;
+        this.token = null;
+        Cookies.remove('token');
+        window.location.href = '/login';
+      }
     }
   }
 })
