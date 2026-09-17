@@ -237,7 +237,7 @@
           <!-- Toggle Button -->
           <button v-if="store.sidebarOpen"
                   @click="settingsStore.toggleStoreStatus()"
-                  class="relative inline-flex h-5 w-9 shrink-0 cursor-pointer items-center justify-center rounded-full focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-[#141420] transition-colors duration-200"
+                  class="relative inline-flex h-5 w-9 shrink-0 cursor-pointer items-center justify-center rounded-full focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-dark-850 transition-colors duration-200"
                   :class="settingsStore.isStoreClosed ? 'bg-red-500' : 'bg-gray-600'"
                   role="switch"
                   :aria-checked="settingsStore.isStoreClosed">

@@ -10,19 +10,19 @@
       <div class="absolute -bottom-32 -right-32 w-96 h-96 rounded-full blur-3xl"
            style="background: radial-gradient(circle, rgba(139,92,246,0.15) 0%, transparent 70%);"></div>
       <!-- Center subtle -->
-      <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full blur-3xl"
+      <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-150 h-150 rounded-full blur-3xl"
            style="background: radial-gradient(circle, rgba(20,20,50,0.5) 0%, transparent 70%);"></div>
       <!-- Grid pattern -->
       <div class="absolute inset-0 opacity-[0.015]"
            style="background-image: linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px); background-size: 50px 50px;"></div>
     </div>
 
-    <div class="w-full max-w-[420px] relative z-10" style="animation: fadeUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;">
+    <div class="w-full max-w-105 relative z-10" style="animation: fadeUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;">
       <!-- Logo / Brand Section -->
       <div class="text-center mb-8">
         <!-- Logo -->
         <div class="relative inline-flex mb-5">
-          <div class="w-[80px] h-[80px] rounded-2xl flex items-center justify-center relative overflow-hidden p-1"
+          <div class="w-20 h-20 rounded-2xl flex items-center justify-center relative overflow-hidden p-1"
                style="background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12); box-shadow: 0 8px 32px rgba(0,0,0,0.4);">
             <img :src="logoImg" alt="DMI Catering" class="w-full h-full object-contain" />
           </div>

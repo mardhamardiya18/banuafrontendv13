@@ -19,14 +19,14 @@
       <!-- Filter Selectors -->
       <template #header>
         <div class="flex flex-col sm:flex-row w-full gap-3">
-          <select v-model="filterOrderStatus" @change="onSearch" class="dark-select flex-1 sm:flex-none min-w-[180px]" style="width: auto;">
+          <select v-model="filterOrderStatus" @change="onSearch" class="dark-select flex-1 sm:flex-none min-w-45" style="width: auto;">
             <option value="">Semua Status Order</option>
             <option value="pending">Pending</option>
             <option value="processing">Processing</option>
             <option value="completed">Completed</option>
             <option value="canceled">Canceled</option>
           </select>
-          <select v-model="filterPaymentStatus" @change="onSearch" class="dark-select flex-1 sm:flex-none min-w-[180px]" style="width: auto;">
+          <select v-model="filterPaymentStatus" @change="onSearch" class="dark-select flex-1 sm:flex-none min-w-45" style="width: auto;">
             <option value="">Semua Pembayaran</option>
             <option value="unpaid">Unpaid</option>
             <option value="dp_received">DP Received</option>

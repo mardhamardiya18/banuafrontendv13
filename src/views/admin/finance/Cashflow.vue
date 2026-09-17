@@ -1,5 +1,5 @@
 <template>
-  <div class="space-y-8 text-[#e0e0ef]">
+  <div class="space-y-8 text-dark-50">
     <!-- Page Header -->
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
       <div>
@@ -143,7 +143,7 @@
               type="text"
               v-model="filters.search"
               placeholder="Cari catatan..."
-              class="w-full bg-[#141420] border border-white/10 rounded-xl pl-9 pr-4 py-2 text-sm text-[#e0e0ef] focus:outline-none focus:ring-1 focus:ring-purple-500"
+              class="w-full bg-dark-850 border border-white/10 rounded-xl pl-9 pr-4 py-2 text-sm text-dark-50 focus:outline-none focus:ring-1 focus:ring-purple-500"
               @input="handleFilterChange"
             />
             <Search :size="14" class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
@@ -156,7 +156,7 @@
           <select
             v-model="filters.type"
             @change="handleFilterChange"
-            class="w-full bg-[#141420] border border-white/10 rounded-xl px-3 py-2 text-sm text-[#e0e0ef] focus:outline-none focus:ring-1 focus:ring-purple-500"
+            class="w-full bg-dark-850 border border-white/10 rounded-xl px-3 py-2 text-sm text-dark-50 focus:outline-none focus:ring-1 focus:ring-purple-500"
           >
             <option value="">Semua Jenis</option>
             <option value="IN">Kas Masuk (IN)</option>
@@ -170,7 +170,7 @@
           <select
             v-model="filters.category"
             @change="handleFilterChange"
-            class="w-full bg-[#141420] border border-white/10 rounded-xl px-3 py-2 text-sm text-[#e0e0ef] focus:outline-none focus:ring-1 focus:ring-purple-500"
+            class="w-full bg-dark-850 border border-white/10 rounded-xl px-3 py-2 text-sm text-dark-50 focus:outline-none focus:ring-1 focus:ring-purple-500"
           >
             <option value="">Semua Kategori</option>
             <option v-for="cat in presetCategories" :key="cat" :value="cat">{{ cat }}</option>
@@ -185,14 +185,14 @@
               type="date"
               v-model="filters.start_date"
               @change="handleFilterChange"
-              class="w-full bg-[#141420] border border-white/10 rounded-xl px-3 py-1.5 text-xs text-[#e0e0ef] focus:outline-none focus:ring-1 focus:ring-purple-500"
+              class="w-full bg-dark-850 border border-white/10 rounded-xl px-3 py-1.5 text-xs text-dark-50 focus:outline-none focus:ring-1 focus:ring-purple-500"
             />
             <span class="text-xs text-gray-500">s/d</span>
             <input
               type="date"
               v-model="filters.end_date"
               @change="handleFilterChange"
-              class="w-full bg-[#141420] border border-white/10 rounded-xl px-3 py-1.5 text-xs text-[#e0e0ef] focus:outline-none focus:ring-1 focus:ring-purple-500"
+              class="w-full bg-dark-850 border border-white/10 rounded-xl px-3 py-1.5 text-xs text-dark-50 focus:outline-none focus:ring-1 focus:ring-purple-500"
             />
           </div>
         </div>
@@ -216,7 +216,7 @@
         <h3 class="text-base font-bold text-white">Daftar Transaksi Kas</h3>
         <button
           @click="fetchData"
-          class="p-2 bg-[#141420] border border-white/5 hover:bg-white/5 rounded-xl transition-all duration-150"
+          class="p-2 bg-dark-850 border border-white/5 hover:bg-white/5 rounded-xl transition-all duration-150"
           title="Refresh Data"
         >
           <RefreshCw :size="14" class="text-gray-400" />
@@ -293,14 +293,14 @@
                   <template v-else>
                     <button
                       @click="openEditModal(item)"
-                      class="p-2 bg-[#141420] border border-white/5 hover:bg-purple-600/10 hover:border-purple-600/20 hover:text-purple-400 rounded-xl transition-all duration-150"
+                      class="p-2 bg-dark-850 border border-white/5 hover:bg-purple-600/10 hover:border-purple-600/20 hover:text-purple-400 rounded-xl transition-all duration-150"
                       title="Edit"
                     >
                       <Edit2 :size="13" />
                     </button>
                     <button
                       @click="deleteItem(item.id)"
-                      class="p-2 bg-[#141420] border border-white/5 hover:bg-rose-600/10 hover:border-rose-600/20 hover:text-rose-400 rounded-xl transition-all duration-150"
+                      class="p-2 bg-dark-850 border border-white/5 hover:bg-rose-600/10 hover:border-rose-600/20 hover:text-rose-400 rounded-xl transition-all duration-150"
                       title="Hapus"
                     >
                       <Trash2 :size="13" />
@@ -322,14 +322,14 @@
           <button
             @click="changePage(meta.current_page - 1)"
             :disabled="meta.current_page === 1"
-            class="p-2 bg-[#141420] border border-white/5 hover:bg-white/5 disabled:opacity-40 disabled:hover:bg-transparent rounded-xl transition-all duration-150"
+            class="p-2 bg-dark-850 border border-white/5 hover:bg-white/5 disabled:opacity-40 disabled:hover:bg-transparent rounded-xl transition-all duration-150"
           >
             <ChevronLeft :size="15" />
           </button>
           <button
             @click="changePage(meta.current_page + 1)"
             :disabled="meta.current_page === meta.last_page"
-            class="p-2 bg-[#141420] border border-white/5 hover:bg-white/5 disabled:opacity-40 disabled:hover:bg-transparent rounded-xl transition-all duration-150"
+            class="p-2 bg-dark-850 border border-white/5 hover:bg-white/5 disabled:opacity-40 disabled:hover:bg-transparent rounded-xl transition-all duration-150"
           >
             <ChevronRight :size="15" />
           </button>
@@ -348,7 +348,7 @@
               class="flex items-center justify-center gap-2 p-3 rounded-xl border cursor-pointer text-sm font-semibold transition-all duration-200"
               :class="form.type === 'IN'
                 ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'
-                : 'bg-[#141420] border-white/10 text-gray-400 hover:border-white/20'"
+                : 'bg-dark-850 border-white/10 text-gray-400 hover:border-white/20'"
             >
               <input type="radio" value="IN" v-model="form.type" class="sr-only" />
               Kas Masuk (IN)
@@ -357,7 +357,7 @@
               class="flex items-center justify-center gap-2 p-3 rounded-xl border cursor-pointer text-sm font-semibold transition-all duration-200"
               :class="form.type === 'OUT'
                 ? 'bg-rose-500/10 border-rose-500/30 text-rose-400'
-                : 'bg-[#141420] border-white/10 text-gray-400 hover:border-white/20'"
+                : 'bg-dark-850 border-white/10 text-gray-400 hover:border-white/20'"
             >
               <input type="radio" value="OUT" v-model="form.type" class="sr-only" />
               Kas Keluar (OUT)
@@ -371,7 +371,7 @@
           <select
             v-model="form.category"
             required
-            class="w-full bg-[#141420] border border-white/10 rounded-xl px-3 py-2.5 text-sm text-[#e0e0ef] focus:outline-none focus:ring-1 focus:ring-purple-500"
+            class="w-full bg-dark-850 border border-white/10 rounded-xl px-3 py-2.5 text-sm text-dark-50 focus:outline-none focus:ring-1 focus:ring-purple-500"
           >
             <option value="">Pilih Kategori</option>
             <option v-for="cat in availableFormCategories" :key="cat" :value="cat">{{ cat }}</option>
@@ -387,7 +387,7 @@
               v-model="form.customCategory"
               placeholder="Masukkan nama kategori kustom..."
               required
-              class="w-full bg-[#141420] border border-white/10 rounded-xl px-3 py-2.5 text-sm text-[#e0e0ef] focus:outline-none focus:ring-1 focus:ring-purple-500"
+              class="w-full bg-dark-850 border border-white/10 rounded-xl px-3 py-2.5 text-sm text-dark-50 focus:outline-none focus:ring-1 focus:ring-purple-500"
             />
           </div>
         </transition>
@@ -403,7 +403,7 @@
               required
               min="1"
               placeholder="0"
-              class="w-full bg-[#141420] border border-white/10 rounded-xl pl-9 pr-4 py-2.5 text-sm text-[#e0e0ef] font-bold focus:outline-none focus:ring-1 focus:ring-purple-500"
+              class="w-full bg-dark-850 border border-white/10 rounded-xl pl-9 pr-4 py-2.5 text-sm text-dark-50 font-bold focus:outline-none focus:ring-1 focus:ring-purple-500"
             />
           </div>
         </div>
@@ -415,7 +415,7 @@
             type="date"
             v-model="form.transaction_date"
             required
-            class="w-full bg-[#141420] border border-white/10 rounded-xl px-3 py-2.5 text-sm text-[#e0e0ef] focus:outline-none focus:ring-1 focus:ring-purple-500"
+            class="w-full bg-dark-850 border border-white/10 rounded-xl px-3 py-2.5 text-sm text-dark-50 focus:outline-none focus:ring-1 focus:ring-purple-500"
           />
         </div>
 
@@ -426,7 +426,7 @@
             v-model="form.notes"
             rows="3"
             placeholder="Contoh: Belanja bawang merah, bayar kurir gas LPG, dll..."
-            class="w-full bg-[#141420] border border-white/10 rounded-xl px-3 py-2.5 text-sm text-[#e0e0ef] focus:outline-none focus:ring-1 focus:ring-purple-500"
+            class="w-full bg-dark-850 border border-white/10 rounded-xl px-3 py-2.5 text-sm text-dark-50 focus:outline-none focus:ring-1 focus:ring-purple-500"
           ></textarea>
         </div>
 
@@ -453,6 +453,7 @@
 </template>
 
 <script setup>
+import { scrollAdminToTop } from '../../../utils/adminScroll'
 import { ref, onMounted, computed } from 'vue'
 import {
   Plus, Search, Edit2, Trash2, Lock, ArrowLeftRight, ChevronLeft, ChevronRight, X, RefreshCw, ArrowDownToLine, ArrowUpFromLine, Wallet
@@ -645,6 +646,7 @@ const submitForm = async () => {
 
     if (res.status === 'success') {
       adminStore.showToast(editMode.value ? 'Catatan kas berhasil diupdate!' : 'Catatan kas berhasil disimpan!', 'success')
+      scrollAdminToTop()
       modalOpen.value = false
       fetchData()
     } else {

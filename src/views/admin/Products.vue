@@ -105,7 +105,7 @@
               theme="snow"
               toolbar="essential"
               placeholder="Jelaskan isi menu di sini (Nasi, Lauk, Sayur, dll)..."
-              class="min-h-[200px]"
+              class="min-h-50"
             />
           </div>
         </div>
@@ -159,6 +159,7 @@
 </template>
 
 <script setup>
+import { scrollAdminToTop } from '../../utils/adminScroll'
 import { ref, onMounted, computed } from 'vue'
 import DataTable from '../../components/admin/DataTable.vue'
 import BaseModal from '../../components/admin/BaseModal.vue'
@@ -255,6 +256,7 @@ const save = async () => {
       await productApi.create(form.value)
       store.showToast('Produk ditambahkan') 
     }
+    scrollAdminToTop()
     showForm.value = false; await fetchData(); await store.refreshProducts()
   } catch (error) {
     let msg = 'Terjadi kesalahan saat menyimpan data produk.'

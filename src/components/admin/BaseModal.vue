@@ -6,7 +6,8 @@
         <transition name="modal-content">
           <div
             v-if="modelValue"
-            class="relative rounded-2xl w-full overflow-hidden"
+            ref="panel"
+            class="relative rounded-2xl w-full overflow-hidden flex flex-col max-h-[calc(100dvh-2rem)]"
             :class="sizeClass"
             style="
               background: #141420;
@@ -19,7 +20,7 @@
                  style="background: linear-gradient(90deg, transparent, rgba(139,92,246,0.5), transparent);"></div>
 
             <!-- Header -->
-            <div class="flex items-center justify-between px-6 py-5"
+            <div class="flex shrink-0 items-center justify-between px-6 py-5"
                  style="border-bottom: 1px solid rgba(255,255,255,0.06);">
               <h3 class="text-base font-bold" style="color: rgba(224,224,239,0.95);">{{ title }}</h3>
               <button
@@ -34,12 +35,12 @@
             </div>
 
             <!-- Body -->
-            <div class="px-6 py-6 max-h-[70vh] overflow-y-auto admin-scrollbar">
+            <div class="px-6 py-6 min-h-0 overflow-y-auto overscroll-contain admin-scrollbar" style="-webkit-overflow-scrolling: touch;">
               <slot />
             </div>
 
             <!-- Footer -->
-            <div v-if="$slots.footer" class="px-6 py-4"
+            <div v-if="$slots.footer" class="shrink-0 px-6 py-4"
                  style="border-top: 1px solid rgba(255,255,255,0.06); background: rgba(255,255,255,0.02);">
               <slot name="footer" />
             </div>
@@ -51,7 +52,8 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
+import { useAdminModalScroll } from '../../composables/useAdminModalScroll'
 import { X } from '@lucide/vue'
 
 const props = defineProps({
@@ -61,6 +63,8 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['update:modelValue'])
+const panel = ref(null)
+useAdminModalScroll(() => props.modelValue, panel)
 
 const sizeClass = computed(() => ({
   'max-w-md': props.size === 'sm',

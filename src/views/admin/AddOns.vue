@@ -80,6 +80,7 @@
 </template>
 
 <script setup>
+import { scrollAdminToTop } from '../../utils/adminScroll'
 import { ref, computed, onMounted } from 'vue'
 import DataTable from '../../components/admin/DataTable.vue'
 import BaseModal from '../../components/admin/BaseModal.vue'
@@ -151,6 +152,7 @@ const save = async () => {
       await addonApi.create(form.value)
       store.showToast('Add-On ditambahkan') 
     }
+    scrollAdminToTop()
     showForm.value = false; fetchData()
   } finally { saving.value = false }
 }

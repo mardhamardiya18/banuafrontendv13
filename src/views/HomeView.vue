@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-[#FDFBF7] min-h-screen">
+  <div class="bg-paper min-h-screen">
 
     <!-- Skip to main content for accessibility -->
     <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-100 focus:bg-brand-maroon focus:text-white focus:px-4 focus:py-2 focus:rounded-lg">Langsung ke konten utama</a>
@@ -40,7 +40,7 @@
         </div>
         <div class="relative animate-fade-up-delay">
           <div class="relative rounded-4xl overflow-hidden shadow-2xl shadow-brand-maroon/10 ">
-            <img :src="heroImg" alt="Sajian tumpeng dan catering Dapur Mamah Iis" fetchpriority="high" width="600" height="499" class="w-full h-[500px] object-cover scale-105"/>
+            <img :src="heroImg" alt="Sajian tumpeng dan catering Dapur Mamah Iis" fetchpriority="high" width="600" height="499" class="w-full h-125 object-cover scale-105"/>
           </div>
           <div class="absolute -bottom-8 -left-8 bg-white/90 backdrop-blur-md p-5 rounded-3xl shadow-[0_20px_50px_rgba(105,11,34,0.15)] border border-brand-maroon/5 flex items-center gap-4 animate-float group hover:scale-105 transition-transform duration-500">
             <div class="bg-linear-to-br from-brand-terracotta to-brand-maroon p-3 rounded-2xl shadow-lg shadow-brand-terracotta/20">
@@ -219,11 +219,11 @@
     <a 
       href="https://wa.me/6285156253408?text=Halo%20Min!%20Mau%20nanya-nanya%20dulu%20nih%20soal%20cateringnya,%20boleh%3F" 
       target="_blank" 
-      class="fixed bottom-8 right-8 z-50 flex items-center justify-center w-16 h-16 bg-[#25D366] text-white rounded-full shadow-2xl hover:scale-110 active:scale-95 transition-all duration-300 group"
+      class="fixed bottom-8 right-8 z-50 flex items-center justify-center w-16 h-16 bg-whatsapp text-white rounded-full shadow-2xl hover:scale-110 active:scale-95 transition-all duration-300 group"
       aria-label="Hubungi Admin via WhatsApp"
     >
       <!-- Ripple Effect Animation -->
-      <span class="absolute inset-0 rounded-full bg-[#25D366] animate-ping opacity-20"></span>
+      <span class="absolute inset-0 rounded-full bg-whatsapp animate-ping opacity-20"></span>
       
       <i class='bx bxl-whatsapp text-4xl relative z-10' aria-hidden="true"></i>
       

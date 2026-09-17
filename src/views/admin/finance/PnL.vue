@@ -1,5 +1,5 @@
 <template>
-  <div class="space-y-8 text-[#e0e0ef] print:text-black print:bg-white print:space-y-4">
+  <div class="space-y-8 text-dark-50 print:text-black print:bg-white print:space-y-4">
     <!-- Page Header (hidden in print) -->
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 print:hidden">
       <div>
@@ -14,7 +14,7 @@
         <select
           v-model="filter"
           @change="handleFilterChange"
-          class="bg-[#141420] border border-white/10 rounded-xl px-4 py-2 text-sm text-[#e0e0ef] focus:outline-none focus:ring-2 focus:ring-purple-500"
+          class="bg-dark-850 border border-white/10 rounded-xl px-4 py-2 text-sm text-dark-50 focus:outline-none focus:ring-2 focus:ring-purple-500"
         >
           <option value="today">Hari Ini</option>
           <option value="this_week">Minggu Ini</option>
@@ -29,13 +29,13 @@
           <input
             type="date"
             v-model="startDate"
-            class="bg-[#141420] border border-white/10 rounded-xl px-3 py-1.5 text-xs text-[#e0e0ef] focus:outline-none focus:ring-1 focus:ring-purple-500"
+            class="bg-dark-850 border border-white/10 rounded-xl px-3 py-1.5 text-xs text-dark-50 focus:outline-none focus:ring-1 focus:ring-purple-500"
           />
           <span class="text-xs text-gray-500">s/d</span>
           <input
             type="date"
             v-model="endDate"
-            class="bg-[#141420] border border-white/10 rounded-xl px-3 py-1.5 text-xs text-[#e0e0ef] focus:outline-none focus:ring-1 focus:ring-purple-500"
+            class="bg-dark-850 border border-white/10 rounded-xl px-3 py-1.5 text-xs text-dark-50 focus:outline-none focus:ring-1 focus:ring-purple-500"
           />
           <button
             @click="fetchData"
@@ -47,7 +47,7 @@
 
         <button
           @click="printReport"
-          class="bg-[#141420] hover:bg-white/5 border border-white/10 text-gray-300 text-sm font-semibold px-4 py-2 rounded-xl transition-all duration-200 flex items-center gap-2"
+          class="bg-dark-850 hover:bg-white/5 border border-white/10 text-gray-300 text-sm font-semibold px-4 py-2 rounded-xl transition-all duration-200 flex items-center gap-2"
         >
           <Printer :size="15" />
           Cetak Laporan

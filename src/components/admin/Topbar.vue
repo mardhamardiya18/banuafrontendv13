@@ -49,7 +49,7 @@
         onmouseleave="this.style.background=''; this.style.color='rgba(160,160,192,0.7)'"
       >
         <Bell :size="20" />
-        <span class="absolute top-2 right-2 w-2 h-2 rounded-full border-2 border-[#0a0a0f]"
+        <span class="absolute top-2 right-2 w-2 h-2 rounded-full border-2 border-dark-950"
               style="background: #E07A5F;"></span>
       </button>
 

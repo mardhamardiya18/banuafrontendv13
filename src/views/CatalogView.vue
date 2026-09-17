@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-[#FDFBF7] font-sans">
+  <div class="min-h-screen bg-paper font-sans">
     <TopNav :showMenu="false" />
     
     <!-- Loading Overlay -->
@@ -23,13 +23,13 @@
 
       <!-- New Banner Section -->
       <div class="px-6 mt-6">
-        <div class="relative bg-gray-900 rounded-4xl p-6 md:p-10 overflow-hidden flex items-center min-h-[160px] md:min-h-[220px] shadow-xl border border-white/10 group">
-          <div class="relative z-10 w-[60%] md:w-1/2">
+        <div class="relative bg-gray-900 rounded-4xl p-6 md:p-10 overflow-hidden flex items-center min-h-40 md:min-h-56 shadow-xl border border-white/10 group">
+          <div class="relative z-10 w-3/5 md:w-1/2">
             <h3 class="text-lg md:text-3xl font-extrabold text-white leading-tight mb-1.5 md:mb-3">
               Sajian Istimewa <br class="hidden md:block"/> 
               Untuk Acaramu!
             </h3>
-            <p class="text-[10px] md:text-sm text-gray-300 font-medium leading-relaxed max-w-[140px] md:max-w-xs mb-4 md:mb-6">
+            <p class="text-[10px] md:text-sm text-gray-300 font-medium leading-relaxed max-w-36 md:max-w-xs mb-4 md:mb-6">
               Nikmati aneka tumpeng, nasi kotak, dan catering dengan cita rasa juara dari DMI Catering.
             </p>
             <a href="https://wa.me/6285156253408?text=Halo%20Min!%20Liat%20banner%20promo%20di%20katalog%20nih,%20boleh%20minta%20info%20promonya%3F" target="_blank" class="inline-block px-5 md:px-10 py-2 md:py-3.5 bg-linear-to-r from-brand-terracotta to-brand-maroon text-white text-[11px] md:text-sm font-bold rounded-xl md:rounded-2xl shadow-lg shadow-brand-terracotta/30 hover:-translate-y-0.5 transition-all active:scale-95">

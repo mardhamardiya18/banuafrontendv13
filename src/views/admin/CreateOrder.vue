@@ -74,10 +74,10 @@
       </div>
 
       <!-- RIGHT: Cart & Checkout -->
-      <div class="w-full lg:w-[420px] xl:w-[460px] flex flex-col gap-4 shrink-0 h-full min-h-0">
+      <div class="w-full lg:w-105 xl:w-115 flex flex-col gap-4 shrink-0 h-full min-h-0">
         
         <!-- Cart List (Scrollable) -->
-        <div class="flex-[3] rounded-2xl shadow-sm flex flex-col overflow-hidden min-h-[300px]"
+        <div class="flex-[3] rounded-2xl shadow-sm flex flex-col overflow-hidden min-h-75"
              style="background: #0a0a0f; border: 1px solid rgba(255,255,255,0.05);">
           <div class="p-3.5 flex justify-between items-center shrink-0"
                style="background: rgba(255,255,255,0.03); border-bottom: 1px solid rgba(255,255,255,0.05);">
@@ -272,6 +272,7 @@
 </template>
 
 <script setup>
+import { scrollAdminToTop } from '../../utils/adminScroll'
 import { ref, computed, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { orderApi, referenceApi } from '../../api/apiService'
@@ -474,7 +475,8 @@ const submitOrder = async () => {
     }
 
     store.showToast('Order berhasil dibuat!')
-    router.push({ name: 'AdminOrders' })
+    scrollAdminToTop()
+    await router.push({ name: 'AdminOrders' })
   } finally { saving.value = false }
 }
 

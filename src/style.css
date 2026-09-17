@@ -26,6 +26,10 @@
   --color-accent-primary: #8b5cf6;
   --color-accent-secondary: #a78bfa;
   --color-accent-glow: rgba(139, 92, 246, 0.15);
+
+  /* Utilities */
+  --color-paper: #FDFBF7;
+  --color-whatsapp: #25D366;
 }
 
 html, body {

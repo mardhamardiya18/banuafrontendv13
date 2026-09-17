@@ -126,7 +126,7 @@
               v-for="col in columns"
               :key="col.key"
               class="px-6 py-4 text-sm"
-              :class="[col.tdClass, { 'max-w-[200px] truncate': col.truncate }]"
+              :class="[col.tdClass, { 'max-w-50 truncate': col.truncate }]"
               style="color: rgba(225,225,245,0.92);"
             >
               <slot :name="`cell-${col.key}`" :row="row" :value="row[col.key]">

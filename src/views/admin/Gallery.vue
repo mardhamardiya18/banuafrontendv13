@@ -145,6 +145,7 @@
 </template>
 
 <script setup>
+import { scrollAdminToTop } from '../../utils/adminScroll'
 import { ref, computed, onMounted } from 'vue'
 import BaseModal from '../../components/admin/BaseModal.vue'
 import ConfirmDialog from '../../components/admin/ConfirmDialog.vue'
@@ -197,6 +198,7 @@ const save = async () => {
   try { 
     await galleryApi.create(form.value)
     store.showToast('Foto ditambahkan')
+    scrollAdminToTop()
     showForm.value = false
     form.value = { product_id: '', image: null }
     previewUrl.value = null

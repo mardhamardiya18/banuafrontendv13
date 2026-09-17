@@ -3,10 +3,10 @@
     <Sidebar />
     <div
       class="transition-all duration-300 ease-in-out lg:block"
-      :class="store.sidebarOpen ? 'lg:ml-[260px]' : 'lg:ml-[80px]'"
+      :class="store.sidebarOpen ? 'lg:ml-[260px]' : 'lg:ml-20'"
     >
       <Topbar />
-      <main class="p-6 lg:p-8">
+      <main data-admin-content class="p-6 lg:p-8">
         <router-view v-slot="{ Component }">
           <transition name="page" mode="out-in">
             <component :is="Component" />

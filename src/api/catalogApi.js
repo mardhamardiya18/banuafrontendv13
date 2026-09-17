@@ -43,7 +43,10 @@ export const catalogApi = {
     try {
       const params = categorySlug ? { category: categorySlug } : {}
       const response = await api.get('/catalog/products', { params })
-      return normalizeResponse(response)
+      const result = normalizeResponse(response)
+      // Visibilitas hanya untuk katalog publik; referensi produk admin tetap lengkap.
+      result.data = result.data.filter(product => product.is_active === true)
+      return result
     } catch (error) {
       console.error('catalogApi.getProducts error:', error)
       return { success: false, data: [], message: error.message }
@@ -53,12 +56,16 @@ export const catalogApi = {
   /**
    * Mendapatkan detail produk tunggal (Agregasi Baru).
    * GET /api/catalog/products/{slug}
-   * Includes: galleries, add_ons, related_products.
+   * Includes: galleries dan related_products; field internal/admin tidak dikirim.
    */
   async getProductDetail(slug) {
     try {
       const response = await api.get(`/catalog/products/${slug}`)
-      return normalizeResponse(response)
+      const result = normalizeResponse(response)
+      if (result.data?.related_products) {
+        result.data.related_products = result.data.related_products.filter(product => product.is_active === true)
+      }
+      return result
     } catch (error) {
       console.error('catalogApi.getProductDetail error:', error)
       return { success: false, data: null, message: error.message }

@@ -1,5 +1,5 @@
 <template>
-  <div class="space-y-8 text-[#e0e0ef]">
+  <div class="space-y-8 text-dark-50">
     <!-- Page Header -->
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
       <div>
@@ -15,7 +15,7 @@
         <select
           v-model="filter"
           @change="handleFilterChange"
-          class="bg-[#141420] border border-white/10 rounded-xl px-4 py-2 text-sm text-[#e0e0ef] focus:outline-none focus:ring-2 focus:ring-purple-500"
+          class="bg-dark-850 border border-white/10 rounded-xl px-4 py-2 text-sm text-dark-50 focus:outline-none focus:ring-2 focus:ring-purple-500"
         >
           <option value="today">Hari Ini</option>
           <option value="this_week">Minggu Ini</option>
@@ -31,13 +31,13 @@
             <input
               type="date"
               v-model="startDate"
-              class="bg-[#141420] border border-white/10 rounded-xl px-3 py-1.5 text-xs text-[#e0e0ef] focus:outline-none focus:ring-1 focus:ring-purple-500"
+              class="bg-dark-850 border border-white/10 rounded-xl px-3 py-1.5 text-xs text-dark-50 focus:outline-none focus:ring-1 focus:ring-purple-500"
             />
             <span class="text-xs text-gray-500">s/d</span>
             <input
               type="date"
               v-model="endDate"
-              class="bg-[#141420] border border-white/10 rounded-xl px-3 py-1.5 text-xs text-[#e0e0ef] focus:outline-none focus:ring-1 focus:ring-purple-500"
+              class="bg-dark-850 border border-white/10 rounded-xl px-3 py-1.5 text-xs text-dark-50 focus:outline-none focus:ring-1 focus:ring-purple-500"
             />
             <button
               @click="fetchData"
@@ -178,13 +178,13 @@
         </div>
         <div class="flex items-center gap-3 text-xs">
           <!-- Chart Type Selector -->
-          <div class="flex bg-[#141420] border border-white/5 rounded-lg p-0.5">
+          <div class="flex bg-dark-850 border border-white/5 rounded-lg p-0.5">
             <button
               v-for="mode in availableChartModes"
               :key="mode.id"
               @click="chartMode = mode.id"
               class="px-2.5 py-1 rounded-md transition-all duration-150"
-              :class="chartMode === mode.id ? 'bg-purple-600 text-white font-semibold' : 'text-gray-400 hover:text-[#e0e0ef]'"
+              :class="chartMode === mode.id ? 'bg-purple-600 text-white font-semibold' : 'text-gray-400 hover:text-dark-50'"
             >
               {{ mode.label }}
             </button>

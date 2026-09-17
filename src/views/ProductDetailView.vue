@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-[#FDFBF7] font-sans text-brand-forest-dark selection:bg-brand-terracotta/20">
+  <div class="min-h-screen bg-paper font-sans text-brand-forest-dark selection:bg-brand-terracotta/20">
     <TopNav :showMenu="false" />
 
     <!-- Loading Overlay -->
@@ -152,7 +152,7 @@
                 
                 <span class="text-[13px] font-black text-white uppercase tracking-[0.2em] relative z-10">Pesan Sekarang</span>
                 
-                <div class="w-12 h-12 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center relative z-10 shadow-inner group-hover:scale-105 group-hover:bg-[#25D366] transition-all duration-500">
+                <div class="w-12 h-12 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center relative z-10 shadow-inner group-hover:scale-105 group-hover:bg-whatsapp transition-all duration-500">
                   <i class='bx bxl-whatsapp text-2xl text-white group-hover:scale-110 transition-transform duration-300'></i>
                 </div>
               </a>
@@ -261,7 +261,7 @@ const fetchProductDetail = async () => {
       if (data.galleries && data.galleries.length > 0) {
         productImages.value = data.galleries.map(g => g.image_url)
       } else {
-        productImages.value = ['https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=1000&auto=format&fit=crop']
+        productImages.value = [data.thumbnail || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=1000&auto=format&fit=crop']
       }
       
       // Related products mapping
@@ -271,11 +271,13 @@ const fetchProductDetail = async () => {
           slug: p.slug,
           name: p.name,
           price: p.price,
-          image: p.image || 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=500&auto=format&fit=crop'
+          image: p.thumbnail || p.image || 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=500&auto=format&fit=crop'
         }))
       } else {
         similarProducts.value = []
       }
+    } else {
+      await router.replace({ name: 'Catalog' })
     }
   } catch (error) {
     console.error('Error fetching product detail:', error)

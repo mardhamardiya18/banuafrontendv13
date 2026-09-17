@@ -86,6 +86,7 @@
 </template>
 
 <script setup>
+import { scrollAdminToTop } from '../../utils/adminScroll'
 import { ref, onMounted } from 'vue'
 import DataTable from '../../components/admin/DataTable.vue'
 import BaseModal from '../../components/admin/BaseModal.vue'
@@ -162,6 +163,7 @@ const save = async () => {
       await categoryApi.create(form.value)
       store.showToast('Kategori berhasil ditambahkan')
     }
+    scrollAdminToTop()
     showForm.value = false
     await fetchData()
     await store.refreshCategories()

@@ -81,6 +81,7 @@
 </template>
 
 <script setup>
+import { scrollAdminToTop } from '../../utils/adminScroll'
 import { ref, onMounted } from 'vue'
 import DataTable from '../../components/admin/DataTable.vue'
 import BaseModal from '../../components/admin/BaseModal.vue'
@@ -116,6 +117,7 @@ const save = async () => {
   try {
     if (editItem.value) { await bankAccountApi.update(editItem.value.id, form.value); store.showToast('Bank diperbarui') }
     else { await bankAccountApi.create(form.value); store.showToast('Bank ditambahkan') }
+    scrollAdminToTop()
     showForm.value = false; await fetchData()
   } finally { saving.value = false }
 }

@@ -4,8 +4,8 @@
       <div v-if="modelValue" class="fixed inset-0 z-90 flex items-center justify-center p-4" @click.self="cancel">
         <div class="absolute inset-0 backdrop-blur-sm" style="background: rgba(0,0,0,0.65);"></div>
         <transition name="confirm-content">
-          <div v-if="modelValue"
-               class="relative w-full max-w-sm p-7 text-center rounded-2xl"
+          <div v-if="modelValue" ref="panel"
+               class="relative w-full max-w-sm p-7 text-center rounded-2xl max-h-[calc(100dvh-2rem)] overflow-y-auto overscroll-contain"
                style="
                  background: #141420;
                  border: 1px solid rgba(255,255,255,0.08);
@@ -52,7 +52,8 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
+import { useAdminModalScroll } from '../../composables/useAdminModalScroll'
 import { Trash2, AlertTriangle, Info, Loader2 } from '@lucide/vue'
 
 const props = defineProps({
@@ -66,6 +67,8 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['update:modelValue', 'confirm'])
+const panel = ref(null)
+useAdminModalScroll(() => props.modelValue, panel)
 
 const accentColor = computed(() => ({
   danger: '#ef4444',

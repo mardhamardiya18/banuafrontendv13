@@ -1,5 +1,5 @@
 <template>
-  <div class="h-full flex flex-col min-h-0 bg-[#0a0a0f] text-gray-100">
+  <div class="h-full flex flex-col min-h-0 bg-dark-950 text-gray-100">
     <!-- Header -->
     <div class="flex items-center justify-between shrink-0 mb-5">
       <div class="flex items-center gap-4">
@@ -78,9 +78,9 @@
       </div>
 
       <!-- RIGHT: Order Items & Totals -->
-      <div class="w-full lg:w-[420px] xl:w-[460px] flex flex-col gap-4 shrink-0 h-full min-h-0">
+      <div class="w-full lg:w-105 xl:w-115 flex flex-col gap-4 shrink-0 h-full min-h-0">
         <!-- Order Items List -->
-        <div class="flex-[3] rounded-2xl shadow-sm flex flex-col overflow-hidden min-h-[300px]"
+        <div class="flex-[3] rounded-2xl shadow-sm flex flex-col overflow-hidden min-h-75"
              style="background: #0a0a0f; border: 1px solid rgba(255,255,255,0.05);">
           <div class="p-4 flex justify-between items-center shrink-0"
                style="background: rgba(255,255,255,0.02); border-bottom: 1px solid rgba(255,255,255,0.05);">
@@ -185,7 +185,7 @@
 
     <!-- Edit Detail Modal -->
     <BaseModal v-model="showEditModal" title="Edit Detail Pesanan">
-      <div class="space-y-4 max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar">
+      <div class="space-y-4">
         <!-- Section: Data Pelanggan -->
         <div>
           <h4 class="text-xs font-bold uppercase tracking-wider text-purple-400 mb-2">Data Pelanggan</h4>
@@ -312,6 +312,7 @@
 </template>
 
 <script setup>
+import { scrollAdminToTop } from '../../utils/adminScroll'
 import { ref, computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import BaseModal from '../../components/admin/BaseModal.vue'
@@ -429,6 +430,7 @@ const saveStatus = async () => {
     const r = await orderApi.updateStatus(detail.value.id, payload)
     if (r.status === 'success') {
       detail.value = r.data
+      scrollAdminToTop()
       showStatusModal.value = false
     } else {
       alert('Gagal mengupdate status pesanan.')
@@ -539,6 +541,7 @@ const saveEdit = async () => {
     const r = await orderApi.update(detail.value.id, payload)
     if (r.status === 'success') {
       detail.value = r.data
+      scrollAdminToTop()
       showEditModal.value = false
     } else {
       alert('Gagal mengupdate detail pesanan.')
