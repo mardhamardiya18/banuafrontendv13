@@ -64,24 +64,7 @@
       </div>
     </section>
 
-    <!-- STATS COUNTER STRIP -->
-    <section class="relative py-16">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="relative bg-brand-maroon rounded-[2.5rem] p-10 md:p-14 grid grid-cols-2 md:grid-cols-4 gap-8 text-center text-white shadow-2xl shadow-brand-maroon/20 overflow-hidden group">
-          <!-- Ornaments -->
-          <div class="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4 group-hover:scale-110 transition-transform duration-700"></div>
-          <div class="absolute bottom-0 left-0 w-48 h-48 bg-brand-terracotta/20 rounded-full blur-2xl translate-y-1/4 -translate-x-1/4 group-hover:scale-110 transition-transform duration-700"></div>
-          
-          <div v-for="stat in stats" :key="stat.label" class="relative z-10 flex flex-col items-center p-4 hover:-translate-y-2 transition-transform duration-500 rounded-2xl hover:bg-white/5">
-            <div class="w-16 h-16 bg-white/10 backdrop-blur-sm rounded-2xl flex items-center justify-center mb-4 shadow-inner">
-              <i :class="['bx text-3xl text-brand-terracotta', stat.icon]" aria-hidden="true"></i>
-            </div>
-            <p class="text-3xl md:text-4xl font-extrabold mb-1 bg-clip-text text-transparent bg-linear-to-r from-white to-white/70">{{ stat.value }}</p>
-            <p class="text-sm text-white/80 font-medium">{{ stat.label }}</p>
-          </div>
-        </div>
-      </div>
-    </section>
+    <StatsProof />
 
     <!-- SERVICES -->
     <section id="services" class="py-24 md:py-32 relative scroll-mt-24">
@@ -248,6 +231,7 @@ import testi1Img from '../assets/images/testi1.webp'
 import testi2Img from '../assets/images/testi2.webp'
 import TopNav from '../components/catalog/TopNav.vue'
 import Footer from '../components/catalog/Footer.vue'
+import StatsProof from '../components/home/StatsProof.vue'
 
 const authStore = useAuthStore()
 
@@ -270,13 +254,6 @@ const testimonials = [
   { name: 'Bella & Rizky', org: 'Wedding Reception', quote: 'Prasmanan pernikahan kami ditangani dengan sempurna. Dekorasinya cantik!', img: null, tall: true },
   { name: 'Hj. Fatimah', org: 'Arisan RT 05', quote: 'Nasi kotaknya enak dan harganya sangat terjangkau. Cocok untuk pengajian.', img: null, tall: false },
   { name: 'David Chen', org: 'StartUp Borneo', quote: 'Tim kami selalu order tumpeng untuk perayaan milestone. Kualitas terbaik!', img: testi2Img, tall: false }
-]
-
-const stats = [
-  { value: '5.000+', label: 'Porsi Terjual', icon: 'bxs-bowl-hot' },
-  { value: '1.200+', label: 'Acara Dilayani', icon: 'bxs-calendar-check' },
-  { value: '4.9/5', label: 'Rating Pelanggan', icon: 'bxs-star' },
-  { value: '5+', label: 'Tahun Pengalaman', icon: 'bxs-award' }
 ]
 
 const whyUs = [

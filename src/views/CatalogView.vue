@@ -18,8 +18,7 @@
         <h2 class="text-3xl font-black text-gray-900 leading-tight tracking-tight">Ada Acara Spesial?<br/>Temukan Menu Favoritmu</h2>
       </div>
 
-      <!-- Search & Filter -->
-      <SearchBar v-model="searchQuery" />
+
 
       <!-- New Banner Section -->
       <div class="px-6 mt-6">
@@ -52,18 +51,18 @@
         </div>
       </div>
 
-      <!-- Categories -->
-      <CategoryList :categories="categories" v-model="selectedCategory" />
-
-      <!-- Product Grid -->
-      <div v-if="!loading && filteredProducts.length > 0" class="px-6 mt-6 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 pb-20">
-        <ProductCard v-for="product in filteredProducts" :key="product.id" :product="product" />
-      </div>
-
-      <div v-else-if="!loading" class="px-6 mt-20 text-center pb-20">
-        <i class="bx bx-dish text-6xl text-gray-200 mb-4"></i>
-        <p class="text-gray-400 font-medium">Wah, menu yang kamu cari belum tersedia.</p>
-      </div>
+      <RecommendedProducts v-if="!loading && recommendedProducts.length" :products="recommendedProducts" />
+      <section class="mt-12 pb-20" aria-labelledby="all-menu-title">
+        <header class="px-6 flex flex-wrap items-end justify-between gap-3">
+          <div><p class="text-[10px] font-bold tracking-widest uppercase text-brand-terracotta mb-2">Pilihan untuk setiap acara</p><h2 id="all-menu-title" class="text-2xl md:text-3xl font-extrabold text-brand-maroon">Jelajahi semua menu</h2><p class="text-sm text-gray-500 mt-2">Temukan sajian yang pas untuk momenmu.</p></div>
+          <p v-if="!loading" class="text-xs text-gray-500">{{ filteredProducts.length }} menu tersedia</p>
+        </header>
+        <SearchBar v-model="searchQuery" />
+        <CategoryList :categories="categories" v-model="selectedCategory" />
+        <div v-if="errorMessage" class="mx-6 mt-6 p-8 rounded-3xl bg-white text-center" role="alert"><p>{{ errorMessage }}</p><button @click="fetchProducts" class="mt-4 px-5 py-3 rounded-full bg-brand-maroon text-white">Coba lagi</button></div>
+        <div v-else-if="!loading && filteredProducts.length" class="px-6 mt-5 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5"><ProductCard v-for="product in filteredProducts" :key="product.id" :product="product" /></div>
+        <div v-else-if="!loading" class="mx-6 mt-6 py-14 px-5 text-center rounded-3xl border border-dashed border-brand-maroon/15"><p class="font-bold text-brand-maroon">Belum ada menu yang cocok</p><p class="mt-2 text-sm text-gray-500">Coba kata kunci lain atau pilih kategori berbeda.</p><button @click="searchQuery = ''; selectedCategory = 'all'" class="mt-5 min-h-11 px-5 rounded-full bg-brand-maroon text-white text-sm">Lihat semua menu</button></div>
+      </section>
 
     </main>
     
@@ -79,6 +78,7 @@ import TopNav from '../components/catalog/TopNav.vue'
 import SearchBar from '../components/catalog/SearchBar.vue'
 import CategoryList from '../components/catalog/CategoryList.vue'
 import ProductCard from '../components/catalog/ProductCard.vue'
+import RecommendedProducts from '../components/catalog/RecommendedProducts.vue'
 import Footer from '../components/catalog/Footer.vue'
 import bannerImg from "../assets/images/banner.jpg"
 
@@ -88,6 +88,8 @@ const products = ref([])
 const selectedCategory = ref('all')
 const searchQuery = ref('')
 const loading = ref(true)
+const errorMessage = ref('')
+const recommendedProducts = computed(() => products.value.filter(p => p.isRecommended))
 
 const fetchCategories = async () => {
   try {
@@ -106,9 +108,9 @@ const fetchCategories = async () => {
 const fetchProducts = async () => {
   loading.value = true
   try {
-    // Pass category slug if not 'all'
-    const categorySlug = selectedCategory.value === 'all' ? null : selectedCategory.value
-    const res = await catalogApi.getProducts(categorySlug)
+    errorMessage.value = ''
+    const res = await catalogApi.getProducts()
+    if (!res.success) throw new Error(res.message)
     
     if (res.success) {
       products.value = res.data.map(p => ({
@@ -116,15 +118,18 @@ const fetchProducts = async () => {
         slug: p.slug,
         name: p.name,
         price: p.price,
-        rating: 4.8, 
+        isRecommended: [true, 1, '1', 'true'].includes(p.is_recommended),
+        minOrder: Number(p.min_order) || null,
+        discount: Number(p.discount) || 0,
         categoryName: p.category?.name || 'Produk',
-        img: p.thumbnail || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&q=80&w=400',
+        img: p.thumbnail || null,
         categoryId: p.category_id,
         categorySlug: p.category?.slug
       }))
     }
   } catch (error) {
     console.error('Error fetching products:', error)
+    errorMessage.value = 'Menu belum berhasil dimuat. Silakan coba lagi.'
   } finally {
     loading.value = false
   }
@@ -133,35 +138,20 @@ const fetchProducts = async () => {
 const filteredProducts = computed(() => {
   return products.value.filter(p => {
     // Filtering by category ID if selected
-    const matchesCategory = selectedCategory.value === 'all' || p.categoryId === selectedCategory.value
-    const matchesSearch = p.name.toLowerCase().includes(searchQuery.value.toLowerCase())
+    const matchesCategory = selectedCategory.value === 'all' || String(p.categoryId) === String(selectedCategory.value)
+    const matchesSearch = p.name.toLowerCase().includes(searchQuery.value.trim().toLowerCase())
     return matchesCategory && matchesSearch
   })
 })
 
-// Watch for category selection changes to fetch filtered products from server
-watch(selectedCategory, () => {
-  fetchProducts()
-})
-
+const applyRouteCategory = () => {
+  const q = String(route.query.category || '').toLowerCase()
+  const found = categories.value.find(c => c.slug?.toLowerCase() === q || (q && c.name.toLowerCase().includes(q)) || (q === 'nasi-kotak' && c.name.toLowerCase().includes('kotak')))
+  selectedCategory.value = found?.id ?? 'all'
+}
+watch(() => route.query.category, applyRouteCategory)
 onMounted(async () => {
-  await fetchCategories()
-  
-  if (route.query.category) {
-    const q = route.query.category.toLowerCase()
-    const found = categories.value.find(c => 
-      (c.slug && c.slug.toLowerCase() === q) || 
-      c.name.toLowerCase().includes(q) ||
-      (q === 'nasi-kotak' && c.name.toLowerCase().includes('kotak'))
-    )
-    
-    if (found && found.id !== 'all') {
-      selectedCategory.value = found.id
-      // The watcher on selectedCategory will automatically trigger fetchProducts()
-      return
-    }
-  }
-  
-  fetchProducts()
+  await Promise.all([fetchCategories(), fetchProducts()])
+  applyRouteCategory()
 })
 </script>

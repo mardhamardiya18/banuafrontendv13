@@ -1,15 +1,16 @@
 <template>
-  <div class="px-0 mt-8 overflow-x-auto custom-scrollbar pb-4" ref="scrollContainer">
-    <div class="flex items-center gap-4 px-6 w-max">
+  <div class="px-0 mt-4 overflow-x-auto custom-scrollbar pb-4" ref="scrollContainer">
+    <div class="flex items-center gap-2 px-6 w-max">
       <button 
         v-for="cat in categories" 
         :key="cat.id"
         :ref="el => { if (el) categoryRefs[cat.id] = el }"
         @click="selectCategory(cat.id)"
-        class="px-4 py-2 text-[13px] rounded-full transition-all duration-300 whitespace-nowrap border-2 font-bold tracking-tight active:scale-95"
+        :aria-pressed="modelValue === cat.id"
+        class="min-h-11 px-4 py-2 text-[13px] rounded-full transition-all duration-300 whitespace-nowrap border-2 font-bold tracking-tight active:scale-95"
         :class="modelValue === cat.id 
           ? 'bg-brand-maroon text-white border-brand-maroon shadow-lg shadow-brand-maroon/20' 
-          : 'bg-white text-gray-400 border-gray-100 hover:border-gray-200'"
+          : 'bg-white text-gray-600 border-brand-maroon/10 hover:border-brand-maroon/30'"
       >
         {{ cat.name }}
       </button>

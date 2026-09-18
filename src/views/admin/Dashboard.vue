@@ -198,24 +198,12 @@
 
     <!-- Product Trend Chart & Top Viewed Products -->
     <div class="grid lg:grid-cols-3 gap-6">
-      <!-- Product Trend Chart -->
-      <div class="lg:col-span-2 rounded-2xl p-6 transition-all duration-300"
-           style="background: rgba(20,20,32,0.8); border: 1px solid rgba(255,255,255,0.06);">
-        <div class="flex items-center justify-between mb-6">
-          <div>
-            <h3 class="text-base font-bold" style="color: rgba(224,224,239,0.95);">Tren Penjualan Produk</h3>
-            <p class="text-sm mt-0.5" style="color: rgba(160,160,192,0.55);">Distribusi produk terlaris setiap bulan</p>
-          </div>
-          <div class="p-2 rounded-xl" style="background: rgba(139,92,246,0.1); border: 1px solid rgba(139,92,246,0.2);">
-            <BarChart3 :size="18" style="color: rgba(139,92,246,0.8);" />
-          </div>
-        </div>
-        <div v-if="loading" class="h-[320px] rounded-xl animate-pulse"
-             style="background: rgba(255,255,255,0.04);"></div>
-        <div v-else class="h-[320px]">
-          <Bar :data="productChartData" :options="productChartOptions" />
-        </div>
-      </div>
+      <ProductSalesChart
+        class="lg:col-span-2"
+        :months="productSalesMonths"
+        :loading="loading"
+        :error="productSalesError"
+      />
 
       <!-- Top Viewed Products -->
       <div class="rounded-2xl p-6 transition-all duration-300"
@@ -306,20 +294,21 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { Line, Bar } from 'vue-chartjs'
+import { Line } from 'vue-chartjs'
 import {
   Chart as ChartJS,
-  CategoryScale, LinearScale, PointElement, LineElement, BarElement,
+  CategoryScale, LinearScale, PointElement, LineElement,
   Title, Tooltip, Legend, Filler
 } from 'chart.js'
 import { dashboardApi, orderApi } from '../../api/apiService'
 import BaseModal from '../../components/admin/BaseModal.vue'
+import ProductSalesChart from '../../components/admin/ProductSalesChart.vue'
 import {
   ShoppingCart, Wallet, Users, Eye,
-  TrendingUp, TrendingDown, CalendarDays, ArrowRight, BarChart3
+  TrendingUp, TrendingDown, CalendarDays, ArrowRight
 } from '@lucide/vue'
 
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend, Filler)
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Filler)
 
 const router = useRouter()
 const loading = ref(true)
@@ -459,54 +448,8 @@ const chartOptions = {
 }
 
 const chartData = ref({ labels: [], datasets: [] })
-const productChartData = ref({ labels: [], datasets: [] })
-
-const productChartOptions = {
-  responsive: true,
-  maintainAspectRatio: false,
-  interaction: { intersect: false, mode: 'index' },
-  plugins: {
-    legend: {
-      position: 'bottom',
-      labels: {
-        usePointStyle: true,
-        padding: 20,
-        font: { family: 'Plus Jakarta Sans', size: 11 },
-        color: 'rgba(160,160,192,0.6)'
-      }
-    },
-    tooltip: {
-      backgroundColor: '#1a1a2e',
-      titleColor: 'rgba(224,224,239,0.9)',
-      bodyColor: 'rgba(160,160,192,0.8)',
-      borderColor: 'rgba(139,92,246,0.3)',
-      borderWidth: 1,
-      titleFont: { family: 'Plus Jakarta Sans', weight: '600', size: 13 },
-      bodyFont: { family: 'Plus Jakarta Sans', size: 12 },
-      padding: 14,
-      cornerRadius: 12,
-      usePointStyle: true,
-      callbacks: {
-        label: (ctx) => ` ${ctx.dataset.label}: ${ctx.raw} porsi`
-      }
-    }
-  },
-  scales: {
-    x: {
-      stacked: true,
-      grid: { display: false },
-      border: { display: false },
-      ticks: { font: { family: 'Plus Jakarta Sans', size: 11 }, color: 'rgba(160,160,192,0.5)' }
-    },
-    y: {
-      stacked: true,
-      border: { display: false, dash: [4, 4] },
-      grid: { color: 'rgba(255,255,255,0.04)' },
-      ticks: { font: { family: 'Plus Jakarta Sans', size: 11 }, color: 'rgba(160,160,192,0.5)' },
-      beginAtZero: true
-    }
-  }
-}
+const productSalesMonths = ref([])
+const productSalesError = ref(false)
 
 const formatCurrency = (val) => 'Rp ' + Number(val || 0).toLocaleString('id-ID')
 
@@ -558,6 +501,7 @@ const getDeliveryTimeAndType = (order) => {
 onMounted(async () => {
   try {
     const res = await dashboardApi.getData()
+    if (res.status !== 'success') throw new Error('Dashboard request failed')
     if (res.status === 'success') {
       const d = res.data
       const stats = d.stats
@@ -629,49 +573,8 @@ onMounted(async () => {
         ]
       }
 
-      if (d.product_chart) {
-        const productTotals = {}
-        const productNames = {}
-        d.product_chart.forEach(month => {
-          month.products.forEach(p => {
-            productTotals[p.product_id] = (productTotals[p.product_id] || 0) + p.total_sold
-            productNames[p.product_id] = p.name
-          })
-        })
-        const sortedIds = Object.keys(productTotals).sort((a, b) => productTotals[b] - productTotals[a])
-        const top5Ids = sortedIds.slice(0, 5)
-        const colors = ['#8b5cf6', '#E07A5F', '#34d399', '#f59e0b', '#60a5fa', '#9ca3af']
-
-        const datasets = top5Ids.map((id, i) => ({
-          label: productNames[id],
-          data: d.product_chart.map(month => {
-            const prod = month.products.find(p => p.product_id === id)
-            return prod ? prod.total_sold : 0
-          }),
-          backgroundColor: colors[i] + 'cc',
-          borderRadius: 6,
-          barThickness: 28
-        }))
-
-        const othersData = d.product_chart.map(month =>
-          month.products.filter(p => !top5Ids.includes(p.product_id))
-            .reduce((sum, p) => sum + p.total_sold, 0)
-        )
-        if (othersData.some(v => v > 0)) {
-          datasets.push({
-            label: 'Lainnya',
-            data: othersData,
-            backgroundColor: colors[5] + 'cc',
-            borderRadius: 6,
-            barThickness: 28
-          })
-        }
-
-        productChartData.value = {
-          labels: d.product_chart.map(c => c.month),
-          datasets
-        }
-      }
+      productSalesMonths.value = d.product_chart || []
+      productSalesError.value = !Array.isArray(d.product_chart)
 
       recentOrders.value = d.recent_orders || []
       topViewedProducts.value = d.top_viewed_products || []
@@ -691,6 +594,7 @@ onMounted(async () => {
       }
     }
   } catch(e) {
+    if (!productSalesMonths.value.length) productSalesError.value = true
     console.error('Dashboard error:', e)
   } finally {
     loading.value = false
