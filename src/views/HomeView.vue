@@ -66,47 +66,9 @@
 
     <StatsProof />
 
-    <!-- SERVICES -->
-    <section id="services" class="py-24 md:py-32 relative scroll-mt-24">
-      <div class="absolute inset-0 bg-brand-forest-dark/2"></div>
-      <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center mb-16 max-w-2xl mx-auto">
-          <p class="text-sm font-bold uppercase tracking-widest text-brand-terracotta mb-4">Layanan Kami</p>
-          <h2 class="text-3xl sm:text-4xl font-extrabold text-brand-maroon tracking-tight mb-4">Solusi Lengkap untuk Acara Anda</h2>
-          <p class="text-brand-forest-dark/80">Dari persiapan hingga pelaksanaan, kami siap membantu.</p>
-        </div>
-        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          <div v-for="(service, i) in services" :key="service.title" class="bg-white/70 backdrop-blur-sm p-8 rounded-4xl border border-white hover:border-brand-terracotta/20 hover:shadow-2xl hover:shadow-brand-terracotta/5 hover:-translate-y-2 transition-all duration-500 group">
-            <div class="w-14 h-14 bg-brand-terracotta/10 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-brand-terracotta group-hover:text-white transition-all duration-500">
-              <i :class="['bx text-3xl transition-colors duration-500', service.icon, 'text-brand-terracotta group-hover:text-white']" aria-hidden="true"></i>
-            </div>
-            <h3 class="text-xl font-bold text-brand-maroon mb-3">{{ service.title }}</h3>
-            <p class="text-brand-forest-dark/80 leading-relaxed text-sm">{{ service.desc }}</p>
-          </div>
-        </div>
-      </div>
-    </section>
+    <ServicesSection />
 
-    <!-- CTA BANNER -->
-    <section class="py-10">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="relative bg-brand-forest-dark rounded-3xl p-10 md:p-16 overflow-hidden">
-          <div class="absolute top-0 right-0 w-64 h-64 bg-brand-terracotta/20 blob blur-3xl"></div>
-          <div class="absolute bottom-0 left-0 w-48 h-48 bg-brand-maroon/20 blob blur-3xl"></div>
-          <div class="relative flex flex-col md:flex-row items-center justify-between gap-8">
-            <div class="space-y-3 text-center md:text-left">
-              <h3 class="text-2xl md:text-3xl font-extrabold text-white">Ada acara spesial dalam waktu dekat?</h3>
-              <p class="text-white/80 max-w-md">Konsultasikan kebutuhan catering Anda secara gratis. Kami bantu carikan paket terbaik!</p>
-            </div>
-            <a href="https://wa.me/6285156253408?text=Halo%20Min!%20Ada%20rencana%20bikin%20acara%20nih,%20bisa%20bantu%20rekomendasiin%20paket%20yang%20pas%20ngga%3F" target="_blank" class="shrink-0 bg-brand-terracotta hover:bg-white hover:text-brand-maroon text-white font-bold px-10 py-4 rounded-full transition-all duration-300 active:scale-95 shadow-xl flex items-center gap-2 animate-shimmer group" aria-label="Konsultasi Gratis via WhatsApp">
-              <i class='bx bxl-whatsapp text-2xl' aria-hidden="true"></i>
-              Konsultasi Gratis
-              <i class='bx bx-chevron-right text-2xl group-hover:translate-x-1 transition-transform' aria-hidden="true"></i>
-            </a>
-          </div>
-        </div>
-      </div>
-    </section>
+    <CateringBanner />
 
     <!-- PRODUCTS -->
     <section id="products" class="py-24 md:py-32 scroll-mt-24">
@@ -129,7 +91,7 @@
             </div>
             <!-- Content -->
             <div class="p-6 space-y-3">
-              <h3 class="text-lg font-bold text-brand-maroon group-hover:text-brand-terracotta transition-colors duration-300">{{ product.name }}</h3>
+              <h3 class="font-body text-lg font-bold text-brand-maroon group-hover:text-brand-terracotta transition-colors duration-300">{{ product.name }}</h3>
               <p class="text-sm text-brand-forest-dark/80 leading-relaxed line-clamp-2">{{ product.desc }}</p>
               <button @click="$router.push({ path: '/katalog', query: { category: product.cat } })" class="w-full bg-brand-cream-light hover:bg-brand-terracotta text-brand-maroon hover:text-white font-semibold py-3 rounded-xl transition-all duration-300 text-sm" :aria-label="'Lihat detail ' + product.name">
                 Lihat Detail
@@ -140,34 +102,7 @@
       </div>
     </section>
 
-    <!-- TRUST / WHY US STRIP -->
-    <section class="py-20 relative overflow-hidden">
-      <!-- Background Ornaments -->
-      <div class="absolute top-1/2 left-0 w-72 h-72 bg-brand-terracotta/5 rounded-full blur-3xl -translate-y-1/2 -translate-x-1/2"></div>
-      <div class="absolute bottom-0 right-0 w-96 h-96 bg-brand-maroon/5 rounded-full blur-3xl translate-y-1/4 translate-x-1/4"></div>
-
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div class="text-center mb-14 max-w-2xl mx-auto">
-          <p class="text-sm font-bold uppercase tracking-widest text-brand-terracotta mb-3">Keunggulan Kami</p>
-          <h2 class="text-3xl md:text-4xl font-extrabold text-brand-maroon tracking-tight">Kenapa Memilih Kami?</h2>
-        </div>
-        <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          <div v-for="(reason, index) in whyUs" :key="reason.text" 
-               class="group bg-white rounded-4xl p-8 border border-brand-maroon/5 shadow-xl shadow-brand-maroon/5 hover:shadow-2xl hover:shadow-brand-terracotta/10 hover:-translate-y-2 transition-all duration-500 relative overflow-hidden">
-            <!-- Card Ornament -->
-            <div class="absolute -right-6 -top-6 w-24 h-24 bg-brand-terracotta/5 rounded-full blur-2xl group-hover:bg-brand-terracotta/10 transition-colors duration-500"></div>
-            
-            <div class="w-16 h-16 bg-brand-cream-light rounded-2xl flex items-center justify-center mb-6 group-hover:bg-brand-terracotta transition-colors duration-500 shadow-sm relative z-10">
-              <i :class="['bx text-3xl text-brand-terracotta group-hover:text-white transition-colors duration-500', reason.icon]" aria-hidden="true"></i>
-            </div>
-            <div class="relative z-10">
-              <h3 class="text-lg font-bold text-brand-maroon mb-2 group-hover:text-brand-terracotta transition-colors duration-300">{{ reason.text }}</h3>
-              <p class="text-sm text-brand-forest-dark/80 leading-relaxed">{{ reason.sub }}</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
+    <WhyUsSection />
 
     <!-- TESTIMONIALS -->
     <section id="testimonials" class="py-24 md:py-32 relative scroll-mt-24">
@@ -232,14 +167,11 @@ import testi2Img from '../assets/images/testi2.webp'
 import TopNav from '../components/catalog/TopNav.vue'
 import Footer from '../components/catalog/Footer.vue'
 import StatsProof from '../components/home/StatsProof.vue'
+import CateringBanner from '../components/home/CateringBanner.vue'
+import ServicesSection from '../components/home/ServicesSection.vue'
+import WhyUsSection from '../components/home/WhyUsSection.vue'
 
 const authStore = useAuthStore()
-
-const services = [
-  { title: 'Pesan Antar / Delivery', desc: 'Pengiriman tepat waktu dengan packaging aman dan higienis. Makanan sampai dalam kondisi segar dan siap dinikmati untuk segala acara.', icon: 'bxs-truck' },
-  { title: 'Cita Rasa Autentik & Menu Beragam', desc: 'Menghadirkan ragam pilihan menu masakan nusantara hingga modern. Dimasak dari bahan segar berkualitas dengan standar kebersihan tinggi untuk rasa yang memanjakan lidah.', icon: 'bxs-magic-wand' },
-  { title: 'Presentasi Elegan & Eksklusif', desc: 'Tampilan hidangan yang menggugah selera; mulai dari set meja prasmanan yang mewah, kreasi tumpeng yang artistik, hingga kemasan nasi kotak yang rapi dan premium.', icon: 'bxs-user-voice' }
-]
 
 const products = [
   { name: 'Nasi Kotak', desc: 'Paket nasi kotak lengkap dengan lauk pilihan, cocok untuk meeting dan seminar.', price: 'Mulai Rp 20.000', img: naskotImg, cat: 'nasi-kotak' },
@@ -256,10 +188,4 @@ const testimonials = [
   { name: 'David Chen', org: 'StartUp Borneo', quote: 'Tim kami selalu order tumpeng untuk perayaan milestone. Kualitas terbaik!', img: testi2Img, tall: false }
 ]
 
-const whyUs = [
-  { text: 'Bahan Segar', sub: '100% bahan pilihan berkualitas', icon: 'bxs-leaf' },
-  { text: 'Tepat Waktu', sub: 'Komitmen pengiriman on-time', icon: 'bxs-time-five' },
-  { text: 'Harga Bersaing', sub: 'Kualitas premium, harga terjangkau', icon: 'bxs-wallet' },
-  { text: 'Higienis', sub: 'Standar kebersihan tinggi', icon: 'bxs-shield-alt-2' }
-]
 </script>

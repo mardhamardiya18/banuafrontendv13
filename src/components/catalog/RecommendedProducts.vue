@@ -20,7 +20,7 @@
         </div>
         <div class="p-4 sm:p-5 flex flex-col flex-1">
           <p class="text-[10px] uppercase tracking-wider font-bold text-[#96533f]">{{ product.categoryName }}</p>
-          <h3 class="mt-2 font-bold text-lg leading-snug text-brand-maroon line-clamp-2">{{ product.name }}</h3>
+          <h3 class="font-body mt-2 font-bold text-lg leading-snug text-brand-maroon line-clamp-2">{{ product.name }}</h3>
           <p v-if="product.minOrder" class="mt-2 text-xs text-gray-500">Pemesanan mulai {{ product.minOrder }} porsi</p>
           <div class="mt-auto pt-5 flex items-end justify-between gap-2">
             <div class="min-w-0"><p class="text-[10px] text-gray-500">Harga mulai</p><p class="text-lg sm:text-xl font-extrabold tracking-tight text-brand-maroon break-words">Rp {{ Number(product.price || 0).toLocaleString('id-ID') }}</p></div>

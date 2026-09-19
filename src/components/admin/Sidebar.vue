@@ -32,7 +32,7 @@
       </div>
       <transition name="text-fade">
         <div v-if="store.sidebarOpen" class="overflow-hidden whitespace-nowrap">
-          <h1 class="text-sm font-bold leading-tight" style="color: #e0e0ef;">DMI Catering</h1>
+          <h1 class="font-body text-sm font-bold leading-tight" style="color: #e0e0ef;">DMI Catering</h1>
           <p class="text-[10px] font-semibold tracking-wider"
              style="color: rgba(224,122,95,0.75);">By Dapur Mamah Iis</p>
         </div>

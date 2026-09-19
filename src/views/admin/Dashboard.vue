@@ -15,100 +15,18 @@
       </div>
     </div>
 
-    <!-- Stats Cards -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-      <div
-        v-for="card in statCards"
-        :key="card.title"
-        class="relative rounded-2xl p-6 overflow-hidden group cursor-default transition-all duration-300 hover:-translate-y-0.5 flex flex-col justify-between"
-        style="background: rgba(20,20,32,0.8); border: 1px solid rgba(255,255,255,0.06);"
-        @mouseenter="e => e.currentTarget.style.borderColor='rgba(139,92,246,0.2)'"
-        @mouseleave="e => e.currentTarget.style.borderColor='rgba(255,255,255,0.06)'"
-      >
-        <!-- Background glow -->
-        <div class="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
-             :style="{ background: card.glowColor }"></div>
-
-        <div class="flex items-start justify-between mb-5 relative z-10">
-          <!-- Icon -->
-          <div class="w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-200 group-hover:scale-105 shrink-0"
-               :style="{ background: card.iconBg, border: `1px solid ${card.iconBorder}` }">
-            <component :is="card.icon" :size="22" :style="{ color: card.iconColor }" />
-          </div>
-          <!-- Trend badge -->
-          <span class="inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full shrink-0"
-                :style="card.change >= 0
-                  ? 'background: rgba(52,211,153,0.1); color: #34d399; border: 1px solid rgba(52,211,153,0.2);'
-                  : 'background: rgba(248,113,113,0.1); color: #f87171; border: 1px solid rgba(248,113,113,0.2);'">
-            <component :is="card.change >= 0 ? TrendingUp : TrendingDown" :size="12" />
-            {{ card.change >= 0 ? '+' : '' }}{{ card.change }}%
-          </span>
-        </div>
-
-        <div class="relative z-10 flex-1 flex flex-col justify-end">
-          <div v-if="loading">
-            <div class="h-7 rounded-lg animate-pulse w-2/3 mb-1.5"
-                 style="background: rgba(255,255,255,0.07);"></div>
-            <div class="h-4 rounded animate-pulse w-1/2 mt-0.5"
-                 style="background: rgba(255,255,255,0.04);"></div>
-            <div class="mt-3.5 pt-2.5 border-t border-white/[0.06] flex items-center justify-between">
-              <div class="h-3 rounded animate-pulse w-24" style="background: rgba(255,255,255,0.04);"></div>
-              <div class="h-3 rounded animate-pulse w-16" style="background: rgba(255,255,255,0.04);"></div>
-            </div>
-          </div>
-          <div v-else>
-            <p class="text-2xl font-bold tracking-tight" style="color: rgba(224,224,239,0.95);">{{ card.value }}</p>
-            <p class="text-sm font-medium mt-0.5 leading-snug" style="color: rgba(160,160,192,0.65);">{{ card.title }}</p>
-            <div v-if="card.subtitleValue || card.subtitle" class="mt-3.5 pt-2.5 border-t flex items-center justify-between text-xs transition-colors duration-200"
-                 style="border-color: rgba(255,255,255,0.07);">
-              <span class="font-medium flex items-center gap-1.5 truncate" style="color: rgba(160,160,192,0.65);">
-                <span class="w-1.5 h-1.5 rounded-full shrink-0" :style="{ background: card.iconColor }"></span>
-                {{ card.subtitleLabel || 'Total Keseluruhan per Tahun' }}
-              </span>
-              <span class="font-bold text-right ml-2 shrink-0 tracking-wide" :style="{ color: card.iconColor }">
-                {{ card.subtitleValue || card.subtitle }}
-              </span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Bottom line accent -->
-        <div class="absolute bottom-0 left-0 right-0 h-px opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-             :style="{ background: `linear-gradient(90deg, transparent, ${card.iconColor}, transparent)` }"></div>
-      </div>
-    </div>
-
-    <!-- Calendar Row -->
-    <div class="rounded-2xl p-6 transition-all duration-300" style="background: rgba(20,20,32,0.8); border: 1px solid rgba(255,255,255,0.06);">
-      <div class="flex items-center justify-between mb-5">
-        <div>
-          <h3 class="text-base font-bold" style="color: rgba(224,224,239,0.95);">Jadwal Pengiriman Minggu Ini</h3>
-          <p class="text-sm mt-0.5" style="color: rgba(160,160,192,0.55);">Data order yang dijadwalkan (Senin - Minggu &amp; Senin berikutnya)</p>
-        </div>
-      </div>
-      <div v-if="loading" class="flex gap-4 overflow-x-auto custom-scrollbar pb-2">
-        <div v-for="n in 8" :key="n" class="min-w-[120px] flex-1 h-24 rounded-xl animate-pulse" style="background: rgba(255,255,255,0.04);"></div>
-      </div>
-      <div v-else class="flex gap-3 overflow-x-auto custom-scrollbar pb-2">
-        <div v-for="day in weekDays" :key="day.dateStr" 
-             class="min-w-[130px] flex-1 rounded-xl p-3 cursor-pointer transition-all duration-200 hover:-translate-y-1 relative"
-             :style="day.dateStr === todayStr ? 'background: rgba(139,92,246,0.15); border: 1px solid rgba(139,92,246,0.3);' : 'background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05);'"
-             @click="openDayModal(day)">
-          <div class="text-xs font-bold uppercase tracking-wider mb-1" :style="day.dateStr === todayStr ? 'color: #a78bfa;' : 'color: rgba(160,160,192,0.6);'">{{ day.dayName }}</div>
-          <div class="text-xl font-black mb-2" :style="day.dateStr === todayStr ? 'color: white;' : 'color: rgba(224,224,239,0.9);'">{{ day.dateNum }}</div>
-          <div v-if="day.orders.length > 0">
-            <div class="flex flex-col gap-1">
-              <div v-for="order in day.orders.slice(0,2)" :key="order.id" class="text-[10px] font-semibold truncate px-2 py-1 rounded bg-black/20" style="color: rgba(220,220,240,0.9);">
-                {{ order.customer_snapshot?.name || order.invoice_number }}
-              </div>
-              <div v-if="day.orders.length > 2" class="text-[10px] font-bold text-center mt-0.5" style="color: #a78bfa;">+{{ day.orders.length - 2 }} order</div>
-            </div>
-          </div>
-          <div v-else class="text-[10px] font-medium" style="color: rgba(160,160,192,0.4);">
-            Tidak ada
-          </div>
-        </div>
-      </div>
+    <div class="dashboard-overview">
+      <section class="metric-grid" aria-label="Statistik bisnis bulan ini">
+        <article v-for="card in statCards" :key="card.title" class="metric-card" :style="{ '--metric-accent': card.iconColor, '--metric-tint': card.iconBg }" :aria-busy="loading">
+          <div class="metric-top"><span class="metric-icon"><component :is="card.icon" :size="20" aria-hidden="true" /></span><span class="metric-period">Bulan ini</span></div>
+          <h2 class="metric-label font-body">{{ card.title.replace(' (Bulan Ini)', '') }}</h2>
+          <div v-if="loading" class="h-8 w-3/4 rounded-lg bg-white/5 animate-pulse my-2"></div>
+          <p v-else class="metric-value">{{ card.value }}</p>
+          <div v-if="!loading" class="metric-trend"><span :class="card.change >= 0 ? 'positive' : 'negative'"><component :is="card.change >= 0 ? TrendingUp : TrendingDown" :size="13" aria-hidden="true" />{{ card.change >= 0 ? '+' : '' }}{{ card.change }}%</span><span>dari bulan lalu</span></div>
+          <div class="metric-total"><span>Total tahun ini</span><strong>{{ loading ? '?' : card.subtitleValue }}</strong></div>
+        </article>
+      </section>
+      <OrderCalendar />
     </div>
 
     <!-- Chart + Recent Orders -->
@@ -258,50 +176,20 @@
       </div>
     </div>
 
-    <!-- Day Modal -->
-    <BaseModal v-model="showDayModal" :title="`Order: ${selectedDay?.dayName}, ${selectedDay?.dateNum}`" size="lg">
-      <div v-if="selectedDay?.orders.length === 0" class="text-center py-8 text-sm" style="color: rgba(160,160,192,0.6);">
-        Tidak ada jadwal pengiriman di hari ini.
-      </div>
-      <div v-else class="space-y-2">
-        <div v-for="order in selectedDay.orders" :key="order.id"
-             @click="goToDetail(order.id)"
-             class="flex items-center gap-3 p-3 rounded-xl transition-all duration-200 cursor-pointer group"
-             style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05);"
-             onmouseenter="this.style.background='rgba(255,255,255,0.06)'; this.style.borderColor='rgba(139,92,246,0.3)';"
-             onmouseleave="this.style.background='rgba(255,255,255,0.03)'; this.style.borderColor='rgba(255,255,255,0.05)';">
-          <div class="w-10 h-10 rounded-xl flex items-center justify-center text-sm font-bold shrink-0"
-               :style="orderAvatarStyle(order.status?.order)">
-            {{ (order.customer_snapshot?.name || '?').charAt(0) }}
-          </div>
-          <div class="flex-1 min-w-0">
-            <p class="text-sm font-semibold truncate" style="color: rgba(224,224,239,0.9);">{{ order.customer_snapshot?.name }}</p>
-            <p class="text-xs mt-0.5" style="color: rgba(160,160,192,0.5);">{{ getOrderProductText(order) }} • {{ getDeliveryTimeAndType(order) }}</p>
-          </div>
-          <div class="text-right shrink-0">
-            <p class="text-sm font-bold" style="color: rgba(224,224,239,0.9);">{{ formatCurrency(order.finance?.total_amount || 0) }}</p>
-            <span class="text-[10px] font-semibold px-2 py-0.5 rounded-full"
-                  :style="paymentBadgeStyle(order.status?.payment)">
-              {{ order.status?.payment }}
-            </span>
-          </div>
-        </div>
-      </div>
-    </BaseModal>
+
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
 import { Line } from 'vue-chartjs'
 import {
   Chart as ChartJS,
   CategoryScale, LinearScale, PointElement, LineElement,
   Title, Tooltip, Legend, Filler
 } from 'chart.js'
-import { dashboardApi, orderApi } from '../../api/apiService'
-import BaseModal from '../../components/admin/BaseModal.vue'
+import { dashboardApi } from '../../api/apiService'
+import OrderCalendar from '../../components/admin/OrderCalendar.vue'
 import ProductSalesChart from '../../components/admin/ProductSalesChart.vue'
 import {
   ShoppingCart, Wallet, Users, Eye,
@@ -310,48 +198,9 @@ import {
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Filler)
 
-const router = useRouter()
 const loading = ref(true)
 const recentOrders = ref([])
 const topViewedProducts = ref([])
-
-const getWeekDays = () => {
-  const days = []
-  const curr = new Date()
-  const currentDay = curr.getDay()
-  const distanceToMonday = currentDay === 0 ? -6 : 1 - currentDay
-  
-  curr.setDate(curr.getDate() + distanceToMonday)
-  
-  for (let i = 0; i < 8; i++) {
-    const day = new Date(curr)
-    const dateStr = day.toLocaleDateString('en-CA') // YYYY-MM-DD
-    days.push({
-      dateObj: day,
-      dateStr: dateStr,
-      dayName: day.toLocaleDateString('id-ID', { weekday: 'short' }),
-      dateNum: day.getDate(),
-      orders: []
-    })
-    curr.setDate(curr.getDate() + 1)
-  }
-  return days
-}
-
-const todayStr = new Date().toLocaleDateString('en-CA')
-const weekDays = ref(getWeekDays())
-const showDayModal = ref(false)
-const selectedDay = ref(null)
-
-const openDayModal = (day) => {
-  selectedDay.value = day
-  showDayModal.value = true
-}
-
-const goToDetail = (id) => {
-  showDayModal.value = false
-  router.push({ name: 'AdminOrderDetail', params: { id } })
-}
 
 const currentDate = new Date().toLocaleDateString('id-ID', {
   weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
@@ -421,8 +270,8 @@ const chartOptions = {
       bodyColor: 'rgba(160,160,192,0.8)',
       borderColor: 'rgba(139,92,246,0.3)',
       borderWidth: 1,
-      titleFont: { family: 'Plus Jakarta Sans', weight: '600', size: 13 },
-      bodyFont: { family: 'Plus Jakarta Sans', size: 12 },
+      titleFont: { family: 'Poppins', weight: '600', size: 13 },
+      bodyFont: { family: 'Poppins', size: 12 },
       padding: 14,
       cornerRadius: 12,
       callbacks: {
@@ -434,13 +283,13 @@ const chartOptions = {
     x: {
       grid: { display: false },
       border: { display: false },
-      ticks: { font: { family: 'Plus Jakarta Sans', size: 11 }, color: 'rgba(160,160,192,0.5)' }
+      ticks: { font: { family: 'Poppins', size: 11 }, color: 'rgba(160,160,192,0.5)' }
     },
     y: {
       border: { display: false, dash: [4, 4] },
       grid: { color: 'rgba(255,255,255,0.04)' },
       ticks: {
-        font: { family: 'Plus Jakarta Sans', size: 11 }, color: 'rgba(160,160,192,0.5)',
+        font: { family: 'Poppins', size: 11 }, color: 'rgba(160,160,192,0.5)',
         callback: (v) => `${(v / 1_000_000).toFixed(0)}jt`
       }
     }
@@ -473,30 +322,6 @@ const paymentBadgeStyle = (s) => {
   }
   return map[s] || 'background: rgba(160,160,192,0.1); color: rgba(160,160,192,0.6);'
 }
-
-const getOrderProductText = (order) => {
-  if (!order.items || order.items.length === 0) return order.invoice_number;
-  const item = order.items[0];
-  let name = item.package?.name || item.product?.name || 'Produk';
-  let parentName = item.package?.parent?.name || item.product?.parent?.name;
-  let text = parentName ? `${parentName} - ${name}` : name;
-  if (order.items.length > 1) {
-    text += ` (+${order.items.length - 1} lainnya)`;
-  }
-  return text;
-};
-
-const getDeliveryTimeAndType = (order) => {
-  let timeStr = '';
-  if (order.delivery && order.delivery.date) {
-    const parts = order.delivery.date.split(' ');
-    if (parts.length > 1) {
-      timeStr = parts[1].substring(0, 5) + ' • ';
-    }
-  }
-  const typeStr = order.delivery?.type || 'Delivery';
-  return timeStr + typeStr;
-};
 
 onMounted(async () => {
   try {
@@ -579,19 +404,7 @@ onMounted(async () => {
       recentOrders.value = d.recent_orders || []
       topViewedProducts.value = d.top_viewed_products || []
 
-      // Fetch upcoming orders for the calendar
-      const orderRes = await orderApi.getAll(1, 100)
-      if (orderRes.status === 'success') {
-        const allOrders = orderRes.data
-        weekDays.value.forEach(day => {
-          day.orders = allOrders.filter(o => 
-            o.delivery && 
-            o.delivery.date && 
-            o.delivery.date.startsWith(day.dateStr) &&
-            (o.status?.order === 'pending' || o.status?.order === 'processing')
-          )
-        })
-      }
+
     }
   } catch(e) {
     if (!productSalesMonths.value.length) productSalesError.value = true
@@ -601,3 +414,21 @@ onMounted(async () => {
   }
 })
 </script>
+
+<style scoped>
+.dashboard-overview { display: grid; grid-template-columns: minmax(0, 1fr); gap: 24px; }
+.metric-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.metric-card { min-width: 0; display: flex; flex-direction: column; padding: 23px; background: radial-gradient(ellipse at top right, var(--metric-tint), transparent 65%), #141420; border: 1px solid #ffffff0d; border-radius: 22px; }
+.metric-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+.metric-icon { color: var(--metric-accent); background: var(--metric-tint); border-radius: 13px; width: 42px; height: 42px; display: grid; place-items: center; }
+.metric-period { font-size: 10px; color: #9898b2; padding: 5px 9px; border-radius: 20px; border: 1px solid #ffffff0d; }
+.metric-label { font-size: 12px; font-weight: 500; color: #aaaac1; }
+.metric-value { color: #f1f1fa; font-size: clamp(21px, 2vw, 30px); font-weight: 750; letter-spacing: -.055em; margin-top: 6px; overflow-wrap: anywhere; }
+.metric-trend { display: flex; flex-wrap: wrap; align-items: center; gap: 7px; font-size: 10px; color: #9797b0; margin: 12px 0 20px; }
+.metric-trend > span:first-child { display: inline-flex; align-items: center; gap: 4px; border-radius: 6px; padding: 3px 6px; }
+.positive { color: #6ee7b7; background: #34d39912; }.negative { color: #fca5a5; background: #f8717112; }
+.metric-total { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 6px; margin-top: auto; padding-top: 13px; border-top: 1px solid #ffffff0d; font-size: 10px; color: #9797b0; }
+.metric-total strong { color: var(--metric-accent); font-weight: 650; }
+@media(min-width: 1280px) { .dashboard-overview { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
+@media(max-width: 479px) { .metric-card { padding: 15px; border-radius: 17px; }.metric-grid { gap: 10px; }.metric-period { font-size: 9px; padding: 4px 6px; }.metric-value { font-size: 21px; }.metric-icon { width: 32px; height: 32px; } }
+</style>

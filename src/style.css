@@ -1,7 +1,10 @@
 @import "tailwindcss";
 
 @theme {
-  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Poppins", ui-sans-serif, system-ui, sans-serif;
+  --font-headline: "Pulang", "Poppins", ui-sans-serif, sans-serif;
+  --font-weight-extrabold: 700;
+  --font-weight-black: 700;
   --color-brand-maroon: #690B22;
   --color-brand-terracotta: #E07A5F;
   --color-brand-cream-light: #F1E3D3;
@@ -30,6 +33,14 @@
   /* Utilities */
   --color-paper: #FDFBF7;
   --color-whatsapp: #25D366;
+}
+
+@font-face {
+  font-family: 'Pulang';
+  src: url('/Pulang.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
 }
 
 html, body {
@@ -61,8 +72,31 @@ html, body {
 @layer base {
   body {
     @apply bg-brand-cream-light text-brand-forest-dark;
+    font-family: var(--font-sans);
+    font-weight: 400;
   }
 }
+
+/* Page, section and dialog headlines use the supplied display face.
+   These properties intentionally override existing utility/scoped heading styles.
+   Compact data headings opt out with font-body to preserve readability. */
+:is(h1, h2, h3):not(.font-body), .font-headline {
+  font-family: var(--font-headline) !important;
+  font-weight: 400 !important;
+  font-style: normal;
+  font-synthesis: none;
+  letter-spacing: 0.01em !important;
+  line-height: 1.35 !important;
+  overflow-wrap: break-word;
+}
+
+:is(h1, h2, h3):not(.font-body) :is(em, strong, .font-serif) {
+  font-family: inherit !important;
+  font-weight: inherit !important;
+  font-style: normal !important;
+}
+
+.font-body { font-family: var(--font-sans); }
 
 /* ===========================
    DARK MODE ADMIN STYLES

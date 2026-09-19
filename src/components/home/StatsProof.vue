@@ -50,7 +50,7 @@ const stats = [
 .proof-eyebrow { display: flex; align-items: center; gap: 8px; color: #855246; font-size: 10px; font-weight: 750; letter-spacing: .16em; margin-bottom: 12px; }
 .proof-eyebrow span { width: 6px; height: 6px; background: #ae5845; border-radius: 50%; }
 .proof-heading h2 { max-width: 590px; color: #690b22; font-size: clamp(24px, 2.5vw, 32px); line-height: 1.3; font-weight: 750; letter-spacing: -.045em; }
-.proof-heading em { font-family: Georgia, serif; font-weight: 400; color: #a45340; }
+.proof-heading em { font-family: inherit; font-weight: 400; color: #a45340; }
 .proof-intro { color: #74665d; font-size: 12px; line-height: 1.8; }
 .proof-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
 .proof-card { position: relative; display: flex; flex-direction: column; overflow: hidden; min-width: 0; padding: 24px 22px 19px; border-radius: 21px; color: #690b22; background: #fffcf6; transition: transform .25s ease, box-shadow .25s ease; }
