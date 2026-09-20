@@ -25,10 +25,10 @@
         <a 
           href="https://wa.me/6285156253408?text=Halo%20Min!%20Mau%20nanya-nanya%20dulu%20nih%20soal%20cateringnya,%20boleh%3F" 
           target="_blank" 
-          class="hidden md:flex items-center gap-3 px-8 py-3 bg-linear-to-r from-brand-terracotta to-brand-maroon text-white rounded-full font-bold text-xs uppercase tracking-[0.2em] shadow-lg shadow-brand-maroon/20 hover:shadow-brand-terracotta/40 hover:-translate-y-0.5 active:scale-95 transition-all duration-500 group"
+          class="hidden md:flex items-center gap-3 px-8 py-3 bg-brand-maroon border border-[#b58e48]/40 text-white rounded-full font-bold text-xs uppercase tracking-[0.2em] shadow-lg shadow-brand-maroon/20 hover:shadow-brand-maroon/25 hover:-translate-y-0.5 active:scale-95 transition-all duration-500 group"
         >
           <span>Hubungi Kami</span>
-          <div class="w-5 h-5 bg-white/20 rounded-full flex items-center justify-center group-hover:bg-white/30 transition-colors">
+          <div class="w-5 h-5 bg-[#e5c584] text-brand-maroon rounded-full flex items-center justify-center group-hover:bg-[#efd6a4] transition-colors">
             <i class='bx bx-right-arrow-alt text-lg group-hover:translate-x-0.5 transition-transform'></i>
           </div>
         </a>
@@ -75,7 +75,7 @@
         
        
 
-        <a href="https://wa.me/6285156253408?text=Halo%20Min!%20Mau%20nanya-nanya%20dulu%20nih%20soal%20cateringnya,%20boleh%3F" target="_blank" class="block bg-brand-terracotta text-white text-center py-3 rounded-full font-black text-xs uppercase tracking-widest" @click="mobileMenu=false">Hubungi Kami</a>
+        <a href="https://wa.me/6285156253408?text=Halo%20Min!%20Mau%20nanya-nanya%20dulu%20nih%20soal%20cateringnya,%20boleh%3F" target="_blank" class="block bg-brand-maroon text-white border border-[#b58e48]/40 text-center py-3 rounded-full font-black text-xs uppercase tracking-widest" @click="mobileMenu=false">Hubungi Kami</a>
       </div>
     </transition>
   </nav>
