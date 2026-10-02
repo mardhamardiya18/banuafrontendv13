@@ -128,6 +128,8 @@
       </div>
     </div>
 
+    <ExpenseSummary :categories="presetCategories" :refresh-key="expenseRefreshKey" @view-transactions="viewExpenseTransactions" />
+
     <!-- Filter Card -->
     <div class="rounded-2xl p-6 space-y-4" style="background: rgba(20,20,32,0.8); border: 1px solid rgba(255,255,255,0.06);">
       <div class="flex items-center gap-2 pb-3 border-b border-white/5">
@@ -211,11 +213,11 @@
     </div>
 
     <!-- Data Table Card -->
-    <div class="rounded-2xl overflow-hidden" style="background: rgba(20,20,32,0.8); border: 1px solid rgba(255,255,255,0.06);">
+    <div ref="transactionTable" class="rounded-2xl overflow-hidden" style="background: rgba(20,20,32,0.8); border: 1px solid rgba(255,255,255,0.06);">
       <div class="p-6 border-b border-white/5 flex items-center justify-between">
         <h3 class="text-base font-bold text-white">Daftar Transaksi Kas</h3>
         <button
-          @click="fetchData"
+          @click="refreshAll"
           class="p-2 bg-dark-850 border border-white/5 hover:bg-white/5 rounded-xl transition-all duration-150"
           title="Refresh Data"
         >
@@ -461,6 +463,7 @@ import {
 import { financeApi } from '../../../api/apiService'
 import { useAdminStore } from '../../../stores/admin'
 import BaseModal from '../../../components/admin/BaseModal.vue'
+import ExpenseSummary from '../../../components/admin/ExpenseSummary.vue'
 
 const adminStore = useAdminStore()
 const loading = ref(true)
@@ -469,6 +472,20 @@ const cashflows = ref([])
 const summary = ref({ total_in: 0, total_out: 0, net_saldo: 0 })
 const meta = ref(null)
 const currentPage = ref(1)
+const expenseRefreshKey = ref(0)
+const transactionTable = ref(null)
+
+const refreshAll = () => {
+  expenseRefreshKey.value++
+  fetchData()
+}
+
+const viewExpenseTransactions = (selection) => {
+  filters.value = { search: '', type: 'OUT', ...selection }
+  currentPage.value = 1
+  fetchData()
+  transactionTable.value?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+}
 
 const filters = ref({
   search: '',
@@ -648,7 +665,7 @@ const submitForm = async () => {
       adminStore.showToast(editMode.value ? 'Catatan kas berhasil diupdate!' : 'Catatan kas berhasil disimpan!', 'success')
       scrollAdminToTop()
       modalOpen.value = false
-      fetchData()
+      refreshAll()
     } else {
       adminStore.showToast(res.message || 'Gagal menyimpan transaksi.', 'error')
     }
@@ -665,7 +682,7 @@ const deleteItem = async (id) => {
     const res = await financeApi.deleteCashflow(id)
     if (res.status === 'success') {
       adminStore.showToast('Catatan kas berhasil dihapus!', 'success')
-      fetchData()
+      refreshAll()
     } else {
       adminStore.showToast(res.message || 'Gagal menghapus transaksi.', 'error')
     }

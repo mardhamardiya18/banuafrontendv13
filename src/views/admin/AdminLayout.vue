@@ -19,6 +19,7 @@
 </template>
 
 <script setup>
+import '../../admin.css'
 import Sidebar from '../../components/admin/Sidebar.vue'
 import Topbar from '../../components/admin/Topbar.vue'
 import ToastNotification from '../../components/admin/ToastNotification.vue'

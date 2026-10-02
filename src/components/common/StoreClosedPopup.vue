@@ -51,6 +51,7 @@ const shouldShow = computed(() => {
 
 // Block scrolling when popup is shown
 watchEffect(() => {
+  if (import.meta.env.SSR) return
   if (shouldShow.value) {
     document.body.style.overflow = 'hidden'
   } else {

@@ -1,5 +1,5 @@
 <template>
-  <div class="detail-page">
+  <div class="detail-page" :class="{ 'is-loading': loading }">
     <TopNav :showMenu="false" />
     <div v-if="loading" class="detail-loading" role="status" aria-live="polite"><span></span><p>Menyiapkan hidangan...</p></div>
     <main class="detail-main" :aria-busy="loading">
@@ -11,25 +11,26 @@
         <section class="gallery-section" aria-label="Galeri produk">
           <div class="gallery-heading"><span>Dari dapur kami</span><span class="gallery-edition">Untuk momen pian</span></div>
           <div class="gallery-stage">
-            <swiper :key="route.params.slug" :modules="modules" :slides-per-view="1" :space-between="18" :keyboard="{ enabled: true, onlyInViewport: true }" @swiper="captureGallery" @slideChange="updateGallery" class="detail-gallery">
-              <swiper-slide v-for="(img, index) in productImages" :key="img + index">
-                <div class="gallery-image"><img :src="img" :alt="product.name + ', foto ' + (index + 1)" :loading="index === 0 ? 'eager' : 'lazy'" :fetchpriority="index === 0 ? 'high' : 'auto'" width="800" height="800" /></div>
-              </swiper-slide>
-            </swiper>
+            <p v-if="loading && !productImages.length" class="gallery-loading" role="status">Menyiapkan foto hidangan...</p>
+            <div ref="gallery" class="detail-gallery" tabindex="0" role="region" aria-label="Foto produk; geser atau gunakan tombol panah" @scroll.passive="updateGallery" @keydown.left.prevent="showImage(activeImage - 1)" @keydown.right.prevent="showImage(activeImage + 1)">
+              <div v-for="(img, index) in productImages" :key="img + index" class="gallery-slide" role="group" :aria-label="'Foto ' + (index + 1) + ' dari ' + productImages.length">
+                <div class="gallery-image"><picture class="contents"><source v-if="mobileImageSrcset(img)" media="(max-width: 767px)" :srcset="mobileImageSrcset(img)" sizes="calc(100vw - 44px)" /><img :src="img" :alt="product.name + ', foto ' + (index + 1)" :loading="index === 0 ? 'eager' : 'lazy'" :fetchpriority="index === 0 ? 'high' : 'auto'" decoding="async" width="800" height="800" /></picture></div>
+              </div>
+            </div>
             <span class="gallery-label">Sajian penuh cerita</span>
           </div>
           <div class="gallery-controls" v-if="productImages.length > 1">
-            <div class="gallery-thumbnails" aria-label="Pilih foto produk"><button v-for="(img, index) in productImages" :key="index" @click="showImage(index)" :class="{ selected: activeImage === index }" :aria-label="'Lihat foto ' + (index + 1)" :aria-pressed="activeImage === index"><img :src="img" alt="" loading="lazy" width="64" height="64" /></button></div>
-            <div class="gallery-paging"><span aria-live="polite">{{ activeImage + 1 }} / {{ productImages.length }}</span><button @click="gallery?.slidePrev()" :disabled="activeImage === 0" aria-label="Foto sebelumnya"><ChevronLeft :size="20" /></button><button @click="gallery?.slideNext()" :disabled="activeImage === productImages.length - 1" aria-label="Foto berikutnya"><ChevronRight :size="20" /></button></div>
+            <div class="gallery-thumbnails" aria-label="Pilih foto produk"><button v-for="(img, index) in productImages" :key="index" @click="showImage(index)" :class="{ selected: activeImage === index }" :aria-label="'Lihat foto ' + (index + 1)" :aria-pressed="activeImage === index"><picture class="contents"><source v-if="mobileImageSrcset(img)" media="(max-width: 767px)" :srcset="mobileImageSrcset(img)" sizes="64px" /><img :src="img" alt="" loading="lazy" width="64" height="64" /></picture></button></div>
+            <div class="gallery-paging"><span aria-live="polite">{{ activeImage + 1 }} / {{ productImages.length }}</span><button @click="showImage(activeImage - 1)" :disabled="activeImage === 0" aria-label="Foto sebelumnya"><ChevronLeft :size="20" /></button><button @click="showImage(activeImage + 1)" :disabled="activeImage === productImages.length - 1" aria-label="Foto berikutnya"><ChevronRight :size="20" /></button></div>
           </div>
         </section>
         <section class="product-panel" aria-labelledby="product-title">
           <div class="product-tags"><span>{{ product.category?.name || 'Catering Banua' }}</span><span v-if="product.is_recommended" class="recommended-tag">Pilihan dapur kami</span></div>
           <h1 id="product-title">{{ product.name }}</h1>
           <p class="panel-intro">Bawa rasa nyaman ke momen istimewa pian.</p>
-          <div class="product-price"><p>Harga mulai dari</p><div><span>Rp</span><strong>{{ formatPriceValue(product.price) }}</strong></div><span v-if="product.discount > 0" class="discount-note">Diskon {{ product.discount }}% tersedia</span></div>
-          <dl class="product-facts"><div><dt>Minimum pesanan</dt><dd>{{ product.min_order || 20 }} porsi</dd></div><div><dt>Sistem pemesanan</dt><dd>Pre-order (PO)</dd></div></dl>
-          <a :href="whatsappLink" target="_blank" rel="noopener noreferrer" class="order-button">Pesan via WhatsApp <ArrowUpRight :size="24" aria-hidden="true" /></a>
+          <div class="product-price"><p>Harga mulai dari</p><div><span>Rp</span><strong>{{ loading ? '—' : formatPriceValue(product.price) }}</strong></div><span v-if="product.discount > 0" class="discount-note">Diskon {{ product.discount }}% tersedia</span></div>
+          <dl class="product-facts"><div><dt>Minimum pesanan</dt><dd>{{ loading ? '—' : (product.min_order || 20) }} porsi</dd></div><div><dt>Sistem pemesanan</dt><dd>Pre-order (PO)</dd></div></dl>
+          <a :href="loading ? undefined : whatsappLink" target="_blank" rel="noopener noreferrer" class="order-button">Pesan via WhatsApp <ArrowUpRight :size="24" aria-hidden="true" /></a>
           <p class="order-note">Yuk, obrolin tanggal acara dan kebutuhan pian bersama kami.</p>
           <a href="#product-description" class="description-jump">Kenali sajiannya <ArrowRight :size="17" aria-hidden="true" /></a>
         </section>
@@ -54,27 +55,27 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watch } from 'vue'
+import { ref, computed, onMounted, watch, nextTick } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { Swiper, SwiperSlide } from 'swiper/vue'
-import { A11y, Keyboard } from 'swiper/modules'
 import { ArrowLeft, ArrowRight, ArrowUpRight, ChevronLeft, ChevronRight } from 'lucide-vue-next'
 import ProductPhoto from '../components/catalog/ProductPhoto.vue'
 import catalogApi from '../api/catalogApi'
 import TopNav from '../components/catalog/TopNav.vue'
 import Footer from '../components/catalog/Footer.vue'
-
-import 'swiper/css'
-
+import { mobileImageSrcset } from '../utils/catalogImages'
+import productImageHints from '../assets/product-image-hints.json'
 
 const route = useRoute()
 const router = useRouter()
-const modules = [A11y, Keyboard]
 const gallery = ref(null)
 const activeImage = ref(0)
-const captureGallery = (instance) => { gallery.value = instance }
-const updateGallery = (instance) => { activeImage.value = instance.activeIndex }
-const showImage = (index) => gallery.value?.slideTo(index)
+function updateGallery() {
+  if (gallery.value) activeImage.value = Math.round(gallery.value.scrollLeft / (gallery.value.clientWidth + 18))
+}
+function showImage(index) {
+  if (!gallery.value || index < 0 || index >= productImages.value.length) return
+  gallery.value.scrollTo({ left: index * (gallery.value.clientWidth + 18), behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' })
+}
 const loading = ref(true)
 
 const product = ref({
@@ -87,15 +88,21 @@ const product = ref({
   discount: 0
 })
 
-const productImages = ref([])
+// Show the already-preloaded public photo while live product details arrive.
+// Prices and ordering remain hidden until the current API response is ready.
+const firstImageHint = productImageHints[route.params.slug]
+const productImages = ref(firstImageHint ? [firstImageHint] : [])
 const similarProducts = ref([])
 
 const fetchProductDetail = async () => {
   loading.value = true
   activeImage.value = 0
+  const slug = route.params.slug
+  const hint = productImageHints[slug]
+  productImages.value = hint ? [hint] : []
   try {
-    const slug = route.params.slug
     const res = await catalogApi.getProductDetail(slug)
+    if (slug !== route.params.slug) return
     
     if (res.success && res.data) {
       const data = res.data
@@ -120,13 +127,15 @@ const fetchProductDetail = async () => {
       } else {
         similarProducts.value = []
       }
+      await nextTick()
+      gallery.value?.scrollTo({ left: 0, behavior: 'instant' })
     } else {
       await router.replace({ name: 'Catalog' })
     }
   } catch (error) {
     console.error('Error fetching product detail:', error)
   } finally {
-    loading.value = false
+    if (slug === route.params.slug) loading.value = false
   }
 }
 
@@ -173,8 +182,12 @@ onMounted(() => {
 .gallery-heading { display: flex; justify-content: space-between; gap: 15px; align-items: center; margin-bottom: 20px; font-size: 11px; text-transform: uppercase; letter-spacing: .12em; color: #806335; }
 .gallery-edition { text-transform: none; letter-spacing: 0; font-size: 12px; transform: rotate(-3deg); }
 .gallery-stage { position: relative; }
+.gallery-loading { display: none; }
 .gallery-stage::before { content: ''; position: absolute; inset: -7px 3px 6px -7px; border: 1px solid #c5a263; border-radius: 95px 30px 85px 30px; transform: rotate(-2deg); pointer-events: none; }
-.detail-gallery { border-radius: 85px 25px 75px 25px; background: #eee3d1; }
+.detail-gallery { border-radius: 85px 25px 75px 25px; background: #eee3d1; display: flex; gap: 18px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; aspect-ratio: 1 / 1.02; }
+.detail-gallery::-webkit-scrollbar { display: none; }
+.detail-gallery:focus-visible { outline: 3px solid #a8813b; outline-offset: 4px; }
+.gallery-slide { flex: 0 0 100%; min-width: 0; scroll-snap-align: start; }
 .gallery-image { aspect-ratio: 1 / 1.02; }
 .gallery-image img { width: 100%; height: 100%; object-fit: cover; }
 .gallery-label { position: absolute; right: 25px; bottom: 23px; z-index: 2; padding: 11px 20px; background: #e9cd92; color: #690b22; font-size: 12px; font-weight: 600; transform: rotate(-5deg); pointer-events: none; }
@@ -254,5 +267,13 @@ onMounted(() => {
 @media (max-width: 1023px) { .detail-layout { gap: 40px 35px; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); } .detail-main { padding-inline: 24px; } .product-panel { top: 95px; } .gallery-controls { flex-wrap: wrap; } .gallery-thumbnails { max-width: 100%; } .related-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .related-heading { flex-wrap: wrap; } }
 @media (max-width: 767px) { .detail-main { padding: 100px 22px 60px; } .detail-navigation { align-items: flex-start; flex-direction: column; gap: 10px; margin-bottom: 27px; } .detail-breadcrumb { width: 100%; font-size: 10px; gap: 9px; } .detail-layout { display: flex; flex-direction: column; gap: 36px; } .gallery-section, .product-panel, .product-description { width: 100%; } .gallery-heading { font-size: 9px; } .gallery-edition { font-size: 10px; } .gallery-image { aspect-ratio: 1; } .gallery-controls { flex-wrap: nowrap; gap: 10px; } .gallery-thumbnails button { width: 46px; height: 52px; } .gallery-paging { gap: 5px; } .gallery-paging button { width: 34px; height: 34px; } .gallery-paging > span { margin-right: 2px; font-size: 10px; } .product-panel { position: static; padding-top: 24px; } .product-panel h1 { font-size: 43px; } .product-price strong { font-size: 39px; } .panel-intro, .order-note { max-width: none; } .description-heading { padding-top: 0; border: 0; } .related-section { margin-top: 50px; padding-top: 36px; } .related-heading { gap: 22px; } .related-heading h2 { font-size: 34px; } .related-grid { gap: 28px 17px; } .related-name { gap: 5px; align-items: flex-start; } .related-name h3 { font-size: 14px; } .related-name > span { width: 28px; height: 28px; } .related-price strong { font-size: 13px; } .related-signoff { gap: 9px; font-size: 9px; } }
 @media (max-width: 380px) { .related-grid { grid-template-columns: 1fr; } .related-item:nth-child(even) { margin-top: 0; } .related-name h3 { font-size: 18px; } }
-@media (prefers-reduced-motion: reduce) { .detail-loading > span { animation: none; } .order-button, .related-photo :deep(img) { transition: none; } :deep(.swiper-wrapper) { transition-duration: 0ms !important; } }
+@media (max-width: 767px) {
+  .gallery-label { right: 16px; bottom: -7px; padding: 7px 12px; font-size: 10px; transform: rotate(-4deg); }
+  .gallery-controls { margin-top: 27px; }
+  .detail-gallery { aspect-ratio: 1; }
+  .detail-loading { display: none; }
+  .gallery-loading { display: block; position: absolute; inset: 45% 0 auto; z-index: 1; text-align: center; font-size: 12px; }
+  .is-loading .product-panel { visibility: hidden; }
+}
+@media (prefers-reduced-motion: reduce) { .detail-loading > span { animation: none; } .order-button, .related-photo :deep(img) { transition: none; } }
 </style>

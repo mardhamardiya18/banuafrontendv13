@@ -1,0 +1,5 @@
+/* Admin utilities travel with the admin route, not with every public visit. */
+@import "tailwindcss/utilities.css" source(none);
+@reference "./style.css";
+@source "./components/admin";
+@source "./views/admin";

@@ -1,6 +1,7 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHistory, createMemoryHistory } from 'vue-router'
 import Cookies from 'js-cookie'
 import { useAuthStore } from '../stores/auth'
+import { catalogApi } from '../api/catalogApi'
 
 const routes = [
   {
@@ -112,6 +113,12 @@ const routes = [
         meta: { title: 'Buku Kas' }
       },
       {
+        path: 'finance/addons',
+        name: 'AdminFinanceAddons',
+        component: () => import('../views/admin/finance/AddonReport.vue'),
+        meta: { title: 'Rekap Add-ons' }
+      },
+      {
         path: 'finance/pnl',
         name: 'AdminFinancePnL',
         component: () => import('../views/admin/finance/PnL.vue'),
@@ -122,13 +129,16 @@ const routes = [
 ]
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
+  history: import.meta.env.SSR ? createMemoryHistory(import.meta.env.BASE_URL) : createWebHistory(import.meta.env.BASE_URL),
   scrollBehavior(to, from, savedPosition) {
     if (savedPosition) {
       return savedPosition
-    } else {
-      return { top: 0, behavior: 'smooth' }
     }
+    if (to.hash) return { el: to.hash, behavior: 'smooth' }
+    // A fresh navigation already starts at the top. Avoid forcing layout immediately
+    // after Vue inserts the entire page just to scroll to the current position.
+    if (!from.matched.length) return false
+    return { top: 0, behavior: 'instant' }
   },
   routes
 })
@@ -142,7 +152,8 @@ const router = createRouter({
 router.beforeEach(async (to, from, next) => {
   // 1. SET TITLE
   const siteTitle = 'Dapur Mamah Iis'
-  document.title = to.meta.title ? `${to.meta.title} - ${siteTitle}` : siteTitle
+  if (!import.meta.env.SSR) document.title = to.meta.title ? `${to.meta.title} - ${siteTitle}` : siteTitle
+  if (!import.meta.env.SSR && to.name === 'ProductDetail') catalogApi.prefetchProductDetail(to.params.slug)
 
   const authStore = useAuthStore()
   const token = Cookies.get('token')

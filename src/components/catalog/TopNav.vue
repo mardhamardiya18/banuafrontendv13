@@ -1,17 +1,17 @@
 <template>
-  <nav class="fixed top-0 left-0 w-full z-50 bg-white/80 backdrop-blur-md border-b border-brand-maroon/10">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 flex items-center justify-between">
+  <nav class="public-nav fixed top-0 left-0 w-full z-50 bg-white/80 backdrop-blur-md border-b border-brand-maroon/10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 flex items-center justify-between gap-4">
       <!-- Logo Section -->
-      <router-link to="/" class="flex items-center gap-3 group">
+      <router-link to="/" class="flex items-center gap-3 group shrink-0">
         <img :src="logo" alt="Logo DMI Catering" width="40" height="40" class="h-10 w-auto group-hover:scale-110 transition-transform duration-300">
         <div class="flex flex-col">
-          <span class="text-2xl font-extrabold text-brand-maroon tracking-tight">DMI Catering</span>
+          <span class="text-xl sm:text-2xl whitespace-nowrap font-extrabold text-brand-maroon tracking-tight">DMI Catering</span>
           <small class="text-xs text-brand-forest-dark/80 font-semibold">By Dapur Mamah Iis</small>
         </div>
       </router-link>
 
       <!-- Desktop Navigation (Conditional) -->
-      <div v-if="showMenu" class="hidden md:flex items-center gap-8 text-sm font-bold text-brand-forest-dark">
+      <div v-if="showMenu" class="hidden xl:flex items-center gap-6 text-sm font-bold text-brand-forest-dark">
         <router-link to="/" class="hover:text-brand-terracotta transition-colors duration-300">Beranda</router-link>
         <router-link to="/katalog" class="hover:text-brand-terracotta transition-colors duration-300">Katalog</router-link>
         <a href="/#services" class="hover:text-brand-terracotta transition-colors duration-300">Layanan</a>
@@ -21,13 +21,13 @@
       </div>
 
       <!-- Action Buttons / Profile -->
-      <div class="flex items-center gap-4">
+      <div class="flex items-center gap-3 shrink-0">
         <a 
           href="https://wa.me/6285156253408?text=Halo%20Min!%20Mau%20nanya-nanya%20dulu%20nih%20soal%20cateringnya,%20boleh%3F" 
           target="_blank" 
-          class="hidden md:flex items-center gap-3 px-8 py-3 bg-brand-maroon border border-[#b58e48]/40 text-white rounded-full font-bold text-xs uppercase tracking-[0.2em] shadow-lg shadow-brand-maroon/20 hover:shadow-brand-maroon/25 hover:-translate-y-0.5 active:scale-95 transition-all duration-500 group"
+          class="hidden md:flex items-center gap-3 px-5 xl:px-8 py-3 bg-brand-maroon border border-[#b58e48]/40 text-white rounded-full font-bold text-xs uppercase tracking-[0.2em] shadow-lg shadow-brand-maroon/20 hover:shadow-brand-maroon/25 hover:-translate-y-0.5 active:scale-95 transition-all duration-500 group"
         >
-          <span>Hubungi Kami</span>
+          <span class="whitespace-nowrap">Hubungi Kami</span>
           <div class="w-5 h-5 bg-[#e5c584] text-brand-maroon rounded-full flex items-center justify-center group-hover:bg-[#efd6a4] transition-colors">
             <i class='bx bx-right-arrow-alt text-lg group-hover:translate-x-0.5 transition-transform'></i>
           </div>
@@ -52,7 +52,7 @@
         </template>
 
         <!-- Mobile Toggle (Only if menu is shown) -->
-        <button v-if="showMenu" @click="mobileMenu = !mobileMenu" class="md:hidden text-brand-maroon" aria-label="Buka menu navigasi">
+        <button v-if="showMenu" @click="mobileMenu = !mobileMenu" class="xl:hidden text-brand-maroon w-11 h-11 grid place-items-center" :aria-expanded="mobileMenu" aria-controls="public-mobile-menu" aria-label="Menu navigasi">
           <i :class="['bx text-3xl transition-transform duration-300', mobileMenu ? 'bx-x rotate-90' : 'bx-menu']" aria-hidden="true"></i>
         </button>
       </div>
@@ -67,7 +67,7 @@
       leave-from-class="transform translate-y-0 opacity-100"
       leave-to-class="transform -translate-y-4 opacity-0"
     >
-      <div v-if="mobileMenu && showMenu" class="md:hidden bg-white border-t border-brand-maroon/10 px-4 py-6 space-y-4 shadow-xl">
+      <div v-if="mobileMenu && showMenu" id="public-mobile-menu" class="xl:hidden bg-white border-t border-brand-maroon/10 px-4 py-6 space-y-4 shadow-xl">
         <router-link to="/" class="block text-sm font-bold text-brand-forest-dark hover:text-brand-terracotta" @click="mobileMenu=false">Beranda</router-link>
         <router-link to="/katalog" class="block text-sm font-bold text-brand-forest-dark hover:text-brand-terracotta" @click="mobileMenu=false">Katalog</router-link>
         <a href="/#services" class="block text-sm font-bold text-brand-forest-dark hover:text-brand-terracotta" @click="mobileMenu=false">Layanan</a>
@@ -96,3 +96,9 @@ const props = defineProps({
 const authStore = useAuthStore()
 const mobileMenu = ref(false)
 </script>
+
+<style scoped>
+@media (max-width: 767px) {
+  .public-nav { background: rgba(255, 255, 255, .98); backdrop-filter: none; }
+}
+</style>

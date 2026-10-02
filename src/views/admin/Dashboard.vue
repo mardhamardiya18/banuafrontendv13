@@ -350,20 +350,7 @@ onMounted(async () => {
       const totalViewsYear = stats.total_views.total_year ?? stats.total_views.total_all_time ?? 0
       statCards.value[3].subtitleValue = `${Number(totalViewsYear).toLocaleString('id-ID')} views`
       
-      // Kalkulasi presentase (trend) Views secara manual berdasarkan bulan ini & bulan sebelumnya jika datanya ada
-      const views = stats.total_views
-      const currentViews = Number(views.this_month || views.current_month || 0)
-      const prevViews = Number(views.last_month || views.previous_month || 0)
-      
-      if (currentViews > 0 || prevViews > 0) {
-        if (prevViews === 0) {
-          statCards.value[3].change = currentViews > 0 ? 100 : 0
-        } else {
-          statCards.value[3].change = Math.round(((currentViews - prevViews) / prevViews) * 100)
-        }
-      } else {
-        statCards.value[3].change = views.trend || 0
-      }
+      statCards.value[3].change = stats.total_views.trend
 
       const months = d.chart.map(c => c.month)
       chartData.value = {

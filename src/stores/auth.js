@@ -1,5 +1,4 @@
 import { defineStore } from 'pinia'
-import api from '../utils/axios'
 import Cookies from 'js-cookie'
 
 export const useAuthStore = defineStore('auth', {
@@ -19,6 +18,7 @@ export const useAuthStore = defineStore('auth', {
       if (!this.token) return
       this.loading = true
       try {
+        const { default: api } = await import('../utils/axios')
         const response = await api.get('/user')
         // Mendukung response.data atau response.data.data
         this.user = response.data.data || response.data
@@ -39,6 +39,7 @@ export const useAuthStore = defineStore('auth', {
 
     async login(credentials) {
       try {
+       const { default: api } = await import('../utils/axios')
        await api.get('/sanctum/csrf-cookie', {
             baseURL: import.meta.env.VITE_BASE_URL // Timpa baseURL global di sini!
         });
@@ -75,6 +76,7 @@ export const useAuthStore = defineStore('auth', {
 
     async register(userData) {
       try {
+        const { default: api } = await import('../utils/axios')
         await api.get('/sanctum/csrf-cookie', {
           baseURL: import.meta.env.VITE_BASE_URL
         });
@@ -87,6 +89,7 @@ export const useAuthStore = defineStore('auth', {
 
     async logout() {
       try {
+        const { default: api } = await import('../utils/axios')
         await api.post('/logout');
       } catch (error) {
         console.error("Gagal logout dari server:", error);

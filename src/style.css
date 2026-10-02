@@ -1,6 +1,45 @@
-@import "tailwindcss";
+@import "tailwindcss" source(none);
+@import "./assets/boxicons.css";
+@source "./App.vue";
+@source "./components/catalog";
+@source "./components/common";
+@source "./components/home";
+@source "./views/HomeView.vue";
+@source "./views/CatalogView.vue";
+@source "./views/ProductDetailView.vue";
+@source "./views/InvoiceVerify.vue";
+@source "./views/auth";
 
-@theme {
+@font-face {
+  font-family: 'Poppins';
+  src: url('./assets/fonts/poppins-latin-400.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Poppins';
+  src: url('./assets/fonts/poppins-latin-500.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Poppins';
+  src: url('./assets/fonts/poppins-latin-600.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Poppins';
+  src: url('./assets/fonts/poppins-latin-700.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@theme static {
   --font-sans: "Poppins", ui-sans-serif, system-ui, sans-serif;
   --font-headline: "Pulang", "Poppins", ui-sans-serif, sans-serif;
   --font-weight-extrabold: 700;
@@ -37,7 +76,7 @@
 
 @font-face {
   font-family: 'Pulang';
-  src: url('/Pulang.ttf') format('truetype');
+  src: url('./assets/fonts/pulang.woff2') format('woff2');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -46,15 +85,6 @@
 html, body {
   scroll-behavior: smooth;
   overflow-x: hidden;
-}
-
-/* Boxicons font */
-@font-face {
-  font-family: 'boxicons';
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-  src: url('https://unpkg.com/boxicons@2.1.4/fonts/boxicons.woff2') format('woff2');
 }
 
 .sr-only {

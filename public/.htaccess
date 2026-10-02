@@ -1,10 +1,17 @@
 <IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteBase /
+  RewriteRule ^katalog/?$ /katalog.html [L]
+  RewriteCond %{DOCUMENT_ROOT}/product-$1.html -f
+  RewriteRule ^produk/([a-z0-9-]+)/?$ /product-$1.html [L]
   RewriteRule ^index\.html$ - [L]
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
-  RewriteRule . /index.html [L]
+  RewriteRule . /spa.html [L]
+</IfModule>
+
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css text/javascript application/javascript application/json image/svg+xml
 </IfModule>
 
 <IfModule mod_expires.c>
@@ -29,6 +36,9 @@
 </IfModule>
 
 <IfModule mod_headers.c>
+  <FilesMatch "\.(html)$">
+    Header set Cache-Control "no-cache"
+  </FilesMatch>
   <FilesMatch "\.(css|js|webp|png|jpe?g|gif|ico|woff2)$">
     Header set Cache-Control "max-age=31536000, public, immutable"
   </FilesMatch>

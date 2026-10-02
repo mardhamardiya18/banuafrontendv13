@@ -5,7 +5,26 @@
  * Seluruh kompleksitas Sistem Menu (Rules, Inclusions, Set Menu) telah DIHAPUS.
  */
 
-import api from '../utils/axios'
+// Public GETs need neither the admin Axios bundle nor authentication/CSRF headers.
+// A simple CORS request also avoids an extra OPTIONS round trip on mobile.
+const api = {
+  async get(path, { params = {} } = {}) {
+    const base = `${import.meta.env.VITE_API_URL.replace(/\/$/, '')}/`
+    const url = new URL(path.replace(/^\//, ''), base)
+    for (const [key, value] of Object.entries(params)) url.searchParams.set(key, value)
+    const response = await fetch(url, {
+      headers: { Accept: 'application/json' },
+      credentials: 'omit',
+      signal: AbortSignal.timeout(15000)
+    })
+    if (!response.ok) throw new Error(`Katalog gagal dimuat (${response.status})`)
+    return { data: await response.json() }
+  }
+}
+
+// A one-navigation request handoff: start detail data while its route chunk is
+// downloading, then consume the same request in the view (no persistent cache).
+let pendingDetail
 
 // ─── Helper: normalize response ─────────────────────────
 function normalizeResponse(response) {
@@ -19,6 +38,12 @@ function normalizeResponse(response) {
 }
 
 export const catalogApi = {
+
+  prefetchProductDetail(slug) {
+    const request = api.get(`/catalog/products/${encodeURIComponent(slug)}`)
+    request.catch(() => {}) // The view handles and reports any failed request.
+    pendingDetail = { slug, request, createdAt: Date.now() }
+  },
 
   /**
    * Mendapatkan daftar kategori aktif.
@@ -60,7 +85,9 @@ export const catalogApi = {
    */
   async getProductDetail(slug) {
     try {
-      const response = await api.get(`/catalog/products/${slug}`)
+      const prefetched = pendingDetail?.slug === slug && Date.now() - pendingDetail.createdAt < 15000 ? pendingDetail.request : null
+      pendingDetail = null
+      const response = await (prefetched || api.get(`/catalog/products/${encodeURIComponent(slug)}`))
       const result = normalizeResponse(response)
       if (result.data?.related_products) {
         result.data.related_products = result.data.related_products.filter(product => product.is_active === true)

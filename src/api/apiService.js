@@ -398,6 +398,14 @@ export const referenceApi = {
 // Finance & Cashflow API — /api/admin/finance
 // ═══════════════════════════════════════════════════════
 export const financeApi = {
+  async getAddonReport(params = {}) {
+    try {
+      return normalizeItem(await api.get('/admin/finance/addon-report', { params }))
+    } catch (error) {
+      console.error('Finance add-on report error:', error)
+      return { status: 'error', data: null }
+    }
+  },
   async getOverview(filter = 'this_month', startDate = '', endDate = '') {
     try {
       const params = { filter }
@@ -515,4 +523,3 @@ export const financeApi = {
     return { status: 'success', message: 'Deleted' }
   }
 }
-

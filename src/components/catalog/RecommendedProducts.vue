@@ -14,7 +14,7 @@
     <div ref="track" class="reco-track" @scroll.passive="updateEdges">
       <RouterLink v-for="product in products" :key="product.id" :to="`/produk/${product.slug}`" class="reco-card group">
         <div class="relative">
-          <ProductPhoto :src="product.img" :name="product.name" class="aspect-[16/10]" />
+          <ProductPhoto :src="product.img" :name="product.name" sizes="(max-width: 767px) 80vw, 400px" class="aspect-[16/10]" />
           <span class="absolute top-3 left-3 inline-flex items-center gap-1.5 rounded-full bg-[#fffaf0]/95 px-3 py-1.5 text-[10px] font-bold text-brand-maroon"><Sparkles :size="12" aria-hidden="true" /> Rekomendasi</span>
           <span v-if="product.discount > 0" class="absolute bottom-3 right-3 rounded-lg bg-brand-maroon px-2.5 py-1.5 text-[10px] font-bold text-white">Diskon {{ product.discount }}%</span>
         </div>

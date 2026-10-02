@@ -1,10 +1,9 @@
 import { defineStore } from 'pinia'
 import { catalogApi } from '../api/catalogApi'
-import { storeStatusApi } from '../api/apiService'
 
 export const useSettingsStore = defineStore('settings', {
   state: () => ({
-    isStoreClosed: JSON.parse(localStorage.getItem('isStoreClosed') || 'false'),
+    isStoreClosed: import.meta.env.SSR ? false : JSON.parse(localStorage.getItem('isStoreClosed') || 'false'),
     isLoading: false
   }),
   actions: {
@@ -25,6 +24,7 @@ export const useSettingsStore = defineStore('settings', {
       this.isLoading = true
       const newStatus = !this.isStoreClosed
       try {
+        const { storeStatusApi } = await import('../api/apiService')
         const res = await storeStatusApi.updateStatus(newStatus)
         if (res && res.status === 'success') {
           this.isStoreClosed = Boolean(res.data?.is_store_closed ?? newStatus)

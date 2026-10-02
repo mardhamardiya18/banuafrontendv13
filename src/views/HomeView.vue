@@ -40,7 +40,10 @@
         </div>
         <div class="hero-visual relative animate-fade-up-delay">
           <div class="hero-photo relative overflow-hidden shadow-2xl shadow-brand-maroon/10">
-            <img :src="heroImg" alt="Sajian tumpeng dan catering Dapur Mamah Iis" fetchpriority="high" width="600" height="499" class="w-full h-125 object-cover"/>
+            <picture>
+              <source media="(max-width: 767px)" srcset="/hero-img-mobile.webp" />
+              <img :src="heroImg" alt="Sajian tumpeng dan catering Dapur Mamah Iis" fetchpriority="high" decoding="async" width="600" height="499" class="w-full h-125 object-cover"/>
+            </picture>
           </div>
           <div class="hero-portions absolute -bottom-8 -left-8 bg-white/90 backdrop-blur-md p-5 rounded-3xl shadow-[0_20px_50px_rgba(105,11,34,0.15)] border border-brand-maroon/5 flex items-center gap-4 animate-float group hover:scale-105 transition-transform duration-500">
             <div class="bg-brand-maroon p-3 rounded-2xl shadow-lg shadow-brand-terracotta/20">
@@ -87,7 +90,10 @@
           <article v-for="product in products" :key="product.name" class="featured-item">
             <RouterLink :to="{ path: '/katalog', query: { category: product.cat } }" class="featured-link" :aria-label="'Lihat pilihan ' + product.name">
               <div class="featured-image">
-                <img :src="product.img" :alt="product.name" loading="lazy" decoding="async" width="400" height="400" />
+                <picture>
+                  <source media="(max-width: 767px)" :srcset="product.mobileImg" />
+                  <img :src="product.img" :alt="product.name" loading="lazy" decoding="async" width="400" height="400" />
+                </picture>
                 <span class="featured-occasion">{{ product.occasion }}</span>
               </div>
               <div class="featured-name"><h3 class="font-body">{{ product.name }}</h3><span class="featured-arrow"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 18 18 6M6 6h12v12" /></svg></span></div>
@@ -112,7 +118,10 @@
         </div>
         <div class="columns-1 sm:columns-2 lg:columns-3 gap-6 space-y-6">
           <div v-for="t in testimonials" :key="t.name" class="break-inside-avoid bg-white/80 backdrop-blur-sm p-6 rounded-4xl border border-white hover:border-brand-terracotta/10 hover:shadow-xl transition-all duration-500">
-            <img v-if="t.img" :src="t.img" :alt="'Foto pelanggan ' + t.name" loading="lazy" decoding="async" width="400" :height="t.tall ? 224 : 160" class="w-full rounded-2xl mb-5 object-cover" :class="t.tall ? 'h-56' : 'h-40'"/>
+            <picture v-if="t.img">
+              <source media="(max-width: 767px)" :srcset="t.mobileImg" />
+              <img :src="t.img" :alt="'Foto pelanggan ' + t.name" loading="lazy" decoding="async" width="400" :height="t.tall ? 224 : 160" class="w-full rounded-2xl mb-5 object-cover" :class="t.tall ? 'h-56' : 'h-40'"/>
+            </picture>
             <div class="flex items-center gap-1 mb-3">
               <i v-for="i in 5" :key="i" class='bx bxs-star text-amber-400 text-[15px]' aria-hidden="true"></i>
             </div>
@@ -152,9 +161,6 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import { useAuthStore } from '../stores/auth'
-import logo from '../assets/images/logo-small.webp'
 const heroImg = '/hero-img.webp'
 import naskotImg from '../assets/images/naskot.webp'
 import tumpengImg from '../assets/images/tumpeng.webp'
@@ -162,6 +168,12 @@ import tuminiImg from '../assets/images/tumini.webp'
 import prasmananImg from '../assets/images/prasmanan.webp'
 import testi1Img from '../assets/images/testi1.webp'
 import testi2Img from '../assets/images/testi2.webp'
+import naskotMobile from '../assets/images/mobile/naskot.webp'
+import tumpengMobile from '../assets/images/mobile/tumpeng.webp'
+import tuminiMobile from '../assets/images/mobile/tumini.webp'
+import prasmananMobile from '../assets/images/mobile/prasmanan.webp'
+import testi1Mobile from '../assets/images/mobile/testi1.webp'
+import testi2Mobile from '../assets/images/mobile/testi2.webp'
 import TopNav from '../components/catalog/TopNav.vue'
 import Footer from '../components/catalog/Footer.vue'
 import StatsProof from '../components/home/StatsProof.vue'
@@ -169,14 +181,13 @@ import CateringBanner from '../components/home/CateringBanner.vue'
 import ServicesSection from '../components/home/ServicesSection.vue'
 import WhyUsSection from '../components/home/WhyUsSection.vue'
 
-const authStore = useAuthStore()
-
 const products = [
   { name: 'Nasi Kotak', occasion: 'Teman kumpul & meeting', desc: 'Paket nasi kotak lengkap dengan lauk pilihan, cocok untuk meeting dan seminar.', price: 'Mulai Rp 20.000', img: naskotImg, cat: 'nasi-kotak' },
   { name: 'Tumpeng Besar', occasion: 'Rayakan yang istimewa', desc: 'Tumpeng nasi kuning megah dengan aneka lauk tradisional untuk acara spesial.', price: 'Mulai Rp 245.000', img: tumpengImg, cat: 'tumpeng' },
   { name: 'Tumpeng Kecil', occasion: 'Mungil, penuh makna', desc: 'Tumpeng mini elegan, sempurna untuk ulang tahun dan syukuran keluarga.', price: 'Mulai Rp 22.500', img: tuminiImg, cat: 'tumpeng' },
   { name: 'Prasmanan', occasion: 'Jamuan untuk semua', desc: 'Paket prasmanan lengkap dengan dekorasi meja mewah untuk pernikahan.', price: 'Mulai Rp 25.000/pax', img: prasmananImg, cat: 'prasmanan' }
 ]
+products.forEach((product, index) => { product.mobileImg = [naskotMobile, tumpengMobile, tuminiMobile, prasmananMobile][index] })
 
 const testimonials = [
   { name: 'Ibu Sari', org: 'PT. Maju Bersama', quote: 'Rasa makanannya luar biasa dan pelayanannya sangat profesional. Semua tamu puas!', img: testi1Img, tall: false },
@@ -185,6 +196,7 @@ const testimonials = [
   { name: 'Hj. Fatimah', org: 'Arisan RT 05', quote: 'Nasi kotaknya enak dan harganya sangat terjangkau. Cocok untuk pengajian.', img: null, tall: false },
   { name: 'David Chen', org: 'StartUp Borneo', quote: 'Tim kami selalu order tumpeng untuk perayaan milestone. Kualitas terbaik!', img: testi2Img, tall: false }
 ]
+testimonials.forEach(testimonial => { testimonial.mobileImg = testimonial.img === testi1Img ? testi1Mobile : testi2Mobile })
 
 </script>
 
@@ -217,6 +229,16 @@ const testimonials = [
 @media (min-width: 768px) and (max-width: 1100px) { .hero-grid { gap: 35px; } .hero-eyebrow { font-size: 8px; gap: 6px; } .hero-primary, .hero-secondary { font-size: 12px; padding-inline: 15px; } }
 @media (max-width: 767px) { .hero-section { padding-inline: 24px; } .hero-grid { gap: 66px; } .hero-copy { max-width: 560px; width: 100%; margin-inline: auto; } .hero-title { font-size: 10.8cqi; } .hero-eyebrow { font-size: 8px; gap: 6px; } .hero-visual { margin: 0 16px 20px; } .hero-photo img { aspect-ratio: 1.05; } .hero-rating, .hero-portions { padding: 12px; gap: 10px; } .hero-visual::after { font-size: 45px; top: -34px; left: -22px; } .hero-proof { margin-inline: auto; } }
 @media (prefers-reduced-motion: reduce) { .hero-copy, .hero-visual { animation: none; } .hero-primary { transition: none; } }
+/* Paint mobile LCP text immediately; retain desktop's entrance animation. */
+@media (max-width: 767px) { .hero-copy, .hero-visual { animation: none; } }
+@media (max-width: 767px) {
+  .hero-copy { container-type: normal; }
+  .hero-title { font-size: min(calc(10.8vw - 5.184px), 60.48px); }
+  main > section:not(#home) { content-visibility: auto; contain-intrinsic-size: auto 800px; }
+  .hero-section > .blob { filter: none; background: radial-gradient(ellipse, #e07a5f0d, transparent 70%); }
+  .hero-section > .blob:nth-child(2) { background: radial-gradient(ellipse, #690b2207, transparent 70%); }
+  .animate-ping { animation: none; }
+}
 
 .featured-section { padding: 100px 0 80px; background: #f7f2e9; }
 .featured-heading { display: flex; justify-content: space-between; align-items: flex-end; gap: 36px; margin-bottom: 48px; }
@@ -239,6 +261,7 @@ const testimonials = [
 .featured-item:nth-child(3) .featured-image { border-radius: 80px 24px 80px 24px; }
 .featured-item:nth-child(4) .featured-image { border-radius: 20px 20px 100px 100px; }
 .featured-image img { width: 100%; height: 100%; object-fit: cover; transition: transform .4s ease; }
+.featured-image picture { display: contents; }
 .featured-link:hover img { transform: scale(1.045); }
 .featured-occasion { position: absolute; bottom: 22px; left: 50%; transform: translateX(-50%) rotate(-4deg); width: max-content; max-width: 94%; padding: 8px 12px; background: #e9cd92; color: #542014; font-size: 10px; font-weight: 600; }
 .featured-item:nth-child(even) .featured-occasion { transform: translateX(-50%) rotate(3deg); background: #690b22; color: #fff4dc; }

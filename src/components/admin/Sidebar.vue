@@ -323,6 +323,7 @@ const toggleFinanceDropdown = () => {
 const financeSubMenu = [
   { label: 'Overview', icon: PieChart, route: '/admin/finance/overview' },
   { label: 'Buku Kas', icon: BookOpen, route: '/admin/finance/cashflow' },
+  { label: 'Rekap Add-ons', icon: BookOpen, route: '/admin/finance/addons' },
   { label: 'Laba Rugi (P&L)', icon: TrendingUp, route: '/admin/finance/pnl' }
 ]
 
