@@ -202,6 +202,12 @@ export const productApi = {
 // Add-on API — /api/admin/add-ons
 // ═══════════════════════════════════════════════════════
 export const addonApi = {
+  async getCategories() {
+    return normalizeList(await api.get('/admin/add-on-categories'))
+  },
+  async createCategory(name) {
+    return normalizeItem(await api.post('/admin/add-on-categories', { name }))
+  },
   async getAll(page = 1, perPage = 20, search = '', productId = '') {
     try {
       const params = { page, per_page: perPage }

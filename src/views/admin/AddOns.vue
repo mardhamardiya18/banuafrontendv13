@@ -15,6 +15,7 @@
       search-placeholder="Cari add-on..."
       @page-change="fetchData" @search="onSearch">
       <template #cell-name="{ value }"><span class="font-semibold" style="color: rgba(230,230,250,0.97);">{{ value }}</span></template>
+      <template #cell-category_id="{ value }"><span class="text-xs text-purple-300">{{ categories.find(category => Number(category.id) === Number(value))?.name || 'Tanpa kategori' }}</span></template>
       <template #cell-product_name="{ row }">
         <span v-if="row.product?.name" class="px-2.5 py-1 rounded-lg text-xs font-semibold"
               style="background: rgba(139,92,246,0.12); color: rgba(167,139,250,0.9); border: 1px solid rgba(139,92,246,0.2);">
@@ -56,6 +57,18 @@
           />
         </div>
         <div>
+          <label for="addon-category" class="dark-label">Kategori Add-on</label>
+          <select id="addon-category" v-model="form.category_id" class="dark-input">
+            <option :value="null">Tanpa kategori</option>
+            <option v-for="category in categories" :key="category.id" :value="category.id">{{ category.name }}</option>
+          </select>
+          <p class="text-xs text-gray-400 mt-2">Pilih Ongkir untuk menggabungkan semua tarif ongkir dalam rekap.</p>
+          <div class="flex gap-2 mt-3">
+            <input v-model="newCategory" maxlength="100" class="dark-input min-w-0" aria-label="Nama kategori baru" placeholder="Kategori baru..." @keydown.enter.prevent="createCategory" />
+            <button type="button" :disabled="!newCategory.trim() || creatingCategory" class="dark-btn-cancel shrink-0" @click="createCategory">Tambah</button>
+          </div>
+        </div>
+        <div>
           <label class="dark-label">Harga Jual (Rp)</label>
           <input v-model="formattedPrice" type="text" required class="dark-input" />
         </div>
@@ -90,10 +103,25 @@ import { addonApi } from '../../api/apiService'
 import { useAdminStore } from '../../stores/admin'
 
 const store = useAdminStore()
+const categories = ref([])
+const newCategory = ref('')
+const creatingCategory = ref(false)
+async function createCategory() {
+  if (!newCategory.value.trim() || creatingCategory.value) return
+  creatingCategory.value = true
+  try {
+    const res = await addonApi.createCategory(newCategory.value.trim())
+    categories.value.push(res.data)
+    form.value.category_id = res.data.id
+    newCategory.value = ''
+  } catch (error) {
+    store.showToast(error.response?.data?.message || 'Gagal menambahkan kategori.', 'error')
+  } finally { creatingCategory.value = false }
+}
 const loading = ref(false), data = ref([]), meta = ref(null), products = ref([])
 const search = ref(''), perPage = ref(10)
 const showForm = ref(false), editItem = ref(null), saving = ref(false)
-const form = ref({ name: '', product_id: null, price: 0, is_active: true })
+const form = ref({ name: '', product_id: null, category_id: null, price: 0, is_active: true })
 
 const formattedPrice = computed({
   get() { return form.value.price ? form.value.price.toLocaleString('id-ID') : '' },
@@ -114,6 +142,7 @@ const selectOptions = computed(() => {
 
 const columns = [
   { key: 'name', label: 'Nama Add-On' },
+  { key: 'category_id', label: 'Kategori' },
   { key: 'product_name', label: 'Terkait' },
   { key: 'price', label: 'Harga' },
   { key: 'is_active', label: 'Status' }
@@ -133,11 +162,12 @@ const fetchData = async (p = 1) => {
 const onSearch = () => fetchData(1)
 
 const openForm = (item = null) => {
+  newCategory.value = ''
   editItem.value = item
   if (item) {
-    form.value = { ...item }
+    form.value = { ...item, category_id: item.category_id ?? null }
   } else {
-    form.value = { name: '', product_id: null, price: 0, is_active: true }
+    form.value = { name: '', product_id: null, category_id: null, price: 0, is_active: true }
   }
   showForm.value = true
 }
@@ -169,6 +199,7 @@ const handleDel = async () => {
 }
 
 onMounted(async () => { 
+  try { categories.value = (await addonApi.getCategories()).data } catch { store.showToast('Kategori add-on gagal dimuat.', 'error') }
   await store.fetchProducts(); 
   products.value = store.products; 
   fetchData() 

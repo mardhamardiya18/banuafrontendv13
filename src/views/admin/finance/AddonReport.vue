@@ -14,10 +14,17 @@
         </div>
       </div>
       <div class="grid sm:grid-cols-2 gap-4">
+        <label for="report-category" class="text-xs font-semibold text-gray-400 space-y-2"><span>Kategori add-on</span>
+          <select id="report-category" aria-label="Kategori add-on" v-model="categoryId" class="report-input" @change="addonId = ''">
+            <option value="">Semua kategori</option>
+            <option v-for="category in categories" :key="category.id" :value="String(category.id)">{{ category.name }}</option>
+            <option value="0">Tanpa kategori</option>
+          </select>
+        </label>
         <div ref="addonDropdown" class="relative text-xs font-semibold text-gray-400 space-y-2" @keydown.esc.prevent="closeDropdown(true)" @focusout="onDropdownBlur">
           <span id="addon-label">Add-on</span>
           <button ref="addonTrigger" type="button" class="report-input addon-trigger text-left" aria-labelledby="addon-label addon-selection" aria-haspopup="listbox" :aria-expanded="dropdownOpen" aria-controls="addon-options" @click="toggleDropdown" @keydown.down.prevent="openDropdown">
-            <span id="addon-selection" class="min-w-0 flex-1 truncate">{{ addonId ? addonLabel(addonId) : 'Semua add-ons' }}</span>
+            <span id="addon-selection" class="min-w-0 flex-1 truncate">{{ addonId ? addonLabel(addonId) : categoryId ? 'Semua varian' : 'Semua add-ons' }}</span>
             <span v-if="selectedAddon?.price != null" class="text-xs text-purple-300 whitespace-nowrap">{{ currency(selectedAddon.price) }}</span>
             <ChevronDown :size="18" class="shrink-0 text-gray-400 transition-transform duration-200" :class="{ 'rotate-180': dropdownOpen }" aria-hidden="true" />
           </button>
@@ -40,6 +47,7 @@
         </label>
       </div>
       <p class="text-xs text-gray-400">Berdasarkan tanggal pengiriman · Harga saat transaksi · {{ periodLabel }}</p>
+      <p v-if="categoryId" class="text-xs text-purple-300">{{ categories.find(category => String(category.id) === categoryId)?.name || 'Tanpa kategori' }} · {{ addonId ? 'Satu varian dipilih' : 'Seluruh varian harga digabungkan' }}</p>
     </section>
 
     <p v-if="!validPeriod" role="status" class="text-amber-300 text-sm">Pilih bulan atau tahun yang valid.</p>
@@ -54,6 +62,14 @@
       </div>
       <p class="text-xs text-gray-500">Nominal add-ons sudah termasuk dalam total order. Rekap ini tidak menambah pendapatan atau mencatat biaya kurir.</p>
 
+      <section v-if="!loading && report.price_breakdown?.length" class="report-panel p-5 sm:p-6 space-y-4">
+        <h2 class="text-base font-bold text-white">Rincian berdasarkan Harga Transaksi</h2>
+        <p class="text-xs text-gray-400">Total sesuai kategori dan varian yang dipilih. Satu order dapat muncul pada beberapa harga.</p>
+        <div class="overflow-x-auto"><table class="w-full text-sm text-left whitespace-nowrap">
+          <thead class="text-xs text-gray-400"><tr><th class="py-3 pr-4">Harga transaksi</th><th class="p-3 text-right">Kuantitas</th><th class="p-3 text-right">Order unik</th><th class="py-3 pl-4 text-right">Total</th></tr></thead>
+          <tbody class="divide-y divide-white/5"><tr v-for="row in report.price_breakdown" :key="row.snapshot_price"><td class="py-3 pr-4">{{ currency(row.snapshot_price) }}</td><td class="p-3 text-right">{{ number(row.total_quantity) }}</td><td class="p-3 text-right">{{ number(row.total_orders) }}</td><td class="py-3 pl-4 text-right text-purple-300 font-semibold">{{ currency(row.total_amount) }}</td></tr></tbody>
+        </table></div>
+      </section>
       <section v-if="!loading && report.breakdown.length" class="report-panel p-5 sm:p-6 space-y-4">
         <h2 class="text-base font-bold text-white">Total per Add-on</h2>
         <div class="grid md:grid-cols-2 gap-3">
@@ -100,6 +116,8 @@ const period = ref('month')
 const month = ref(`${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`)
 const year = ref(now.getFullYear())
 const addonId = ref('')
+const categoryId = ref('')
+const categories = ref([])
 const page = ref(1)
 const options = ref([])
 const report = ref({ summary: {}, breakdown: [], details: [], meta: {} })
@@ -113,6 +131,7 @@ const number = value => Number(value || 0).toLocaleString('id-ID')
 const currency = value => `Rp ${number(value)}`
 const optionLabel = addon => addon.product_name ? `${addon.name} · ${addon.product_name}` : addon.name
 const selectedAddon = computed(() => options.value.find(addon => addon.id === addonId.value))
+const categoryOptions = computed(() => options.value.filter(addon => categoryId.value === '' || (categoryId.value === '0' ? addon.category_id == null : String(addon.category_id) === categoryId.value)))
 const dropdownOpen = ref(false)
 const search = ref('')
 const activeOption = ref(0)
@@ -121,7 +140,8 @@ const addonTrigger = ref(null)
 const addonSearch = ref(null)
 const matchingOptions = computed(() => {
   const query = search.value.trim().toLocaleLowerCase('id-ID')
-  return [{ id: '', name: 'Semua add-ons', label: 'Semua add-ons' }, ...options.value.map(addon => ({ id: addon.id, name: addon.name, product: addon.product_name, price: addon.price, label: optionLabel(addon) }))]
+  const allLabel = categoryId.value ? 'Semua varian' : 'Semua add-ons'
+  return [{ id: '', name: allLabel, label: allLabel }, ...categoryOptions.value.map(addon => ({ id: addon.id, name: addon.name, product: addon.product_name, price: addon.price, label: optionLabel(addon) }))]
     .filter(option => option.label.toLocaleLowerCase('id-ID').includes(query))
 })
 const visibleOptions = computed(() => matchingOptions.value.slice(0, 6))
@@ -163,19 +183,21 @@ async function loadReport() {
   if (period.value === 'month') params.month = month.value
   if (period.value === 'year') params.year = year.value
   if (addonId.value) params.add_on_id = addonId.value
+  if (categoryId.value !== '') params.category_id = categoryId.value
   try {
     const res = await financeApi.getAddonReport(params)
     if (id !== requestId) return
     if (res.status !== 'success' || !res.data?.summary || !Array.isArray(res.data.details)) throw new Error('Invalid report')
     report.value = res.data
     options.value = res.data.add_ons
+    categories.value = res.data.categories || []
   } catch {
     if (id === requestId) error.value = true
   } finally {
     if (id === requestId) loading.value = false
   }
 }
-watch([period, month, year, addonId], () => { if (page.value !== 1) page.value = 1; else loadReport() })
+watch([period, month, year, addonId, categoryId], () => { closeDropdown(); if (page.value !== 1) page.value = 1; else loadReport() })
 watch(page, loadReport)
 loadReport()
 </script>

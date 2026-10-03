@@ -20,7 +20,9 @@ try {
       const empty = url.searchParams.get('year') === '2020'
       return route.fulfill({ json: { success: true, data: {
         summary: { total_amount: empty ? 0 : 80000, total_quantity: empty ? 0 : 2, total_orders: empty ? 0 : 2 },
-        add_ons: [...Array.from({ length: 8 }, (_, i) => ({ id: `sample-${i}`, name: `Add-on ${i}`, product_name: 'Tumini Reguler' })), { id: addonId, name: 'Ongkir', product_name: null, price: 40000 }],
+        categories: [{ id: 1, name: 'Ongkir' }],
+        price_breakdown: empty ? [] : [{ snapshot_price: 40000, total_amount: 80000, total_quantity: 2, total_orders: 2 }],
+        add_ons: [...Array.from({ length: 8 }, (_, i) => ({ id: `sample-${i}`, name: `Add-on ${i}`, product_name: 'Tumini Reguler', category_id: null })), { id: addonId, name: 'Ongkir', product_name: null, price: 40000, category_id: 1 }],
         breakdown: empty ? [] : [{ add_on_id: addonId, name: 'Ongkir', total_amount: 80000, total_quantity: 2, total_orders: 2 }],
         details: empty ? [] : [{ id: 'line-1', add_on_id: addonId, add_on_name: 'Ongkir', order_id: 'order-1', invoice_number: 'INV-2610-003', delivery_date: '2026-10-02 13:00:00', quantity: 1, snapshot_price: 40000, sub_total: 40000 }],
         meta: { current_page: Number(url.searchParams.get('page')), last_page: empty ? 1 : 2, total: empty ? 0 : 16 },
@@ -37,20 +39,26 @@ try {
   await page.getByRole('link', { name: 'INV-2610-003' }).waitFor()
   assert.equal(await page.getByRole('heading', { name: 'Rekap Add-ons', exact: true }).count(), 1)
   await page.getByRole('button', { name: 'Add-on Semua add-ons', exact: true }).click()
-  assert.equal(await page.getByRole('option').count(), 6)
+  assert.equal(await page.getByRole('listbox').getByRole('option').count(), 6)
   await page.getByText('Gunakan fitur search', { exact: false }).waitFor()
   const search = page.getByRole('combobox', { name: 'Cari add-on atau produk' })
   await search.fill('TUMINI')
-  assert.equal(await page.getByRole('option').count(), 6)
+  assert.equal(await page.getByRole('listbox').getByRole('option').count(), 6)
   await search.fill('tidak-ada')
   await page.getByText('Add-on tidak ditemukan. Coba kata kunci lain.').waitFor()
   await search.fill(' ONGKIR ')
-  assert.equal(await page.getByRole('option').count(), 1)
-  assert.match(await page.getByRole('option').innerText(), /Rp 40\.000/)
+  assert.equal(await page.getByRole('listbox').getByRole('option').count(), 1)
+  assert.match(await page.getByRole('listbox').getByRole('option').innerText(), /Rp 40\.000/)
   await Promise.all([page.waitForResponse(res => res.url().includes(`add_on_id=${addonId}`)), search.press('Enter')])
   await page.getByRole('button', { name: 'Add-on Ongkir', exact: true }).click()
   await search.press('Escape')
   assert.equal(await page.getByRole('listbox').count(), 0)
+  await Promise.all([page.waitForResponse(res => res.url().includes('category_id=1')), page.getByLabel('Kategori add-on', { exact: true }).selectOption('1')])
+  assert.equal(requests.at(-1).add_on_id, undefined)
+  await page.getByRole('button', { name: 'Add-on Semua varian', exact: true }).click()
+  assert.equal(await page.getByRole('listbox').getByRole('option').count(), 2)
+  await page.getByRole('combobox', { name: 'Cari add-on atau produk' }).press('Escape')
+  await page.getByRole('heading', { name: 'Rincian berdasarkan Harga Transaksi' }).waitFor()
   await page.getByRole('button', { name: 'Berikutnya' }).click()
   await page.waitForResponse(res => res.url().includes('page=2'))
   await page.getByRole('button', { name: 'Tahunan', exact: true }).click()
