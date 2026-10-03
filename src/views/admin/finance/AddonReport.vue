@@ -14,9 +14,26 @@
         </div>
       </div>
       <div class="grid sm:grid-cols-2 gap-4">
-        <label class="text-xs font-semibold text-gray-400 space-y-2"><span>Add-on</span>
-          <select v-model="addonId" class="report-input"><option value="">Semua add-ons</option><option v-for="addon in options" :key="addon.id" :value="addon.id">{{ optionLabel(addon) }}</option></select>
-        </label>
+        <div ref="addonDropdown" class="relative text-xs font-semibold text-gray-400 space-y-2" @keydown.esc.prevent="closeDropdown(true)" @focusout="onDropdownBlur">
+          <span id="addon-label">Add-on</span>
+          <button ref="addonTrigger" type="button" class="report-input addon-trigger text-left" aria-labelledby="addon-label addon-selection" aria-haspopup="listbox" :aria-expanded="dropdownOpen" aria-controls="addon-options" @click="toggleDropdown" @keydown.down.prevent="openDropdown">
+            <span id="addon-selection" class="min-w-0 flex-1 truncate">{{ addonId ? addonLabel(addonId) : 'Semua add-ons' }}</span>
+            <span v-if="selectedAddon?.price != null" class="text-xs text-purple-300 whitespace-nowrap">{{ currency(selectedAddon.price) }}</span>
+            <ChevronDown :size="18" class="shrink-0 text-gray-400 transition-transform duration-200" :class="{ 'rotate-180': dropdownOpen }" aria-hidden="true" />
+          </button>
+          <div v-if="dropdownOpen" class="absolute z-30 top-full left-0 right-0 mt-2 rounded-xl border border-white/15 bg-[#191925] shadow-xl p-2">
+            <input ref="addonSearch" v-model="search" type="search" role="combobox" aria-label="Cari add-on atau produk" aria-autocomplete="list" aria-controls="addon-options" :aria-expanded="true" :aria-activedescendant="visibleOptions.length ? `addon-option-${activeOption}` : undefined" placeholder="Cari nama add-on atau produk..." class="report-input" @keydown.down.prevent="moveOption(1)" @keydown.up.prevent="moveOption(-1)" @keydown.enter.prevent="selectActiveOption" />
+            <ul id="addon-options" role="listbox" aria-label="Pilihan add-on" class="mt-2 space-y-1">
+              <li v-for="(option, index) in visibleOptions" :id="`addon-option-${index}`" :key="option.id" role="option" :aria-selected="addonId === option.id" class="flex items-center justify-between gap-3 px-3 py-3 rounded-lg text-sm cursor-pointer" :class="index === activeOption ? 'bg-purple-500/20 text-purple-200' : 'text-gray-300 hover:bg-white/5'" @mouseenter="activeOption = index" @mousedown.prevent @click="selectOption(option)">
+                <div class="min-w-0"><p class="break-words font-semibold">{{ option.name }}</p><p v-if="option.product" class="text-xs text-gray-400 font-normal mt-1 break-words">{{ option.product }}</p></div>
+                <span v-if="option.id" class="shrink-0 rounded-lg bg-white/5 px-2.5 py-1.5 text-xs text-purple-200 whitespace-nowrap">{{ option.price != null ? currency(option.price) : 'Harga belum tersedia' }}</span>
+              </li>
+            </ul>
+            <p v-if="!visibleOptions.length" role="status" class="p-3 text-gray-400">Add-on tidak ditemukan. Coba kata kunci lain.</p>
+            <p v-if="matchingOptions.length > 6" role="status" class="px-3 pt-3 pb-2 border-t border-white/10 mt-2 text-xs text-gray-400 leading-relaxed">Menampilkan 6 dari {{ matchingOptions.length }} pilihan. Gunakan fitur search untuk mencari data lainnya.</p>
+            <p class="px-3 py-2 text-[11px] font-normal text-gray-500">Harga pada pilihan adalah harga add-on saat ini.</p>
+          </div>
+        </div>
         <label v-if="period !== 'all'" class="text-xs font-semibold text-gray-400 space-y-2"><span>{{ period === 'month' ? 'Pilih bulan' : 'Pilih tahun' }}</span>
           <input v-if="period === 'month'" v-model="month" type="month" class="report-input" />
           <input v-else v-model="year" type="number" min="1000" max="9998" step="1" class="report-input" />
@@ -73,7 +90,8 @@
 </template>
 
 <script setup>
-import { computed, ref, watch } from 'vue'
+import { computed, ref, watch, nextTick, onMounted, onBeforeUnmount } from 'vue'
+import { ChevronDown } from '@lucide/vue'
 import { financeApi } from '../../../api/apiService'
 import { expenseDateRange } from '../../../utils/expenseSummary'
 
@@ -94,6 +112,41 @@ const periodLabel = computed(() => !validPeriod.value ? 'Periode belum dipilih' 
 const number = value => Number(value || 0).toLocaleString('id-ID')
 const currency = value => `Rp ${number(value)}`
 const optionLabel = addon => addon.product_name ? `${addon.name} · ${addon.product_name}` : addon.name
+const selectedAddon = computed(() => options.value.find(addon => addon.id === addonId.value))
+const dropdownOpen = ref(false)
+const search = ref('')
+const activeOption = ref(0)
+const addonDropdown = ref(null)
+const addonTrigger = ref(null)
+const addonSearch = ref(null)
+const matchingOptions = computed(() => {
+  const query = search.value.trim().toLocaleLowerCase('id-ID')
+  return [{ id: '', name: 'Semua add-ons', label: 'Semua add-ons' }, ...options.value.map(addon => ({ id: addon.id, name: addon.name, product: addon.product_name, price: addon.price, label: optionLabel(addon) }))]
+    .filter(option => option.label.toLocaleLowerCase('id-ID').includes(query))
+})
+const visibleOptions = computed(() => matchingOptions.value.slice(0, 6))
+watch(search, () => { activeOption.value = 0 })
+async function openDropdown() {
+  search.value = ''
+  activeOption.value = 0
+  dropdownOpen.value = true
+  await nextTick()
+  addonSearch.value?.focus()
+}
+function closeDropdown(restoreFocus = false) {
+  dropdownOpen.value = false
+  if (restoreFocus) addonTrigger.value?.focus()
+}
+function toggleDropdown() { dropdownOpen.value ? closeDropdown() : openDropdown() }
+function moveOption(direction) {
+  if (visibleOptions.value.length) activeOption.value = (activeOption.value + direction + visibleOptions.value.length) % visibleOptions.value.length
+}
+function selectOption(option) { addonId.value = option.id; closeDropdown(true) }
+function selectActiveOption() { if (visibleOptions.value[activeOption.value]) selectOption(visibleOptions.value[activeOption.value]) }
+function onDropdownBlur(event) { if (!addonDropdown.value?.contains(event.relatedTarget)) closeDropdown() }
+function onOutsideClick(event) { if (!addonDropdown.value?.contains(event.target)) closeDropdown() }
+onMounted(() => document.addEventListener('pointerdown', onOutsideClick))
+onBeforeUnmount(() => document.removeEventListener('pointerdown', onOutsideClick))
 const addonLabel = (id, fallback) => { const addon = options.value.find(item => item.id === id); return addon ? optionLabel(addon) : fallback || 'Add-on tidak tersedia' }
 const deliveryDate = value => value ? new Date(value.replace(' ', 'T')).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' }) : '-'
 const cards = computed(() => [
@@ -131,4 +184,5 @@ loadReport()
 .report-panel { background: rgba(20,20,32,.8); border: 1px solid rgba(255,255,255,.06); border-radius: 18px; }
 .report-input { display: block; width: 100%; background: #141420; border: 1px solid #ffffff1a; border-radius: 12px; padding: 10px 12px; color: #e0e0ef; font-size: 14px; color-scheme: dark; }
 .report-input:focus { outline: 2px solid #a78bfa; outline-offset: 2px; }
+.report-input.addon-trigger { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 </style>
